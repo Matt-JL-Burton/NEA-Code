@@ -70,7 +70,7 @@ def initialiseWindow():
     # entryBackground_Test = Label(root, image = black_Short_SVG,background=None).place(x = 100, y = 100) 
     # chdir('..')
     # ######### testing
-    root.mainloop()
+    # root.mainloop()
 
 #Finding out what OS the device runs on and setting the path seperator approrialtly
 def findOS():
@@ -336,5 +336,6 @@ def checkPageOpen(page_root):
 def displayTCs():
     root.title('Property managment system - Terms and Condtions')
     print ('terms and conditions')
+    root.mainloop()
 
 initialise()
