@@ -337,5 +337,4 @@ def displayTCs():
     root.title('Property managment system - Terms and Condtions')
     print ('terms and conditions')
 
-
 initialise()
