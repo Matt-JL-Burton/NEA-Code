@@ -96,7 +96,7 @@ def createFolder(folderName):
 def createFile(fileName):
     listOfFilesInDirectory = os.listdir(cwd)
     if fileName not in listOfFilesInDirectory:
-        f = open(fileName,'r')
+        f = open(fileName,'w')
         f.close()
 
 def addAssests():
