@@ -333,9 +333,12 @@ def checkPageOpen(page_root):
             print (page_root.state())
             return 'Not Open'
 
+# def endPageLoop():
+#     root.mainloop()
+
 def displayTCs():
     root.title('Property managment system - Terms and Condtions')
+    
     root.mainloop()
-    #close without commitng check
 
 initialise()
