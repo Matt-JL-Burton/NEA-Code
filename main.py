@@ -335,7 +335,6 @@ def checkPageOpen(page_root):
 
 def displayTCs():
     root.title('Property managment system - Terms and Condtions')
-    print ('terms and conditions')
     root.mainloop()
     #close without commitng check
 
