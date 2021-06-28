@@ -20,7 +20,6 @@ def initialise():
     setCWD()
     if path_seperator != None: #basically if the device is running on an accepted OS
         fileCreation()
-        initialiseWindow()
         displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
@@ -46,7 +45,7 @@ def definingDefaultVariables():
     secondry = '#ffffff'
     tertiary = '#a9a9a9'
     bannedColours = {'errorRed':'#','warningYellow':'#'}
-    font = 'Bahnschrift SemiBold'
+    font = 'Bahnschrift SemiLight'
     listOfIdealTables = ['Accounts', 'Complaints', 'Loan_table', 'Refinance', 'Sold_Units', "Tenant's_Entity", "Unit's_Monthly", 'Units']
     databaseName = 'Property Managment System Database.db'
     listOfIdealAssests = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG']
@@ -337,8 +336,13 @@ def checkPageOpen(page_root):
 #     root.mainloop()
 
 def displayTCs():
+    initialiseWindow()
     root.title('Property managment system - Terms and Condtions')
-    
+    tCsTitle = Label(root, font=(font,'25'), text='TERMS & CONDITIONS', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.1, anchor=CENTER)
+    tCsSubTitle = Label(root,font=(font,'15'), text='By accepting the terms and condtions you agree to the following', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.15, anchor=CENTER)
+    tCsBP1 = Label(root,font=(font,'13'), text= '○ I will only enter personal data into this system when the person whom the data belongs to has given consent for their data to be stored', width='125', bg=primary,fg=secondry, relief='sunken').place(relx=0.025, rely=0.25)
+    tCsBP2 = Label(root,font=(font,'13'), text= '○ I will keep all data stored accurate and upto date', width='125', bg=primary,fg=secondry,justify='left', relief='sunken').place(relx=0.025, rely=0.30)
+
     root.mainloop()
 
 initialise()
