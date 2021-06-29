@@ -340,8 +340,14 @@ def displayTCs():
     root.title('Property managment system - Terms and Condtions')
     tCsTitle = Label(root, font=(font,'25'), text='TERMS & CONDITIONS', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.1, anchor=CENTER)
     tCsSubTitle = Label(root,font=(font,'15'), text='By accepting the terms and condtions you agree to the following', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.15, anchor=CENTER)
-    tCsBP1 = Label(root,font=(font,'13'), text= '○ I will only enter personal data into this system when the person whom the data belongs to has given consent for their data to be stored', width='125', bg=primary,fg=secondry, relief='sunken').place(relx=0.025, rely=0.25)
-    tCsBP2 = Label(root,font=(font,'13'), text= '○ I will keep all data stored accurate and upto date', width='125', bg=primary,fg=secondry,justify='left', relief='sunken').place(relx=0.025, rely=0.30)
+    tCsBP1 = Label(root,font=(font,'13'), text= '○ I will only enter personal data into this system when the person whom the data belongs to has given consent for their data to be stored', anchor='w',width='125', bg=primary,fg=secondry).place(relx=0.025, rely=0.25)
+    tCsBP2 = Label(root,font=(font,'13'), text= '○ I will keep all data stored accurate and upto date', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.3)
+    tCsBP3 = Label(root,font=(font,'13'), text= '○ I will not share of the data stored on this system with any unauthorised person or an organisation', anchor='w',width='125', bg=primary,fg=secondry).place(relx=0.025, rely=0.35)
+    tCsBP4 = Label(root,font=(font,'13'), text= '○ I will not use this system to store data about a tenant that has left a unit', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.4)
+    tCsBP5 = Label(root,font=(font,'13'), text= '○ I will delete personal data on anyone as soon as it becomes unnecessary', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.45)
+    tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not share my pasword anywhere or with anyone who is unauthorised to access the data stored by this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.5)
+    tCsBP6 = Label(root,font=(font,'13'), text= '○ h', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
+    tCsBP7 = Label(root,font=(font,'13'), text= '○ h', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
 
     root.mainloop()
 
