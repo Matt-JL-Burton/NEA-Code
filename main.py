@@ -109,14 +109,13 @@ def addAssests():
             except OSError: #if there is a connection error
                 if checkPageOpen(connectionError) == 'Not Open':
                     displayConnectionError()
-                    
+
     for asset in listOfIdealAssestsMutable:
         try:
             urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/",f'{asset}')
         except OSError: #if there is a connection error
             if checkPageOpen(connectionError) == 'Not Open':
                 displayConnectionError()
-        
     chdir('..')
 
 def configureDatabase():
