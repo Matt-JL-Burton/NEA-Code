@@ -10,7 +10,7 @@ import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale
+from matplotlib.pyplot import autoscale, text
 
 print('program started')
 
@@ -44,7 +44,7 @@ def definingDefaultVariables():
     primary = '#373f51'
     secondry = '#ffffff'
     tertiary = '#a9a9a9'
-    bannedColours = {'errorRed':'#','warningYellow':'#'}
+    bannedColours = {'errorRed':'#','warningYellow':'#','activeTextColor':'dark grey'}
     font = 'Bahnschrift SemiLight'
     listOfIdealTables = ['Accounts', 'Complaints', 'Loan_table', 'Refinance', 'Sold_Units', "Tenant's_Entity", "Unit's_Monthly", 'Units']
     databaseName = 'Property Managment System Database.db'
@@ -342,14 +342,17 @@ def displayTCs():
     tCsSubTitle = Label(root,font=(font,'15'), text='By accepting the terms and condtions you agree to the following', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.15, anchor=CENTER)
     tCsBP1 = Label(root,font=(font,'13'), text= '○ I will only enter personal data into this system when the person whom the data belongs to has given consent for their data to be stored', anchor='w',width='125', bg=primary,fg=secondry).place(relx=0.025, rely=0.25)
     tCsBP2 = Label(root,font=(font,'13'), text= '○ I will keep all data stored accurate and upto date', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.3)
-    tCsBP3 = Label(root,font=(font,'13'), text= '○ I will not share of the data stored on this system with any unauthorised person or an organisation', anchor='w',width='125', bg=primary,fg=secondry).place(relx=0.025, rely=0.35)
+    tCsBP3 = Label(root,font=(font,'13'), text= '○ I will not share the data stored on this system with any unauthorised person or an organisation', anchor='w',width='125', bg=primary,fg=secondry).place(relx=0.025, rely=0.35)
     tCsBP4 = Label(root,font=(font,'13'), text= '○ I will not use this system to store data about a tenant that has left a unit', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.4)
     tCsBP5 = Label(root,font=(font,'13'), text= '○ I will delete personal data on anyone as soon as it becomes unnecessary', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.45)
     tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not share my pasword anywhere or with anyone who is unauthorised to access the data stored by this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.5)
     tCsBP6 = Label(root,font=(font,'13'), text= '○ I understand that the creator of this system is not responsible for the security of any data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
     tCsBP7 = Label(root,font=(font,'13'), text= '○ I accept that I hold complete responsibilty for any data breaches involving data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.6)
-    viewFullTCs = Button(root).place(relx=0.5, rely=0.8, anchor=CENTER)
-
+    viewFullTCsB = Button(root, width='50', text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
     root.mainloop()
+
+def viewFullTCs():
+    print ('Mat Smells really bad')
+    pass
 
 initialise()
