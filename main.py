@@ -40,7 +40,7 @@ def invalidOSRunning():
  
 #defining certain default variables
 def definingDefaultVariables():
-    global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssests, connectionError
+    global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssestsConstant, listOfIdealAssestsMutable ,connectionError
     primary = '#373f51'
     secondry = '#ffffff'
     tertiary = '#a9a9a9'
@@ -48,7 +48,8 @@ def definingDefaultVariables():
     font = 'Bahnschrift SemiLight'
     listOfIdealTables = ['Accounts', 'Complaints', 'Loan_table', 'Refinance', 'Sold_Units', "Tenant's_Entity", "Unit's_Monthly", 'Units']
     databaseName = 'Property Managment System Database.db'
-    listOfIdealAssests = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG']
+    listOfIdealAssestsConstant = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG']
+    listOfIdealAssestsMutable = ['Terms-Condtions.pdf']
     connectionError = 0
 
 #intialising page
@@ -101,13 +102,21 @@ def createFile(fileName):
 def addAssests():
     chdir(f'.{path_seperator}Assests')
     listOfAssets = os.listdir(os.getcwd())
-    for asset in listOfIdealAssests:
+    for asset in listOfIdealAssestsConstant:
         if asset not in listOfAssets:
             try:
                 urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/{asset}",f'{asset}')
             except OSError: #if there is a connection error
                 if checkPageOpen(connectionError) == 'Not Open':
                     displayConnectionError()
+                    
+    for asset in listOfIdealAssestsMutable:
+        try:
+            urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/",f'{asset}')
+        except OSError: #if there is a connection error
+            if checkPageOpen(connectionError) == 'Not Open':
+                displayConnectionError()
+        
     chdir('..')
 
 def configureDatabase():
@@ -345,9 +354,9 @@ def displayTCs():
     tCsBP3 = Label(root,font=(font,'13'), text= '○ I will not share the data stored on this system with any unauthorised person or an organisation', anchor='w',width='125', bg=primary,fg=secondry).place(relx=0.025, rely=0.35)
     tCsBP4 = Label(root,font=(font,'13'), text= '○ I will not use this system to store data about a tenant that has left a unit', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.4)
     tCsBP5 = Label(root,font=(font,'13'), text= '○ I will delete personal data on anyone as soon as it becomes unnecessary', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.45)
-    tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not share my pasword anywhere or with anyone who is unauthorised to access the data stored by this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.5)
+    tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not alter any files relating to this system except through this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.5)
     tCsBP6 = Label(root,font=(font,'13'), text= '○ I understand that the creator of this system is not responsible for the security of any data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
-    tCsBP7 = Label(root,font=(font,'13'), text= '○ I accept that I hold complete responsibilty for any data breaches involving data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.6)
+    tCsBP7 = Label(root,font=(font,'13'), text= '○ I have read, understand and accept the full terms and conditions of this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.6)
     viewFullTCsB = Button(root, width='50', text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
     root.mainloop()
 
