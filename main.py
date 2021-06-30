@@ -346,8 +346,9 @@ def displayTCs():
     tCsBP4 = Label(root,font=(font,'13'), text= '○ I will not use this system to store data about a tenant that has left a unit', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.4)
     tCsBP5 = Label(root,font=(font,'13'), text= '○ I will delete personal data on anyone as soon as it becomes unnecessary', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.45)
     tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not share my pasword anywhere or with anyone who is unauthorised to access the data stored by this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.5)
-    tCsBP6 = Label(root,font=(font,'13'), text= '○ h', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
-    tCsBP7 = Label(root,font=(font,'13'), text= '○ h', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
+    tCsBP6 = Label(root,font=(font,'13'), text= '○ I understand that the creator of this system is not responsible for the security of any data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
+    tCsBP7 = Label(root,font=(font,'13'), text= '○ I accept that I hold complete responsibilty for any data breaches involving data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.6)
+    viewFullTCs = Button(root).place(relx=0.5, rely=0.8, anchor=CENTER)
 
     root.mainloop()
 
