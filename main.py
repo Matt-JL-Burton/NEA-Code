@@ -15,6 +15,7 @@ import webbrowser
 
 print('program started')
 
+#main start program function
 def initialise():
     definingDefaultVariables()
     findOS()
@@ -374,6 +375,8 @@ def loginPage():
     pass
 
 def declineTCs():
-    pass
+    initialiseWindow()
+    root.title('Property managment system - Terms and Condtions declined')
+    root.geometry('500x500')
 
 initialise()
