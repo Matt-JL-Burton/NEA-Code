@@ -11,6 +11,7 @@ import platform
 import tkinter.font as tkfont
 import urllib.request
 from matplotlib.pyplot import autoscale, text
+import webbrowser
 
 print('program started')
 
@@ -356,11 +357,23 @@ def displayTCs():
     tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not alter any files relating to this system except through this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.5)
     tCsBP6 = Label(root,font=(font,'13'), text= '○ I understand that the creator of this system is not responsible for the security of any data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
     tCsBP7 = Label(root,font=(font,'13'), text= '○ I have read, understand and accept the full terms and conditions of this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.6)
-    viewFullTCsB = Button(root, width='50', text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
+    viewFullTCsB = Button(root, width='30', text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
+    acceptTCsB = Button(root, width='8', text='Accept', font=(font,'50','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.8, anchor=CENTER)
+    declineTCs = Button(root, width='9', text='Decline', font=(font,'11','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def viewFullTCs():
-    print ('Mat Smells really bad')
+    try:
+        webbrowser.open_new('https://emuxmatt.github.io/NEA/Terms-Condtions.pdf')
+    except OSError:
+        if checkPageOpen(connectionError) == 'Not Open':
+                displayConnectionError()
+
+
+def loginPage():
+    pass
+
+def declineTCs():
     pass
 
 initialise()
