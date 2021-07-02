@@ -333,13 +333,12 @@ def restartFromConnectionError():
     initialise()
 
 def checkPageOpen(page_root):
-    if page_root == 0: #this means a page of this root has never been made. It is only defined in the default_Variables
+    if page_root == 0: #this means a page of this root has never been made. It is only defined in the defaultVariables
         return 'Not Open'
     else:
         if page_root.state() == 'open':
             return 'Open'
         else:
-            print (page_root.state())
             return 'Not Open'
 
 # def endPageLoop():
@@ -360,7 +359,7 @@ def displayTCs():
     tCsBP7 = Label(root,font=(font,'13'), text= '○ I have read, understand and accept the full terms and conditions of this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.6)
     viewFullTCsB = Button(root, width='30', text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
     acceptTCsB = Button(root, width='8', text='Accept', font=(font,'50','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.8, anchor=CENTER)
-    declineTCs = Button(root, width='9', text='Decline', font=(font,'11','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    declineTCsB = Button(root, width='9', text='Decline', font=(font,'11','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=declineTCs).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def viewFullTCs():
@@ -370,11 +369,16 @@ def viewFullTCs():
         if checkPageOpen(connectionError) == 'Not Open':
                 displayConnectionError()
 
+def closeMainPage():
+    print('hello')
+    if root.state() == 'open':
+        root.destroy()
 
 def loginPage():
     pass
 
 def declineTCs():
+    closeMainPage()
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions declined')
     root.geometry('500x500')
