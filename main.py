@@ -12,7 +12,6 @@ import tkinter.font as tkfont
 import urllib.request
 from matplotlib.pyplot import autoscale, text
 import webbrowser
-import unittest
 
 print('program started')
 
@@ -52,7 +51,8 @@ def definingDefaultVariables():
     listOfIdealTables = ['Accounts', 'Complaints', 'Loan_table', 'Refinance', 'Sold_Units', "Tenant's_Entity", "Unit's_Monthly", 'Units']
     databaseName = 'Property Managment System Database.db'
     listOfIdealAssests = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG']
-    connectionError = 0
+    connectionError = Tk()
+    connectionError.destroy()
 
 #intialising page
 def initialiseWindow():
@@ -114,7 +114,7 @@ def addAssests():
             try:
                 urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/{asset}",f'{asset}')
             except OSError: #if there is a connection error
-                if checkPageOpen(connectionError) == 'Not Open':
+                if connectionError.state != 'normal':
                     i = len(listOfIdealAssests) + 1 #to exit while loop so as not to try and get more assests resulting in 
                     #loads of connection error's being displayed
                     displayConnectionError()
@@ -124,7 +124,6 @@ def addAssests():
     else:
         print('Correct Assests Not Obtained')
         return 'Correct Assests Not Obtained'
-
 
 def configureDatabase():
     createFile(databaseName)
@@ -338,18 +337,6 @@ def restartFromConnectionError():
     connectionError.destroy()
     initialise()
 
-def checkPageOpen(page_root):
-    if page_root == 0: #this means a page of this root has never been made. It is only defined in the defaultVariables
-        return 'Not Open'
-    else:
-        if page_root.state() == 'open':
-            return 'Open'
-        else:
-            return 'Not Open'
-
-# def endPageLoop():
-#     root.mainloop()
-
 def displayTCs():
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions')
@@ -372,12 +359,11 @@ def viewFullTCs():
     try:
         webbrowser.open_new('https://emuxmatt.github.io/NEA/Terms-Condtions.pdf')
     except OSError:
-        if checkPageOpen(connectionError) == 'Not Open':
+        if connectionError.state() != 'Normal':
                 displayConnectionError()
 
 def closeMainPage():
-    print('hello')
-    if root.state() == 'open':
+    if root.state() == 'normal':
         root.destroy()
 
 def loginPage():
