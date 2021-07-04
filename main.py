@@ -104,21 +104,20 @@ def createFile(fileName):
 def addAssests():
     chdir(f'.{path_seperator}Assests')
     listOfAssets = os.listdir(os.getcwd())
+    print(listOfIdealAssestsConstant)
     for asset in listOfIdealAssestsConstant:
+        print(asset)
         if asset not in listOfAssets:
             try:
                 urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/{asset}",f'{asset}')
+                print('asset got')
             except OSError: #if there is a connection error
-                if checkPageOpen(connectionError) == 'Not Open':
-                    displayConnectionError()
-
-    for asset in listOfIdealAssestsMutable:
-        try:
-            urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/",f'{asset}')
-        except OSError: #if there is a connection error
-            if checkPageOpen(connectionError) == 'Not Open':
+                # if checkPageOpen(connectionError) == 'Not Open':
+                print('connection error')
                 displayConnectionError()
-    chdir('..')
+    print('for loop ended')
+                    
+
 
 def configureDatabase():
     createFile(databaseName)
@@ -130,6 +129,7 @@ def configureDatabase():
     createTables()
 
 def displayConnectionError():
+    initialiseWindow()
     global connectionError
     connectionError = Tk()
     connectionError.title('Property managment system')
