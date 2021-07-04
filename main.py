@@ -89,7 +89,6 @@ def fileCreation():
     createFolder('Assests')
     configureDatabase()
     if addAssests() == 'Correct Assests Obtained':
-        print('hello mat')
         return 'Correct Files Created'
     else:
         return 'Incorrect Files Created'
@@ -122,7 +121,6 @@ def addAssests():
     print(listOfIdealAssests)
     print(os.listdir(os.getcwd()))
     if os.listdir(os.getcwd()) == listOfIdealAssests:
-        print('Correct Assests Obtained')
         return 'Correct Assests Obtained'
     else:
         print('Correct Assests Not Obtained')
