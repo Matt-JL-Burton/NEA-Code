@@ -12,6 +12,7 @@ import tkinter.font as tkfont
 import urllib.request
 from matplotlib.pyplot import autoscale, text
 import webbrowser
+import unittest
 
 print('program started')
 
@@ -21,8 +22,8 @@ def initialise():
     findOS()
     setCWD()
     if path_seperator != None: #basically if the device is running on an accepted OS
-        fileCreation()
-        displayTCs()
+        if fileCreation() == 'Correct Files Created':
+            displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -42,7 +43,7 @@ def invalidOSRunning():
  
 #defining certain default variables
 def definingDefaultVariables():
-    global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssestsConstant, listOfIdealAssestsMutable ,connectionError
+    global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssests, listOfIdealAssestsMutable ,connectionError
     primary = '#373f51'
     secondry = '#ffffff'
     tertiary = '#a9a9a9'
@@ -50,8 +51,7 @@ def definingDefaultVariables():
     font = 'Bahnschrift SemiLight'
     listOfIdealTables = ['Accounts', 'Complaints', 'Loan_table', 'Refinance', 'Sold_Units', "Tenant's_Entity", "Unit's_Monthly", 'Units']
     databaseName = 'Property Managment System Database.db'
-    listOfIdealAssestsConstant = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG']
-    listOfIdealAssestsMutable = ['Terms-Condtions.pdf']
+    listOfIdealAssests = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG']
     connectionError = 0
 
 #intialising page
@@ -88,7 +88,11 @@ def findOS():
 def fileCreation():
     createFolder('Assests')
     configureDatabase()
-    addAssests()
+    if addAssests() == 'Correct Assests Obtained':
+        print('hello mat')
+        return 'Correct Files Created'
+    else:
+        return 'Incorrect Files Created'
     
 def createFolder(folderName):
     listOfFilesInDirectory = os.listdir(os.getcwd())
@@ -104,19 +108,25 @@ def createFile(fileName):
 def addAssests():
     chdir(f'.{path_seperator}Assests')
     listOfAssets = os.listdir(os.getcwd())
-    print(listOfIdealAssestsConstant)
-    for asset in listOfIdealAssestsConstant:
-        print(asset)
+    i = 0
+    while i in range(len(listOfIdealAssests)):
+        asset = listOfIdealAssests[i]
         if asset not in listOfAssets:
             try:
                 urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/{asset}",f'{asset}')
-                print('asset got')
             except OSError: #if there is a connection error
-                # if checkPageOpen(connectionError) == 'Not Open':
-                print('connection error')
-                displayConnectionError()
-    print('for loop ended')
-                    
+                if checkPageOpen(connectionError) == 'Not Open':
+                    i = len(listOfIdealAssests) + 1 #to exit while loop so as not to try and get more assests resulting in loads of connection error's being displayed
+                    displayConnectionError()
+        i = i + 1
+    print(listOfIdealAssests)
+    print(os.listdir(os.getcwd()))
+    if os.listdir(os.getcwd()) == listOfIdealAssests:
+        print('Correct Assests Obtained')
+        return 'Correct Assests Obtained'
+    else:
+        print('Correct Assests Not Obtained')
+        return 'Correct Assests Not Obtained'
 
 
 def configureDatabase():
@@ -129,7 +139,6 @@ def configureDatabase():
     createTables()
 
 def displayConnectionError():
-    initialiseWindow()
     global connectionError
     connectionError = Tk()
     connectionError.title('Property managment system')
