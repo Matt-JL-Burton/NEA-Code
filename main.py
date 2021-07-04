@@ -115,11 +115,10 @@ def addAssests():
                 urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/{asset}",f'{asset}')
             except OSError: #if there is a connection error
                 if checkPageOpen(connectionError) == 'Not Open':
-                    i = len(listOfIdealAssests) + 1 #to exit while loop so as not to try and get more assests resulting in loads of connection error's being displayed
+                    i = len(listOfIdealAssests) + 1 #to exit while loop so as not to try and get more assests resulting in 
+                    #loads of connection error's being displayed
                     displayConnectionError()
         i = i + 1
-    print(listOfIdealAssests)
-    print(os.listdir(os.getcwd()))
     if os.listdir(os.getcwd()) == listOfIdealAssests:
         return 'Correct Assests Obtained'
     else:
