@@ -367,6 +367,7 @@ def closeMainPage():
         root.destroy()
 
 def loginPage():
+    #TODO:
     pass
 
 def declineTCs():
@@ -374,5 +375,6 @@ def declineTCs():
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions declined')
     root.geometry('500x500')
+    #TODO:
 
 initialise()
