@@ -375,6 +375,6 @@ def declineTCs():
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions declined')
     root.geometry('500x500')
-    #TODO:
+    #TODO: just to get a commit
 
 initialise()
