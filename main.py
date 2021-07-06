@@ -3,6 +3,7 @@ from tkinter import *
 import sqlite3
 import time
 import datetime
+from typing import TypedDict
 import matplotlib
 import os
 from os import chdir, close, error, system
@@ -50,7 +51,7 @@ def definingDefaultVariables():
     font = 'Bahnschrift SemiLight'
     listOfIdealTables = ['Accounts', 'Complaints', 'Loan_table', 'Refinance', 'Sold_Units', "Tenant's_Entity", "Unit's_Monthly", 'Units']
     databaseName = 'Property Managment System Database.db'
-    listOfIdealAssests = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG']
+    listOfIdealAssests = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico']
     connectionError = Tk()
     connectionError.destroy()
 
@@ -119,7 +120,12 @@ def addAssests():
                     #loads of connection error's being displayed
                     displayConnectionError()
         i = i + 1
-    if os.listdir(os.getcwd()) == listOfIdealAssests:
+
+    #sorting list
+    listOfIdealAssestsSorted = (listOfIdealAssests).sort()
+    listOfObtainedAssestsSorted =  ((os.listdir(os.getcwd())).sort())
+    
+    if listOfObtainedAssestsSorted == listOfIdealAssestsSorted:
         return 'Correct Assests Obtained'
     else:
         print('Correct Assests Not Obtained')
@@ -375,7 +381,9 @@ def declineTCs():
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions declined')
     root.geometry('500x500')
-    headerDTC = Label(root,text='You must accept the terms and conditions to use this system',font=((font,'11')),relief='raised',fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
+    headerDTC = Label(root,text='You must accept the terms and\nconditions to use this system',font=((font,'20')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
+    messageDTC = Label(root,text='Unfortunatly you cannot use this system unless you have accept the terms and conditions of this system',font=((font,'12')),fg=secondry,bg=primary).place(relx=0.5,rely=0.3, anchor=CENTER)
+
     root.mainloop()
 
 initialise()
