@@ -1,0 +1,50 @@
+.flexColumn{
+    display: flex;
+    flex-direction: column;
+}
+
+.relative{
+    position: relative;
+}
+
+.assetContainer{
+    margin: 0.01cm auto;
+    border: red solid 1px;
+    width: 20cm;
+    height: 4cm;
+}
+
+.assest{
+    border-radius: 4cm;
+    border: black 8px solid;
+    margin: auto;
+}
+
+.fat{
+    height: 5.5cm;
+}
+
+#normalLong{
+    width: 18cm;
+    height: 2.5cm;
+}
+
+#normalShort{
+    width: 9cm;
+    height: 2.5cm;
+}
+
+#fatShort{
+    width: 9cm;
+    height: 4cm;
+}
+
+#skinnyLong{
+    width: 18cm;
+    height: 2cm;
+}
+
+#fatLong{
+    width: 18cm;
+    height: 4cm;
+}
