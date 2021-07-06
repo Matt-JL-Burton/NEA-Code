@@ -63,17 +63,8 @@ def initialiseWindow():
     root.geometry('1250x850')
     root.configure(background=primary)
     root.resizable(width=False, height=False) #Makes the window not be reziable becuase that mucks up the asthetics
+    root.iconbitmap("House.ico")
     root.bind("`", escapeProgram)
-    # ######### testing
-    # chdir(f'.{path_seperator}Assests')
-    # print(os.getcwd())
-    # print(os.listdir(os.getcwd()))
-    # global black_Short_SVG
-    # black_Short_SVG = PhotoImage(file=os.listdir(os.getcwd())[0])
-    # entryBackground_Test = Label(root, image = black_Short_SVG,background=None).place(x = 100, y = 100) 
-    # chdir('..')
-    # ######### testing
-    # root.mainloop()
 
 #Finding out what OS the device runs on and setting the path seperator approrialtly
 def findOS():
@@ -124,7 +115,7 @@ def addAssests():
     #sorting list
     listOfIdealAssestsSorted = (listOfIdealAssests).sort()
     listOfObtainedAssestsSorted =  ((os.listdir(os.getcwd())).sort())
-    
+
     if listOfObtainedAssestsSorted == listOfIdealAssestsSorted:
         return 'Correct Assests Obtained'
     else:
