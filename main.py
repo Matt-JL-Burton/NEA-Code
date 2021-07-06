@@ -5,7 +5,7 @@ import time
 import datetime
 import matplotlib
 import os
-from os import chdir, close, error
+from os import chdir, close, error, system
 import pathlib
 import platform
 import tkinter.font as tkfont
@@ -375,6 +375,7 @@ def declineTCs():
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions declined')
     root.geometry('500x500')
-    #TODO: just to get a commit
+    headerDTC = Label(root,text='You must accept the terms and conditions to use this system',font=((font,'11')),relief='raised',fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
+    root.mainloop()
 
 initialise()
