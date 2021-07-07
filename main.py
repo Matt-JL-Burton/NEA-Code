@@ -373,7 +373,7 @@ def declineTCs():
     root.title('Property managment system - Terms and Condtions declined')
     root.geometry('500x500')
     headerDTC = Label(root,text='You must accept the terms and\nconditions to use this system',font=((font,'20')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
-    messageDTC = Label(root,text='Unfortunatly you cannot use this system unless you have accept the terms and conditions of this system',font=((font,'12')),fg=secondry,bg=primary).place(relx=0.5,rely=0.3, anchor=CENTER)
+    messageDTC = Label(root,text='Unfortunatly you cannot use this system unless you have\naccept the terms and conditions of this system',font=((font,'12')),fg=secondry,bg=primary).place(relx=0.5,rely=0.3, anchor=CENTER)
 
     root.mainloop()
 
