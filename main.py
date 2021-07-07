@@ -364,8 +364,8 @@ def closeMainPage():
     try:
         if root.state() == 'normal':
             root.destroy()
-    except:
-        pass
+    except NameError: #this means that the page is not defined and thus there is no previous page
+        pass 
 
 
 def loginPage():
