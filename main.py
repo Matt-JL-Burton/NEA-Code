@@ -58,6 +58,7 @@ def definingDefaultVariables():
 #intialising page
 def initialiseWindow():
     global root
+    closeMainPage()
     root = Tk()
     root.title('Property managment system')
     root.geometry('1250x850')
@@ -360,8 +361,12 @@ def viewFullTCs():
                 displayConnectionError()
 
 def closeMainPage():
-    if root.state() == 'normal':
-        root.destroy()
+    try:
+        if root.state() == 'normal':
+            root.destroy()
+    except:
+        pass
+
 
 def loginPage():
     #TODO:
@@ -374,6 +379,7 @@ def declineTCs():
     root.geometry('500x500')
     headerDTC = Label(root,text='You must accept the terms and\nconditions to use this system',font=((font,'20')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
     messageDTC = Label(root,text='Unfortunatly you cannot use this system unless you have\naccept the terms and conditions of this system',font=((font,'12')),fg=secondry,bg=primary).place(relx=0.5,rely=0.3, anchor=CENTER)
+    returnToTCPageB = Button(root,text='go back to terms and conditions',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=displayTCs).place(relx=0.5,rely=0.5, anchor=CENTER)
 
     root.mainloop()
 
