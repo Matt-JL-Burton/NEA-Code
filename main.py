@@ -57,8 +57,8 @@ def definingDefaultVariables():
 
 #intialising page
 def initialiseWindow():
-    global root
     closeMainPage()
+    global root
     root = Tk()
     root.title('Property managment system')
     root.geometry('1250x850')
@@ -348,9 +348,9 @@ def displayTCs():
     tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not alter any files relating to this system except through this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.5)
     tCsBP6 = Label(root,font=(font,'13'), text= '○ I understand that the creator of this system is not responsible for the security of any data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
     tCsBP7 = Label(root,font=(font,'13'), text= '○ I have read, understand and accept the full terms and conditions of this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.6)
-    viewFullTCsB = Button(root, width='30', text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
-    acceptTCsB = Button(root, width='8', text='Accept', font=(font,'50','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.8, anchor=CENTER)
-    declineTCsB = Button(root, width='9', text='Decline', font=(font,'11','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=declineTCs).place(relx=0.5, rely=0.9, anchor=CENTER)
+    viewFullTCsB = Button(root, text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
+    acceptTCsB = Button(root, text='Accept', font=(font,'50','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.8, anchor=CENTER)
+    declineTCsB = Button(root, text='Decline', font=(font,'11','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=declineTCs).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def viewFullTCs():
@@ -369,17 +369,20 @@ def closeMainPage():
 
 
 def loginPage():
-    #TODO:
+    initialiseWindow()
+    root.title ('Property managment system - Login')
     pass
 
 def declineTCs():
-    closeMainPage()
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions declined')
     root.geometry('500x500')
     headerDTC = Label(root,text='You must accept the terms and\nconditions to use this system',font=((font,'20')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
     messageDTC = Label(root,text='Unfortunatly you cannot use this system unless you have\naccept the terms and conditions of this system',font=((font,'12')),fg=secondry,bg=primary).place(relx=0.5,rely=0.3, anchor=CENTER)
-    returnToTCPageB = Button(root,text='go back to terms and conditions',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=displayTCs).place(relx=0.5,rely=0.5, anchor=CENTER)
+    returnToTCPageB = Button(root,text='Go Back To Terms And Conditions',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=displayTCs).place(relx=0.5,rely=0.5, anchor=CENTER)
+    confirmDeclineB = Button(root,text='Confrim Decline',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=closeMainPage).place(relx=0.5,rely=0.7, anchor=CENTER)
+    acceptTCsB = Button(root, text='Accept', font=(font,'12','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+
 
     root.mainloop()
 
