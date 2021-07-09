@@ -379,6 +379,14 @@ def loginPage():
     #password input
     root.mainloop()
 
+def convertAssetColor():
+    print(os.getcwd())
+    chdir(f'.{path_seperator}Assests')
+    print(os.getcwd())
+    listOfAssets = os.listdir(os.getcwd())
+    chdir('..')
+    print(os.getcwd())
+
 def declineTCs():
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions declined')
@@ -389,13 +397,5 @@ def declineTCs():
     confirmDeclineB = Button(root,text='Confrim Decline',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=closeMainPage).place(relx=0.5,rely=0.7, anchor=CENTER)
     acceptTCsB = Button(root, text='Accept Terms and Conditions', font=(font,'12','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
-
-def convertAssetColor():
-    print(os.getcwd())
-    chdir(f'.{path_seperator}Assests')
-    print(os.getcwd())
-    listOfAssets = os.listdir(os.getcwd())
-    chdir('..')
-    print(os.getcwd())
 
 initialise()
