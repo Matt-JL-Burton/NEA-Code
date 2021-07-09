@@ -7,7 +7,7 @@ from typing import TypedDict
 import matplotlib
 import os
 from os import chdir, close, error, system
-import pathlib
+from pathlib import Path
 import platform
 import tkinter.font as tkfont
 import urllib.request
@@ -20,9 +20,12 @@ print('program started')
 def initialise():
     definingDefaultVariables()
     findOS()
-    setCWD()
     if path_seperator != None: #basically if the device is running on an accepted OS
         if fileCreation() == 'Correct Files Created':
+            convertAssetColor()
+            ### This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
+            #loginPage()
+            ###
             displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
@@ -64,6 +67,7 @@ def initialiseWindow():
     root.geometry('1250x850')
     root.configure(background=primary)
     root.resizable(width=False, height=False) #Makes the window not be reziable becuase that mucks up the asthetics
+    chdir(f'.{path_seperator}Assests')
     root.iconbitmap("House.ico")
     root.bind("`", escapeProgram)
 
@@ -92,7 +96,7 @@ def createFolder(folderName):
         os.makedirs(folderName)
 
 def createFile(fileName):
-    listOfFilesInDirectory = os.listdir(cwd)
+    listOfFilesInDirectory = os.listdir(os.getcwd())
     if fileName not in listOfFilesInDirectory:
         f = open(fileName,'w')
         f.close()
@@ -116,6 +120,7 @@ def addAssests():
     #sorting list
     listOfIdealAssestsSorted = (listOfIdealAssests).sort()
     listOfObtainedAssestsSorted =  ((os.listdir(os.getcwd())).sort())
+    chdir('..')
 
     if listOfObtainedAssestsSorted == listOfIdealAssestsSorted:
         return 'Correct Assests Obtained'
@@ -317,11 +322,6 @@ def checkTableExsistance():
     else:
         return False #not all tables are present
 
-def setCWD():
-    global cwd
-    cwd = pathlib.Path(__file__).parent.absolute() 
-    chdir(cwd)
-
 def openDatabase():
     global connection, cursor
     connection = sqlite3.connect(databaseName)
@@ -364,14 +364,20 @@ def closeMainPage():
     try:
         if root.state() == 'normal':
             root.destroy()
+            chdir('..')
     except NameError: #this means that the page is not defined and thus there is no previous page
         pass 
-
 
 def loginPage():
     initialiseWindow()
     root.title ('Property managment system - Login')
-    pass
+    headerL = Label(root,text='Login',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
+    #username input
+    logo = PhotoImage(file = "Long-Normal.PNG")
+    logoLabel = Label(image = logo, border = 0).place(relx=0.5,rely=0.4,anchor=CENTER)
+    usernameHeaderL = Label(root,text='Username',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.28, anchor=CENTER)
+    #password input
+    root.mainloop()
 
 def declineTCs():
     initialiseWindow()
@@ -382,8 +388,14 @@ def declineTCs():
     returnToTCPageB = Button(root,text='Go Back To Terms And Conditions',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=displayTCs).place(relx=0.5,rely=0.5, anchor=CENTER)
     confirmDeclineB = Button(root,text='Confrim Decline',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=closeMainPage).place(relx=0.5,rely=0.7, anchor=CENTER)
     acceptTCsB = Button(root, text='Accept Terms and Conditions', font=(font,'12','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
-
-
     root.mainloop()
+
+def convertAssetColor():
+    print(os.getcwd())
+    chdir(f'.{path_seperator}Assests')
+    print(os.getcwd())
+    listOfAssets = os.listdir(os.getcwd())
+    chdir('..')
+    print(os.getcwd())
 
 initialise()
