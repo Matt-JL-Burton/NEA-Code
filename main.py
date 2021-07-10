@@ -380,12 +380,11 @@ def loginPage():
     root.mainloop()
 
 def convertAssetColor():
-    print(os.getcwd())
     chdir(f'.{path_seperator}Assests')
-    print(os.getcwd())
     listOfAssets = os.listdir(os.getcwd())
+    for asset in listOfAssets:
+        if (asset.split('.')[1]).lower() == 'png':
     chdir('..')
-    print(os.getcwd())
 
 def declineTCs():
     initialiseWindow()
