@@ -384,7 +384,7 @@ def convertAssetColor():
     listOfAssets = os.listdir(os.getcwd())
     for asset in listOfAssets:
         if (asset.split('.')[1]).lower() == 'png':
-            pass
+            pass #comment
     chdir('..')
 
 def declineTCs():
