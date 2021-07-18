@@ -386,6 +386,7 @@ def convertAssetColor():
         if (asset.split('.')[1]).lower() == 'png':
             print(asset)
             #change color of asset
+            #more minor testing
     chdir('..')
 
 def declineTCs():
