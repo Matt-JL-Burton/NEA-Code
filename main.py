@@ -379,27 +379,30 @@ def loginPage():
     #password input
     root.mainloop()
 
-def convertAssetColor(primary,secondry):
+def convertAssetColor(primaryHex,secondryHex):
     chdir(f'.{path_seperator}Assests')
     listOfAssets = os.listdir(os.getcwd())
     for asset in listOfAssets:
         if (asset.split('.')[1]).lower() == 'png':
-            print(asset) 
+            # print(asset) 
             img = Image.open(asset)
             x = 0
             y = 0
             count = 0
             for x in range(img.size[0]):
                 if [x,y] == [0,0]:
-                    oldPrimary = img.getpixel((x,y))
-                    print('Old Primary = ',oldPrimary)  
+                    oldPrimary = tupleToList(img.getpixel((x,y)))
+                    # print('Old Primary = ',oldPrimary)
+                    newPrimary =  tupleToList(ImageColor.getcolor(primaryHex, "RGBA"))
+                    # print('New Primary = ',newPrimary)
                 for y in range(img.size[1]):
                     r,g,b,a = img.getpixel((x,y))
-                    if (r,g,b,a) == oldPrimary:
-                        img.putpixel((x,y),(r,g,b))
+                    if [r,g,b,a] == oldPrimary:
+                        img.putpixel((x,y),(newPrimary[0],newPrimary[1],newPrimary[2]))
                     else:
-                        r,g,b,a = ImageColor.getcolor(secondry, "RGBA")
-                        img.putpixel((x,y),(r,g,b))
+                        newSecondry = tupleToList(ImageColor.getcolor(secondryHex, "RGBA"))
+                        img.putpixel((x,y),(newSecondry[0],newSecondry[1],newSecondry[2]))
+                        pass
             img.save(asset)
             # img.show()
     chdir('..')
@@ -414,5 +417,11 @@ def declineTCs():
     confirmDeclineB = Button(root,text='Confrim Decline',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=closeMainPage).place(relx=0.5,rely=0.7, anchor=CENTER)
     acceptTCsB = Button(root, text='Accept Terms and Conditions', font=(font,'12','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
+
+def tupleToList(tuple):
+    listToReturn = []
+    for i in range(len(tuple)):
+        listToReturn.append(tuple[i])
+    return listToReturn
 
 initialise()
