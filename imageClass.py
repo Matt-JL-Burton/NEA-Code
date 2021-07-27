@@ -1,3 +1,7 @@
-class Image:
+import PIL
+
+
+class ImageClass():
     def __init__(self):
-        pass
+        super.__init__(name)
+        print('hello, this is image')

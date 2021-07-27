@@ -14,6 +14,7 @@ import urllib.request
 from matplotlib.pyplot import autoscale, text
 import webbrowser
 from PIL import Image
+from imageClass import ImageClass
 
 print('program started')
 
@@ -23,7 +24,7 @@ def initialise():
     findOS()
     if path_seperator != None: #basically if the device is running on an accepted OS
         if fileCreation() == 'Correct Files Created':
-            convertAssetColor()
+            convertAssetColor(primary,secondry)
             ### This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
             #loginPage()
             ###
@@ -380,14 +381,18 @@ def loginPage():
     #password input
     root.mainloop()
 
-def convertAssetColor():
+def convertAssetColor(primary,secondry):
     chdir(f'.{path_seperator}Assests')
     listOfAssets = os.listdir(os.getcwd())
     for asset in listOfAssets:
         if (asset.split('.')[1]).lower() == 'png':
-            print(asset)
-            #change color of asset
-            #Not good
+            print(asset) 
+            image = Image.open(asset)
+            for x in range(image.size[0]):
+                for y in range(image.size[1]):
+                    # print(image.getpixel((x,y)))
+                    r,g,b,a = image.getpixel((x,y))
+                    print (f'({r},{g},{b},{a})')
     chdir('..')
 
 def declineTCs():
