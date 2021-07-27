@@ -3,7 +3,7 @@ from tkinter import *
 import sqlite3
 import time
 import datetime
-from typing import TypedDict
+# from typing import TypedDict
 import matplotlib
 import os
 from os import chdir, close, error, system
@@ -13,6 +13,7 @@ import tkinter.font as tkfont
 import urllib.request
 from matplotlib.pyplot import autoscale, text
 import webbrowser
+from PIL import Image
 
 print('program started')
 
