@@ -404,7 +404,6 @@ def convertAssetColor(primaryHex,secondryHex):
                         img.putpixel((x,y),(newSecondry[0],newSecondry[1],newSecondry[2]))
                         pass
             img.save(asset)
-            # img.show()
     chdir('..')
 
 def declineTCs():
