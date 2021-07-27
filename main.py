@@ -3,7 +3,6 @@ from tkinter import *
 import sqlite3
 import time
 import datetime
-# from typing import TypedDict
 import matplotlib
 import os
 from os import chdir, close, error, system
@@ -13,8 +12,7 @@ import tkinter.font as tkfont
 import urllib.request
 from matplotlib.pyplot import autoscale, text
 import webbrowser
-from PIL import Image
-from imageClass import ImageClass
+from PIL import Image, ImageColor
 
 print('program started')
 
@@ -387,12 +385,23 @@ def convertAssetColor(primary,secondry):
     for asset in listOfAssets:
         if (asset.split('.')[1]).lower() == 'png':
             print(asset) 
-            image = Image.open(asset)
-            for x in range(image.size[0]):
-                for y in range(image.size[1]):
-                    # print(image.getpixel((x,y)))
-                    r,g,b,a = image.getpixel((x,y))
-                    print (f'({r},{g},{b},{a})')
+            img = Image.open(asset)
+            x = 0
+            y = 0
+            count = 0
+            for x in range(img.size[0]):
+                if [x,y] == [0,0]:
+                    oldPrimary = img.getpixel((x,y))
+                    print('Old Primary = ',oldPrimary)  
+                for y in range(img.size[1]):
+                    r,g,b,a = img.getpixel((x,y))
+                    if (r,g,b,a) == oldPrimary:
+                        img.putpixel((x,y),(r,g,b))
+                    else:
+                        r,g,b,a = ImageColor.getcolor(secondry, "RGBA")
+                        img.putpixel((x,y),(r,g,b))
+            img.save(asset)
+            # img.show()
     chdir('..')
 
 def declineTCs():
