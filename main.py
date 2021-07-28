@@ -410,6 +410,8 @@ def convertAssetColor(primaryHex,secondryHex):
                             count = count + 1
                 listOfPixelsInForeground[(x,y)] = count
             img.save(asset)
+            img.close()
+            img = Image.open(asset)
             for pixel in list(listOfPixelsInForeground.keys()):
                 x,y = list(pixel)[0],list(pixel)[1]
                 img.putpixel(pixel,(newSecondry[0]//listOfPixelsInForeground[(x,y)],newSecondry[1]//listOfPixelsInForeground[(x,y)],newSecondry[2]//listOfPixelsInForeground[(x,y)]))
