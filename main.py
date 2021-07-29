@@ -12,7 +12,7 @@ import tkinter.font as tkfont
 import urllib.request
 from matplotlib.pyplot import autoscale, text
 import webbrowser
-from PIL import Image, ImageColor
+from PIL import Image, ImageColor, ImageFilter
 
 print('program started')
 
@@ -109,7 +109,7 @@ def addAssests():
         asset = listOfIdealAssests[i]
         if asset not in listOfAssets:
             try:
-                urllib.request.urlretrieve(f"https://emuxmatt.github.io/NEA/{asset}",f'{asset}')
+                urllib.request.urlretrieve(f"https://matt-jl-burton.github.io/NEA/{asset}",f'{asset}')
             except OSError: #if there is a connection error
                 if connectionError.state != 'normal':
                     i = len(listOfIdealAssests) + 1 #to exit while loop so as not to try and get more assests resulting in 
@@ -355,7 +355,7 @@ def displayTCs():
 
 def viewFullTCs():
     try:
-        webbrowser.open_new('https://emuxmatt.github.io/NEA/Terms-Condtions.pdf')
+        webbrowser.open_new('https://Matt-JL-Burton.github.io/NEA/Terms-Condtions.pdf')
     except OSError:
         if connectionError.state() != 'Normal':
                 displayConnectionError()
@@ -416,6 +416,8 @@ def convertAssetColor(primaryHex,secondryHex):
             #     x,y = list(pixel)[0],list(pixel)[1]
             #     img.putpixel(pixel,(newSecondry[0]//listOfPixelsInForeground[(x,y)],newSecondry[1]//listOfPixelsInForeground[(x,y)],newSecondry[2]//listOfPixelsInForeground[(x,y)]))
             # img.save(asset)
+            img.filter(ImageFilter.SMOOTH_MORE)
+            img.save(asset)
     chdir('..')
 
 def declineTCs():
