@@ -416,7 +416,9 @@ def convertAssetColor(primaryHex,secondryHex):
             #     x,y = list(pixel)[0],list(pixel)[1]
             #     img.putpixel(pixel,(newSecondry[0]//listOfPixelsInForeground[(x,y)],newSecondry[1]//listOfPixelsInForeground[(x,y)],newSecondry[2]//listOfPixelsInForeground[(x,y)]))
             # img.save(asset)
-            img.filter(ImageFilter.SMOOTH_MORE)
+            im1 = img.filter(ImageFilter.SMOOTH_MORE)
+            im1 = img.convert('L')
+            im1.save(asset[0:10]+str('_altered')+str('.PNG'))
             img.save(asset)
     chdir('..')
 
