@@ -387,7 +387,7 @@ def convertAssetColor(primaryHex,secondryHex):
             img = Image.open(asset)
             x = 0
             y = 0
-            # listOfPixelsInForeground = {}
+            listOfPixelsInForeground = {}
             for x in range(img.size[0]):
                 if [x,y] == [0,0]:
                     oldPrimary = list(img.getpixel((x,y)))
@@ -397,29 +397,29 @@ def convertAssetColor(primaryHex,secondryHex):
                     if [r,g,b,a] == oldPrimary:
                         img.putpixel((x,y),(newPrimary[0],newPrimary[1],newPrimary[2]))
                     else:
-                        # listOfPixelsInForeground[x,y] = 0
+                        listOfPixelsInForeground[x,y] = 0
                         newSecondry = list(ImageColor.getcolor(secondryHex, "RGBA"))
                         img.putpixel((x,y),(newSecondry[0],newSecondry[1],newSecondry[2]))
-            # for pixel in list(listOfPixelsInForeground.keys()):
-            #     x,y = list(pixel)[0],list(pixel)[1]
-            #     count = 1
-            #     for i in range(3):
-            #         for ii in range (3):
-            #             r,g,b,a = img.getpixel(((x-1)+i,(y-1)+ii))
-            #             if [r,g,b,a] == oldPrimary:
-            #                 count = count + 1
-            #     listOfPixelsInForeground[(x,y)] = count
-            # img.save(asset)
-            # img.close()
-            # img = Image.open(asset)
-            # for pixel in list(listOfPixelsInForeground.keys()):
-            #     x,y = list(pixel)[0],list(pixel)[1]
-            #     img.putpixel(pixel,(newSecondry[0]//listOfPixelsInForeground[(x,y)],newSecondry[1]//listOfPixelsInForeground[(x,y)],newSecondry[2]//listOfPixelsInForeground[(x,y)]))
-            # img.save(asset)
-            im1 = img.filter(ImageFilter.SMOOTH_MORE)
-            im1 = img.convert('L')
-            im1.save(asset[0:10]+str('_altered')+str('.PNG'))
+            for pixel in list(listOfPixelsInForeground.keys()):
+                x,y = list(pixel)[0],list(pixel)[1]
+                count = 1
+                for i in range(3):
+                    for ii in range (3):
+                        r,g,b,a = img.getpixel(((x-1)+i,(y-1)+ii))
+                        if [r,g,b,a] == oldPrimary:
+                            count = count + 1
+                listOfPixelsInForeground[(x,y)] = count
             img.save(asset)
+            img.close()
+            img = Image.open(asset)
+            for pixel in list(listOfPixelsInForeground.keys()):
+                x,y = list(pixel)[0],list(pixel)[1]
+                img.putpixel(pixel,(newSecondry[0]//listOfPixelsInForeground[(x,y)],newSecondry[1]//listOfPixelsInForeground[(x,y)],newSecondry[2]//listOfPixelsInForeground[(x,y)]))
+            img.save(asset)
+            # im1 = img.filter(ImageFilter.SMOOTH_MORE)
+            # im1 = img.convert('L')
+            # im1.save(asset[0:10]+str('_altered')+str('.PNG'))
+            # img.save(asset)
     chdir('..')
 
 def declineTCs():
