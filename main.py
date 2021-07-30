@@ -23,10 +23,10 @@ def initialise():
     if path_seperator != None: #basically if the device is running on an accepted OS
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
-            ### This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            #loginPage()
-            ###
-            displayTCs()
+            ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
+            loginPage()
+            ##
+            # displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -373,9 +373,13 @@ def loginPage():
     root.title ('Property managment system - Login')
     headerL = Label(root,text='Login',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
     #username input
-    logo = PhotoImage(file = "Long-Normal.PNG")
-    logoLabel = Label(image = logo, border = 0).place(relx=0.5,rely=0.4,anchor=CENTER)
     usernameHeaderL = Label(root,text='Username',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.28, anchor=CENTER)
+    longNormal = PhotoImage(file = "Long-Normal.PNG")
+    longNormalLabelU = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.39,anchor=CENTER)
+    usernameEntry = Entry(root, bg=primary, fg=secondry, width=48, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.39,anchor=CENTER)
+    passwordHeaderL = Label(root,text='Password',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.55, anchor=CENTER)
+    longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.66,anchor=CENTER)
+    passwordEntry = Entry(root, bg=primary,fg=secondry, width=48, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.66,anchor=CENTER)
     #password input
     root.mainloop()
 
