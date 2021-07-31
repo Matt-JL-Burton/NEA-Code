@@ -377,10 +377,10 @@ def loginPage():
     longNormal = PhotoImage(file = "Long-Normal.PNG")
     longNormalLabelU = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.39,anchor=CENTER)
     usernameEntry = Entry(root, bg=primary, fg=secondry, width=48, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.39,anchor=CENTER)
+    #password input
     passwordHeaderL = Label(root,text='Password',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.55, anchor=CENTER)
     longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.66,anchor=CENTER)
     passwordEntry = Entry(root, bg=primary,fg=secondry, width=48, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.66,anchor=CENTER)
-    #password input
     root.mainloop()
 
 def convertAssetColor(primaryHex,secondryHex):
