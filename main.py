@@ -381,7 +381,7 @@ def loginPage():
     passwordHeaderL = Label(root,text='Password',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.55, anchor=CENTER)
     longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.66,anchor=CENTER)
     passwordEntry = Entry(root, bg=primary,fg=secondry, width=48, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.66,anchor=CENTER)
-    hidePasswordLoginPageB = Button(root, text='Hide', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccountPage).place(relx=0.1, rely=0.66, anchor=CENTER)
+    hidePasswordLoginPageB = Button(root, text='Hide', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=hidePasswordLoginPage).place(relx=0.05, rely=0.66, anchor=CENTER)
     createAccountPageB = Button(root, text='Create Account', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
     ForgottenPageB = Button(root, text='Forgotten Password?', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
     submitLoginDetailsB = Button(root, text='L O G I N', font=(font,'20','underline','bold'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
@@ -390,11 +390,11 @@ def loginPage():
 def convertAssetColor(primaryHex,secondryHex):
     chdir(f'.{path_seperator}Assests')
     listOfAssets = os.listdir(os.getcwd())
-    testAsset = listOfAssets[0]
+    testAsset = listOfAssets[1]
     img = Image.open(testAsset)
     newPrimary = list(ImageColor.getcolor(primaryHex, "RGBA"))
     newSecondry = list(ImageColor.getcolor(secondryHex, "RGBA"))
-    if testAsset == 'Long-Fat.PNG' and newPrimary != list(img.getpixel((0,0))) and newSecondry != list(img.getpixel((7,107))):
+    if testAsset == 'Long-Fat.PNG' and (newPrimary != list(img.getpixel((0,0))) or newSecondry != list(img.getpixel((9,112)))): #check to see if assets are already in the correct colours and so we shoudl not bother changing them
         for asset in listOfAssets:
             if (asset.split('.')[1]).lower() == 'png':
                 img = Image.open(asset)
@@ -410,7 +410,8 @@ def convertAssetColor(primaryHex,secondryHex):
                         if [r,g,b,a] == oldPrimary:
                             img.putpixel((x,y),(newPrimary[0],newPrimary[1],newPrimary[2]))
                         else:
-                            time.sleep(1000)
+                            # print(x,y)
+                            # time.sleep(1000)
                             # listOfPixelsInForeground[x,y] = 0
                             newSecondry = list(ImageColor.getcolor(secondryHex, "RGBA"))
                             img.putpixel((x,y),(newSecondry[0],newSecondry[1],newSecondry[2]))
@@ -431,9 +432,6 @@ def convertAssetColor(primaryHex,secondryHex):
                 #     img.putpixel(pixel,(newSecondry[0]//listOfPixelsInForeground[(x,y)],newSecondry[1]//listOfPixelsInForeground[(x,y)],newSecondry[2]//listOfPixelsInForeground[(x,y)]))
                 img.save(asset)
                 img.close()
-    else:
-        #Assets already in correct colour and so we dont bother changing them
-        pass
     chdir('..')
 
 def declineTCs():
