@@ -10,7 +10,7 @@ from pathlib import Path
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, text
+from matplotlib.pyplot import autoscale, get, text
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 
@@ -381,45 +381,59 @@ def loginPage():
     passwordHeaderL = Label(root,text='Password',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.55, anchor=CENTER)
     longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.66,anchor=CENTER)
     passwordEntry = Entry(root, bg=primary,fg=secondry, width=48, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.66,anchor=CENTER)
+    hidePasswordLoginPageB = Button(root, text='Hide', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccountPage).place(relx=0.1, rely=0.66, anchor=CENTER)
+    createAccountPageB = Button(root, text='Create Account', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
+    ForgottenPageB = Button(root, text='Forgotten Password?', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
+    submitLoginDetailsB = Button(root, text='L O G I N', font=(font,'20','underline','bold'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def convertAssetColor(primaryHex,secondryHex):
     chdir(f'.{path_seperator}Assests')
     listOfAssets = os.listdir(os.getcwd())
-    for asset in listOfAssets:
-        if (asset.split('.')[1]).lower() == 'png':
-            img = Image.open(asset)
-            x = 0
-            y = 0
-            listOfPixelsInForeground = {}
-            for x in range(img.size[0]):
-                if [x,y] == [0,0]:
-                    oldPrimary = list(img.getpixel((x,y)))
-                    newPrimary =  list(ImageColor.getcolor(primaryHex, "RGBA"))
-                for y in range(img.size[1]):
-                    r,g,b,a = img.getpixel((x,y))
-                    if [r,g,b,a] == oldPrimary:
-                        img.putpixel((x,y),(newPrimary[0],newPrimary[1],newPrimary[2]))
-                    else:
-                        listOfPixelsInForeground[x,y] = 0
-                        newSecondry = list(ImageColor.getcolor(secondryHex, "RGBA"))
-                        img.putpixel((x,y),(newSecondry[0],newSecondry[1],newSecondry[2]))
-            for pixel in list(listOfPixelsInForeground.keys()):
-                x,y = list(pixel)[0],list(pixel)[1]
-                count = 1
-                for i in range(3):
-                    for ii in range (3):
-                        r,g,b,a = img.getpixel(((x-1)+i,(y-1)+ii))
+    testAsset = listOfAssets[0]
+    img = Image.open(testAsset)
+    newPrimary = list(ImageColor.getcolor(primaryHex, "RGBA"))
+    newSecondry = list(ImageColor.getcolor(secondryHex, "RGBA"))
+    if testAsset == 'Long-Fat.PNG' and newPrimary != list(img.getpixel((0,0))) and newSecondry != list(img.getpixel((7,107))):
+        for asset in listOfAssets:
+            if (asset.split('.')[1]).lower() == 'png':
+                img = Image.open(asset)
+                x = 0
+                y = 0
+                # listOfPixelsInForeground = {}
+                for x in range(img.size[0]):
+                    if [x,y] == [0,0]:
+                        oldPrimary = list(img.getpixel((x,y)))
+                        newPrimary =  list(ImageColor.getcolor(primaryHex, "RGBA"))
+                    for y in range(img.size[1]):
+                        r,g,b,a = img.getpixel((x,y))
                         if [r,g,b,a] == oldPrimary:
-                            count = count + 1
-                listOfPixelsInForeground[(x,y)] = count
-            img.save(asset)
-            img.close()
-            img = Image.open(asset)
-            for pixel in list(listOfPixelsInForeground.keys()):
-                x,y = list(pixel)[0],list(pixel)[1]
-                img.putpixel(pixel,(newSecondry[0]//listOfPixelsInForeground[(x,y)],newSecondry[1]//listOfPixelsInForeground[(x,y)],newSecondry[2]//listOfPixelsInForeground[(x,y)]))
-            img.save(asset)
+                            img.putpixel((x,y),(newPrimary[0],newPrimary[1],newPrimary[2]))
+                        else:
+                            time.sleep(1000)
+                            # listOfPixelsInForeground[x,y] = 0
+                            newSecondry = list(ImageColor.getcolor(secondryHex, "RGBA"))
+                            img.putpixel((x,y),(newSecondry[0],newSecondry[1],newSecondry[2]))
+                # for pixel in list(listOfPixelsInForeground.keys()):
+                #     x,y = list(pixel)[0],list(pixel)[1]
+                #     count = 1
+                #     for i in range(3):
+                #         for ii in range (3):
+                #             r,g,b,a = img.getpixel(((x-1)+i,(y-1)+ii))
+                #             if [r,g,b,a] == oldPrimary:
+                #                 count = count + 1
+                #     listOfPixelsInForeground[(x,y)] = count
+                # img.save(asset)
+                # img.close()
+                # img = Image.open(asset)
+                # for pixel in list(listOfPixelsInForeground.keys()):
+                #     x,y = list(pixel)[0],list(pixel)[1]
+                #     img.putpixel(pixel,(newSecondry[0]//listOfPixelsInForeground[(x,y)],newSecondry[1]//listOfPixelsInForeground[(x,y)],newSecondry[2]//listOfPixelsInForeground[(x,y)]))
+                img.save(asset)
+                img.close()
+    else:
+        #Assets already in correct colour and so we dont bother changing them
+        pass
     chdir('..')
 
 def declineTCs():
@@ -432,5 +446,28 @@ def declineTCs():
     confirmDeclineB = Button(root,text='Confrim Decline',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=closeMainPage).place(relx=0.5,rely=0.7, anchor=CENTER)
     acceptTCsB = Button(root, text='Accept Terms and Conditions', font=(font,'12','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
+
+def createAccountPage():
+    initialiseWindow()
+    root.title('Property managment system - Create Account')
+    #TODO: Next section to do
+    root.mainloop()
+
+def forgottenPasswordPageOne():
+    initialiseWindow()
+    root.title('Property managment system - Forgotten Password (Page 1 of 3)')
+    print('forgotten password page one')
+    root.mainloop()
+
+def login():
+    print('attempt login')
+    root.mainloop()
+
+def hidePasswordLoginPage():
+    #TODO: hide the password 
+    #TODO: replace the hide button with a show button and then code show button
+    pass
+
+
 
 initialise()
