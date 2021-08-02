@@ -24,7 +24,7 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            loginPage()
+            createAccountPage()
             ##
             # displayTCs()
 
@@ -448,6 +448,8 @@ def declineTCs():
 def createAccountPage():
     initialiseWindow()
     root.title('Property managment system - Create Account')
+    headerL = Label(root,text='Create Account',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
+    
     #TODO: Next section to do
     root.mainloop()
 
