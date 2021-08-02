@@ -5,7 +5,7 @@ import time
 import datetime
 import matplotlib
 import os
-from os import chdir, close, error, system
+from os import chdir, close, error, system, terminal_size
 from pathlib import Path
 import platform
 import tkinter.font as tkfont
@@ -449,7 +449,16 @@ def createAccountPage():
     initialiseWindow()
     root.title('Property managment system - Create Account')
     headerL = Label(root,text='Create Account',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
-    
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    emailEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.3,anchor=CENTER)
+    emailEntryBox = Entry(root, bg=primary,fg=secondry, width=27, font=(font,24),justify='center',relief='flat').place(relx=0.25,rely=0.3,anchor=CENTER)
+    firstNameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.5,anchor=CENTER)
+    operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.7,anchor=CENTER)
+    otherIncomeEstimateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.9,anchor=CENTER)
+    passwordEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.3,anchor=CENTER)
+    surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.5,anchor=CENTER)
+    titleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.7,anchor=CENTER)
+    nationalInsuranceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.9,anchor=CENTER)
     #TODO: Next section to do
     root.mainloop()
 
