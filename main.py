@@ -24,9 +24,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            createAccountPage()
-            ##
-            # displayTCs()
+            #createAccountPage()  
+            displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -46,7 +45,7 @@ def invalidOSRunning():
  
 #defining certain default variables
 def definingDefaultVariables():
-    global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssests, listOfIdealAssestsMutable ,connectionError
+    global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssests, listOfIdealAssestsMutable ,connectionError, previousPage
     primary = '#373f51'
     secondry = '#ffffff'
     tertiary = '#a9a9a9'
@@ -57,6 +56,7 @@ def definingDefaultVariables():
     listOfIdealAssests = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico']
     connectionError = Tk()
     connectionError.destroy()
+    previousPage = None
 
 #intialising page
 def initialiseWindow():
@@ -69,7 +69,7 @@ def initialiseWindow():
     root.resizable(width=False, height=False) #Makes the window not be reziable becuase that mucks up the asthetics
     chdir(f'.{path_seperator}Assests')
     root.iconbitmap("House.ico")
-    root.bind("`", escapeProgram)
+    root.bind("=", escapeProgram)
 
 #Finding out what OS the device runs on and setting the path seperator approrialtly
 def findOS():
@@ -337,6 +337,8 @@ def restartFromConnectionError():
 
 def displayTCs():
     initialiseWindow()
+    global previousPage
+    previousPage = 'Terms and Conditions'
     root.title('Property managment system - Terms and Condtions')
     tCsTitle = Label(root, font=(font,'25'), text='TERMS & CONDITIONS', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.1, anchor=CENTER)
     tCsSubTitle = Label(root,font=(font,'15'), text='By accepting the terms and condtions you agree to the following', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.15, anchor=CENTER)
@@ -370,18 +372,21 @@ def closeMainPage():
 
 def loginPage():
     initialiseWindow()
+    displayBackButton()
+    global previousPage
+    previousPage = 'Login'
     root.title ('Property managment system - Login')
     headerL = Label(root,text='Login',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
     #username input
     usernameHeaderL = Label(root,text='Username',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.28, anchor=CENTER)
     longNormal = PhotoImage(file = "Long-Normal.PNG")
-    longNormalLabelU = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.39,anchor=CENTER)
-    usernameEntry = Entry(root, bg=primary, fg=secondry, width=48, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.39,anchor=CENTER)
+    longNormalLabelU = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.37,anchor=CENTER)
+    usernameEntry = Entry(root, bg=primary, fg=secondry, width=42, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.37,anchor=CENTER)
     #password input
     passwordHeaderL = Label(root,text='Password',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.55, anchor=CENTER)
-    longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.66,anchor=CENTER)
-    passwordEntry = Entry(root, bg=primary,fg=secondry, width=48, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.66,anchor=CENTER)
-    hidePasswordLoginPageB = Button(root, text='Hide', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=hidePasswordLoginPage).place(relx=0.05, rely=0.66, anchor=CENTER)
+    longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.64,anchor=CENTER)
+    passwordEntry = Entry(root, bg=primary,fg=secondry, width=42, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.64,anchor=CENTER)
+    hidePasswordLoginPageB = Button(root, text='Hide', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=hidePasswordLoginPage).place(relx=0.15, rely=0.64, anchor=CENTER)
     createAccountPageB = Button(root, text='Create Account', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
     ForgottenPageB = Button(root, text='Forgotten Password?', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
     submitLoginDetailsB = Button(root, text='L O G I N', font=(font,'20','underline','bold'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
@@ -447,19 +452,22 @@ def declineTCs():
 
 def createAccountPage():
     initialiseWindow()
+    displayBackButton()
+    global previousPage
+    previousPage = 'Create Account'
     root.title('Property managment system - Create Account')
     headerL = Label(root,text='Create Account',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
-    emailEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.3,anchor=CENTER)
-    emailEntryBox = Entry(root, bg=primary,fg=secondry, width=27, font=(font,24),justify='center',relief='flat').place(relx=0.25,rely=0.3,anchor=CENTER)
-    firstNameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.5,anchor=CENTER)
-    operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.7,anchor=CENTER)
-    otherIncomeEstimateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.9,anchor=CENTER)
-    passwordEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.3,anchor=CENTER)
-    surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.5,anchor=CENTER)
-    titleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.7,anchor=CENTER)
-    nationalInsuranceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.9,anchor=CENTER)
-    #TODO: Next section to do
+    emailEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.25,anchor=CENTER)
+    emailEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.25,anchor=CENTER)
+    firstNameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.42,anchor=CENTER)
+    operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.59,anchor=CENTER)
+    otherIncomeEstimateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.76,anchor=CENTER)
+    passwordEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.25,anchor=CENTER)
+    surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.42,anchor=CENTER)
+    titleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.59,anchor=CENTER)
+    nationalInsuranceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.76,rely=0.76,anchor=CENTER)
+    submitLoginDetailsB = Button(root, text='C R E A T E   A C C O U N T ', font=(font,'20','underline','bold'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccount).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def forgottenPasswordPageOne():
@@ -476,6 +484,22 @@ def hidePasswordLoginPage():
     #TODO: hide the password 
     #TODO: replace the hide button with a show button and then code show button
     pass
+
+def createAccount():
+    print('attempt create account')
+    pass
+
+def displayBackButton():
+    print('Func called')
+    print(previousPage)
+    if previousPage == None:
+        pass
+    elif previousPage == 'Login':
+        backButton = Button(root, text='BACK', font=(font,'15','underline','bold'),fg=tertiary,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Create Account':
+        backButton = Button(root, text='BACK', font=(font,'15','underline','bold'),fg=tertiary,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccountPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Terms and Conditions':
+        backButton = Button(root, text='BACK', font=(font,'15','underline','bold'),fg=tertiary,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=displayTCs).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 
 
