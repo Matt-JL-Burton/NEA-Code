@@ -472,8 +472,9 @@ def createAccountPage():
 
 def forgottenPasswordPageOne():
     initialiseWindow()
+    global previousPage
+    previousPage = 'Forgotten Password Page 1'
     root.title('Property managment system - Forgotten Password (Page 1 of 3)')
-    print('forgotten password page one')
     root.mainloop()
 
 def login():
@@ -487,11 +488,12 @@ def hidePasswordLoginPage():
 
 def createAccount():
     print('attempt create account')
+    #TODO: get entry box data
+    #TODO: entry validation
+    #TODO: run SQL command to add data to database
     pass
 
 def displayBackButton():
-    print('Func called')
-    print(previousPage)
     if previousPage == None:
         pass
     elif previousPage == 'Login':
@@ -500,6 +502,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font,'15','underline','bold'),fg=tertiary,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccountPage).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Terms and Conditions':
         backButton = Button(root, text='BACK', font=(font,'15','underline','bold'),fg=tertiary,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=displayTCs).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Forgotten Password Page 1':
+        backButton = Button(root, text='BACK', font=(font,'15','underline','bold'),fg=tertiary,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=forgottenPasswordPageOne).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 
 
