@@ -24,8 +24,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            #createAccountPage()  
-            displayTCs()
+            createAccountPage()  
+            #displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -458,16 +458,44 @@ def createAccountPage():
     root.title('Property managment system - Create Account')
     headerL = Label(root,text='Create Account',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    
     emailEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.25,anchor=CENTER)
     emailEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.25,anchor=CENTER)
-    firstNameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.42,anchor=CENTER)
-    operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.59,anchor=CENTER)
-    otherIncomeEstimateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.76,anchor=CENTER)
+    emailLabel = Label(root, text='Email',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.17,anchor=CENTER)
+    emailSubLabel = Label(root, text='This will be used as your username, so make sure you can access it',bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.25,rely=0.315,anchor=CENTER)
+
+    firstNameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.43,anchor=CENTER)
+    firstNameEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.43,anchor=CENTER)
+    firstNameLabel = Label(root, text='First Name',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.35,anchor=CENTER)
+    
+    operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.61,anchor=CENTER)
+    #operationTypeEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.61,anchor=CENTER)
+    operationTypeLabel = Label(root, text='Operation Type',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.53,anchor=CENTER)
+    
+    otherIncomeEstimateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.79,anchor=CENTER)
+    otherIncomeEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.79,anchor=CENTER)
+    otherIncomeLabel = Label(root, text='Other Income (Estimate in £)',bg=primary, fg=secondry, width=23, font=(font,15), justify='center',relief='flat').place(relx=0.25,rely=0.71,anchor=CENTER)
+    otherIncomeSubLabel = Label(root, text='This data is used for calcualting tax estiamtes, it is kept private and secure',bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.25,rely=0.855,anchor=CENTER)
+
     passwordEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.25,anchor=CENTER)
-    surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.42,anchor=CENTER)
-    titleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.59,anchor=CENTER)
-    nationalInsuranceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.76,rely=0.76,anchor=CENTER)
-    submitLoginDetailsB = Button(root, text='C R E A T E   A C C O U N T ', font=(font,'20','underline','bold'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccount).place(relx=0.5, rely=0.9, anchor=CENTER)
+    passwordEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.75,rely=0.25,anchor=CENTER)
+    passwordLabel = Label(root, text='Password',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.17,anchor=CENTER)
+    
+    surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.43,anchor=CENTER)
+    surnameEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.75,rely=0.43,anchor=CENTER)
+    surnameEntryLabel = Label(root, text='Surname',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.35,anchor=CENTER)
+
+    titleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.61,anchor=CENTER)
+    titleEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.75,rely=0.61,anchor=CENTER)
+    titleeEntryLabel = Label(root, text='Title',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.53,anchor=CENTER)
+
+    nationalInsuranceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.79,anchor=CENTER)
+    nationalInsuranceEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.75,rely=0.79,anchor=CENTER)
+    nationalInsuranceLabel = Label(root, text='National Insurance Tax Due (£)',bg=primary, fg=secondry, width=25, font=(font,15), justify='center',relief='flat').place(relx=0.75,rely=0.71,anchor=CENTER)
+    nationalInsuranceSubLabel = Label(root, text="Don't know how much to pay? - ",bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.735,rely=0.855,anchor=CENTER)
+    nationalInsuranceClickHereB = Button(root, text='Click Here', font=(font,'7','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=displayGovermentNationalInsurancePage).place(relx=0.805, rely=0.855, anchor=CENTER)
+
+    submitLoginDetailsB = Button(root, text='C R E A T E   A C C O U N T ', font=(font,'20','underline','bold'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccount).place(relx=0.5, rely=0.93, anchor=CENTER)
     root.mainloop()
 
 def forgottenPasswordPageOne():
@@ -505,6 +533,11 @@ def displayBackButton():
     elif previousPage == 'Forgotten Password Page 1':
         backButton = Button(root, text='BACK', font=(font,'15','underline','bold'),fg=tertiary,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=forgottenPasswordPageOne).place(relx=0.05, rely=0.05, anchor=CENTER)
 
-
+def displayGovermentNationalInsurancePage():
+    try:
+        webbrowser.open_new('https://www.gov.uk/government/collections/how-to-manually-check-your-payroll-calculations ')
+    except OSError:
+        if connectionError.state() != 'Normal':
+                displayConnectionError()
 
 initialise()
