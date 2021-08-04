@@ -1,11 +1,13 @@
 #importing modules
 from tkinter import *
+from tkinter import ttk
 import sqlite3
 import time
 import datetime
+import tkinter
 import matplotlib
 import os
-from os import chdir, close, error, system, terminal_size
+from os import chdir, close, error, name, system, terminal_size
 from pathlib import Path
 import platform
 import tkinter.font as tkfont
@@ -13,6 +15,8 @@ import urllib.request
 from matplotlib.pyplot import autoscale, get, text
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
+import random
+import string
 
 print('program started')
 
@@ -460,37 +464,56 @@ def createAccountPage():
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
     
     emailEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.25,anchor=CENTER)
-    emailEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.25,anchor=CENTER)
+    global emailEntryBox
+    emailEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    emailEntryBox.place(relx=0.25,rely=0.25,anchor=CENTER)
     emailLabel = Label(root, text='Email',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.17,anchor=CENTER)
     emailSubLabel = Label(root, text='This will be used as your username, so make sure you can access it',bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.25,rely=0.315,anchor=CENTER)
 
     firstNameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.43,anchor=CENTER)
-    firstNameEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.43,anchor=CENTER)
+    global firstNameEntryBox
+    firstNameEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    firstNameEntryBox.place(relx=0.25,rely=0.43,anchor=CENTER)
     firstNameLabel = Label(root, text='First Name',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.35,anchor=CENTER)
     
     operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.61,anchor=CENTER)
-    #operationTypeEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.61,anchor=CENTER)
+    options = ['Business','Personal']
+    global operationTypeMenu
+    operationTypeMenu = ttk.Combobox(root, value=options, justify=tkinter.CENTER, font=(font,18))
+    operationTypeMenu.current(1)
+    operationTypeMenu.place(relx=0.25,rely=0.61,anchor=CENTER)
+    root.option_add('*TCombobox*Listbox.font', (font,14)) 
     operationTypeLabel = Label(root, text='Operation Type',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.53,anchor=CENTER)
     
     otherIncomeEstimateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.79,anchor=CENTER)
-    otherIncomeEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.25,rely=0.79,anchor=CENTER)
+    global otherIncomeEntryBox
+    otherIncomeEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    otherIncomeEntryBox.place(relx=0.25,rely=0.79,anchor=CENTER)
     otherIncomeLabel = Label(root, text='Other Income (Estimate in £)',bg=primary, fg=secondry, width=23, font=(font,15), justify='center',relief='flat').place(relx=0.25,rely=0.71,anchor=CENTER)
     otherIncomeSubLabel = Label(root, text='This data is used for calcualting tax estiamtes, it is kept private and secure',bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.25,rely=0.855,anchor=CENTER)
 
     passwordEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.25,anchor=CENTER)
-    passwordEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.75,rely=0.25,anchor=CENTER)
+    global passwordEntryBox
+    passwordEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    passwordEntryBox.place(relx=0.75,rely=0.25,anchor=CENTER)
     passwordLabel = Label(root, text='Password',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.17,anchor=CENTER)
     
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.43,anchor=CENTER)
-    surnameEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.75,rely=0.43,anchor=CENTER)
+    global surnameEntryBox
+    surnameEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    surnameEntryBox.place(relx=0.75,rely=0.43,anchor=CENTER)
     surnameEntryLabel = Label(root, text='Surname',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.35,anchor=CENTER)
 
     titleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.61,anchor=CENTER)
-    titleEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.75,rely=0.61,anchor=CENTER)
+    global titleEntryBox
+    titleEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    titleEntryBox.place(relx=0.75,rely=0.61,anchor=CENTER)
     titleeEntryLabel = Label(root, text='Title',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.53,anchor=CENTER)
 
     nationalInsuranceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.79,anchor=CENTER)
-    nationalInsuranceEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat').place(relx=0.75,rely=0.79,anchor=CENTER)
+    global nationalInsuranceEntryBox
+    nationalInsuranceEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    nationalInsuranceEntryBox.place(relx=0.75,rely=0.79,anchor=CENTER)
     nationalInsuranceLabel = Label(root, text='National Insurance Tax Due (£)',bg=primary, fg=secondry, width=25, font=(font,15), justify='center',relief='flat').place(relx=0.75,rely=0.71,anchor=CENTER)
     nationalInsuranceSubLabel = Label(root, text="Don't know how much to pay? - ",bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.735,rely=0.855,anchor=CENTER)
     nationalInsuranceClickHereB = Button(root, text='Click Here', font=(font,'7','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=displayGovermentNationalInsurancePage).place(relx=0.805, rely=0.855, anchor=CENTER)
@@ -515,10 +538,25 @@ def hidePasswordLoginPage():
     pass
 
 def createAccount():
-    print('attempt create account')
-    #TODO: get entry box data
+    email = emailEntryBox.get()
+    firstName = firstNameEntryBox.get()
+    operationType = operationTypeMenu.get()
+    otherIncomeEstimate = otherIncomeEntryBox.get()
+    password = passwordEntryBox.get()
+    surname = surnameEntryBox.get()
+    title = titleEntryBox.get()
+    nationalInsurance = nationalInsuranceEntryBox.get()
+    characters = (string.ascii_uppercase)+(string.digits)
+    account_ID =  (''.join(random.choice(characters) for i in range(10)))
+    createAccountArray = [account_ID,password,email,firstName,surname, operationType]
     #TODO: entry validation
     #TODO: run SQL command to add data to database
+    openDatabase()
+    global accountsInsertionCommand
+    accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
+    Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+    cursor.execute(accountsInsertionCommand,createAccountArray)
+    closeDatabase()
     pass
 
 def displayBackButton():
