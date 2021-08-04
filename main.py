@@ -133,6 +133,7 @@ def addAssests():
         return 'Correct Assests Not Obtained'
 
 def configureDatabase():
+    chdir(f'.{path_seperator}Assests')
     createFile(databaseName)
     if checkTableExsistance() == False: #Deletes all tables if the all tables dont exsist - this is to uphold referentail integrity and becasue it is easier to add all tables again instead of working out which ones are gone and trying to restich the database together
         openDatabase()
@@ -140,6 +141,7 @@ def configureDatabase():
             cursor.execute('DROP TABLE ' + table)
         closeDatabase()
     createTables()
+    chdir('..')
 
 def displayConnectionError():
     global connectionError
@@ -157,7 +159,7 @@ def createTables():
     openDatabase()
     #### accounts
     create_Accounts_Entity = """
-    CREATE TABLE accounts (
+    CREATE TABLE accounts(
         account_ID varchar(16) NOT NULL,
         password varchar(16) NOT NULL,
         recovery_Email varchar(32) NOT NULL,
@@ -328,12 +330,15 @@ def checkTableExsistance():
 
 def openDatabase():
     global connection, cursor
+    # if ((os.getcwd()).split({path_seperator}))[len(path_seperator)-1] != 'Assets':
+    #     chdir(f'.{path_seperator}Assests')
     connection = sqlite3.connect(databaseName)
     cursor = connection.cursor()
 
 def closeDatabase():
     connection.commit()
     connection.close()
+    # chdir('..')
 
 def restartFromConnectionError():
     connectionError.destroy()
@@ -548,14 +553,16 @@ def createAccount():
     nationalInsurance = nationalInsuranceEntryBox.get()
     characters = (string.ascii_uppercase)+(string.digits)
     account_ID =  (''.join(random.choice(characters) for i in range(10)))
-    createAccountArray = [account_ID,password,email,firstName,surname, operationType]
+    createAccountArray = [account_ID,password,email,firstName,surname, operationType, title, getTaxRate(account_ID),otherIncomeEstimate]
     #TODO: entry validation
     #TODO: run SQL command to add data to database
     openDatabase()
-    global accountsInsertionCommand
-    accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
-    Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
-    cursor.execute(accountsInsertionCommand,createAccountArray)
+    print (listOfTables)
+    # global accountsInsertionCommand
+    # accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
+    # Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+    # cursor.execute(accountsInsertionCommand,createAccountArray)
+    cursor.execute("SELECT account_ID FROM accounts WHERE password = 'your mother'")
     closeDatabase()
     pass
 
@@ -577,5 +584,13 @@ def displayGovermentNationalInsurancePage():
     except OSError:
         if connectionError.state() != 'Normal':
                 displayConnectionError()
+
+def getTaxRate(accountID):
+    # openDatabase()
+    # otherIncome = cursor.execute('SELECT other_Income_Estimate FROM accounts WHERE account_ID ='+str(accountID))
+    # closeDatabase()
+    # #TODO: need to find other income streams
+    tax_Rate = 'b'
+    return(tax_Rate)
 
 initialise()
