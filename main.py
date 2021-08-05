@@ -1,4 +1,5 @@
 #importing modules
+from sqlite3.dbapi2 import Connection
 from tkinter import *
 from tkinter import ttk
 import sqlite3
@@ -7,7 +8,7 @@ import datetime
 import tkinter
 import matplotlib
 import os
-from os import chdir, close, error, name, system, terminal_size
+from os import chdir, close, error, getcwd, name, system, terminal_size
 from pathlib import Path
 import platform
 import tkinter.font as tkfont
@@ -28,8 +29,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            createAccountPage()  
-            #displayTCs()
+            #createAccountPage()  
+            displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -49,18 +50,31 @@ def invalidOSRunning():
  
 #defining certain default variables
 def definingDefaultVariables():
-    global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssests, listOfIdealAssestsMutable ,connectionError, previousPage
+    global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
+    global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR 
     primary = '#373f51'
     secondry = '#ffffff'
     tertiary = '#a9a9a9'
     bannedColours = {'errorRed':'#','warningYellow':'#','activeTextColor':'dark grey'}
     font = 'Bahnschrift SemiLight'
-    listOfIdealTables = ['Accounts', 'Complaints', 'Loan_table', 'Refinance', 'Sold_Units', "Tenant's_Entity", "Unit's_Monthly", 'Units']
+    listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
-    listOfIdealAssests = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico']
+    listOfIdealAssets = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico']
     connectionError = Tk()
     connectionError.destroy()
     previousPage = None
+    incPA = 12500.0
+    bIncTR = 20.0
+    hIncTR = 40.0
+    aIncTR = 45.0
+    bCapGainsAllowence = 12300.0
+    bIncCutOff = 50000.0
+    hIncCutOff = 150000.0
+    corpTR = 19
+    corpCapGainsTR = 20
+    bCapGainsTR = 18
+    hCapGainsTR = 28
+    aCapGainsTR = 28
 
 #intialising page
 def initialiseWindow():
@@ -71,7 +85,8 @@ def initialiseWindow():
     root.geometry('1250x850')
     root.configure(background=primary)
     root.resizable(width=False, height=False) #Makes the window not be reziable becuase that mucks up the asthetics
-    chdir(f'.{path_seperator}Assests')
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        chdir(f'.{path_seperator}Assets')
     root.iconbitmap("House.ico")
     root.bind("=", escapeProgram)
 
@@ -87,9 +102,10 @@ def findOS():
         invalidOSRunning()
 
 def fileCreation():
-    createFolder('Assests')
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        createFolder('Assets')
     configureDatabase()
-    if addAssests() == 'Correct Assests Obtained':
+    if addAssets() == 'Correct Assets Obtained':
         return 'Correct Files Created'
     else:
         return 'Incorrect Files Created'
@@ -105,42 +121,44 @@ def createFile(fileName):
         f = open(fileName,'w')
         f.close()
 
-def addAssests():
-    chdir(f'.{path_seperator}Assests')
+def addAssets():
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        chdir(f'.{path_seperator}Assets')
     listOfAssets = os.listdir(os.getcwd())
     i = 0
-    while i in range(len(listOfIdealAssests)):
-        asset = listOfIdealAssests[i]
+    while i in range(len(listOfIdealAssets)):
+        asset = listOfIdealAssets[i]
         if asset not in listOfAssets:
             try:
                 urllib.request.urlretrieve(f"https://matt-jl-burton.github.io/NEA/{asset}",f'{asset}')
             except OSError: #if there is a connection error
                 if connectionError.state != 'normal':
-                    i = len(listOfIdealAssests) + 1 #to exit while loop so as not to try and get more assests resulting in 
+                    i = len(listOfIdealAssets) + 1 #to exit while loop so as not to try and get more Assets resulting in 
                     #loads of connection error's being displayed
                     displayConnectionError()
         i = i + 1
 
     #sorting list
-    listOfIdealAssestsSorted = (listOfIdealAssests).sort()
-    listOfObtainedAssestsSorted =  ((os.listdir(os.getcwd())).sort())
+    listOfIdealAssetsSorted = (listOfIdealAssets).sort()
+    listOfObtainedAssetsSorted =  ((os.listdir(os.getcwd())).sort())
     chdir('..')
 
-    if listOfObtainedAssestsSorted == listOfIdealAssestsSorted:
-        return 'Correct Assests Obtained'
+    if listOfObtainedAssetsSorted == listOfIdealAssetsSorted:
+        return 'Correct Assets Obtained'
     else:
-        print('Correct Assests Not Obtained')
-        return 'Correct Assests Not Obtained'
+        print('Correct Assets Not Obtained')
+        return 'Correct Assets Not Obtained'
 
 def configureDatabase():
-    chdir(f'.{path_seperator}Assests')
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        chdir(f'.{path_seperator}Assets')
     createFile(databaseName)
     if checkTableExsistance() == False: #Deletes all tables if the all tables dont exsist - this is to uphold referentail integrity and becasue it is easier to add all tables again instead of working out which ones are gone and trying to restich the database together
         openDatabase()
         for table in listOfTables:
             cursor.execute('DROP TABLE ' + table)
         closeDatabase()
-    createTables()
+        createTables()
     chdir('..')
 
 def displayConnectionError():
@@ -316,29 +334,27 @@ def createTables():
 
 def checkTableExsistance():
     openDatabase()
-    cursor.execute('SELECT name from sqlite_master WHERE type = "table"')
-    listOfTablesTuples = cursor.fetchall()
-    closeDatabase()
     global listOfTables
     listOfTables = []
-    for tableTuple in listOfTablesTuples:
-        listOfTables.append(listOfTablesTuples[listOfTablesTuples.index(tableTuple)][0])
-    if sorted(listOfTables) == listOfIdealTables:
+    for line in cursor.execute('SELECT name from sqlite_master WHERE type = "table"'):
+        listOfTables.append(line[0])
+    closeDatabase()
+    if sorted(listOfTables) == sorted(listOfIdealTables):
         return True #all tables are present
     else:
         return False #not all tables are present
 
 def openDatabase():
     global connection, cursor
-    # if ((os.getcwd()).split({path_seperator}))[len(path_seperator)-1] != 'Assets':
-    #     chdir(f'.{path_seperator}Assests')
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        chdir(f'.{path_seperator}Assets')
     connection = sqlite3.connect(databaseName)
     cursor = connection.cursor()
 
 def closeDatabase():
     connection.commit()
     connection.close()
-    # chdir('..')
+    #chdir('..')
 
 def restartFromConnectionError():
     connectionError.destroy()
@@ -402,7 +418,8 @@ def loginPage():
     root.mainloop()
 
 def convertAssetColor(primaryHex,secondryHex):
-    chdir(f'.{path_seperator}Assests')
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        chdir(f'.{path_seperator}Assets')
     listOfAssets = os.listdir(os.getcwd())
     testAsset = listOfAssets[1]
     img = Image.open(testAsset)
@@ -550,19 +567,22 @@ def createAccount():
     password = passwordEntryBox.get()
     surname = surnameEntryBox.get()
     title = titleEntryBox.get()
-    nationalInsurance = nationalInsuranceEntryBox.get()
+    natInsuranceDue = nationalInsuranceEntryBox.get()
     characters = (string.ascii_uppercase)+(string.digits)
     account_ID =  (''.join(random.choice(characters) for i in range(10)))
-    createAccountArray = [account_ID,password,email,firstName,surname, operationType, title, getTaxRate(account_ID),otherIncomeEstimate]
+    createAccountArray = [account_ID,password,email,firstName,surname, operationType, title, getTaxRate(account_ID),otherIncomeEstimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,natInsuranceDue, primary, secondry, tertiary, font]
+    
+    listOfDataValidationResults = []
+    listOfDataValidationResults.append(uniqueDataCheck(email,'recovery_Email','accounts'))
+    print(listOfDataValidationResults)
+
     #TODO: entry validation
     #TODO: run SQL command to add data to database
     openDatabase()
-    print (listOfTables)
-    # global accountsInsertionCommand
-    # accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
-    # Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
-    # cursor.execute(accountsInsertionCommand,createAccountArray)
-    cursor.execute("SELECT account_ID FROM accounts WHERE password = 'your mother'")
+    global accountsInsertionCommand
+    accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, basic_Capital_Gains_Rate, basic_Capital_Gains_Allowence, high_Capital_Gains_Rate, additional_Capital_Gains_Rate, corporation_Capital_Gains_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
+    Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+    cursor.execute(accountsInsertionCommand,createAccountArray)
     closeDatabase()
     pass
 
@@ -592,5 +612,16 @@ def getTaxRate(accountID):
     # #TODO: need to find other income streams
     tax_Rate = 'b'
     return(tax_Rate)
+
+def uniqueDataCheck(dataValue,fieldName,table):
+    returnedValue = []
+    openDatabase()
+    for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(dataValue)+str("'")):
+        returnedValue.append(line[0])
+    closeDatabase()
+    if returnedValue == None or returnedValue == []:
+        return True
+    else:
+        return False
 
 initialise()
