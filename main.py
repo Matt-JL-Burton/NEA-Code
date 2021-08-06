@@ -29,8 +29,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            #createAccountPage()  
-            displayTCs()
+            createAccountPage()  
+            #displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -561,6 +561,8 @@ def hidePasswordLoginPage():
 
 def createAccount():
     email = emailEntryBox.get()
+    email = stringScramble(email)
+    email = stringDeScramble(email)
     firstName = firstNameEntryBox.get()
     operationType = operationTypeMenu.get()
     otherIncomeEstimate = otherIncomeEntryBox.get()
@@ -570,6 +572,7 @@ def createAccount():
     natInsuranceDue = nationalInsuranceEntryBox.get()
     characters = (string.ascii_uppercase)+(string.digits)
     account_ID =  (''.join(random.choice(characters) for i in range(10)))
+
     createAccountArray = [account_ID,password,email,firstName,surname, operationType, title, getTaxRate(account_ID),otherIncomeEstimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,natInsuranceDue, primary, secondry, tertiary, font]
     
     listOfDataValidationResults = []
@@ -623,5 +626,93 @@ def uniqueDataCheck(dataValue,fieldName,table):
         return True
     else:
         return False
+
+def dataDBPrep(data):
+    data = data.lower()
+    data = data.replace('.','A')
+    data = data.replace('@','B')
+    data = data.replace('-','C')
+    data = data.replace('|','D')
+    data = data.replace('!','E')
+    data = data.replace('#','F')
+    data = data.replace('$','G')
+    data = data.replace('%','H')
+    data = data.replace('&','I')
+    data = data.replace("'",'J')
+    data = data.replace('+','K')
+    data = data.replace('/','L')
+    data = data.replace('=','M')
+    data = data.replace('?','N')
+    data = data.replace('^','O')
+    data = data.replace('_','P')
+    data = data.replace('`','Q')
+    data = data.replace('{','R')
+    data = data.replace('}','S')
+    data = data.replace('~','T')
+    data = data.replace('(','U')
+    data = data.replace(')','V')
+    data = data.replace(',','W')
+    data = data.replace(':','X')
+    data = data.replace(';','Y')
+    return data
+
+def dataScriptPrep(data):
+    data = data.replace('A','.')
+    data = data.replace('B','@')
+    data = data.replace('C','-')
+    data = data.replace('D','|')
+    data = data.replace('E','!')
+    data = data.replace('F','#')
+    data = data.replace('G','$')
+    data = data.replace('H','%')
+    data = data.replace('I','&')
+    data = data.replace("J","'")
+    data = data.replace('K','+')
+    data = data.replace('L','/')
+    data = data.replace('M','=')
+    data = data.replace('N','?')
+    data = data.replace('O','^')
+    data = data.replace('P','_')
+    data = data.replace('Q','`')
+    data = data.replace('R','{')
+    data = data.replace('S','}')
+    data = data.replace('T','~')
+    data = data.replace('U','(')
+    data = data.replace('V',')')
+    data = data.replace('W',',')
+    data = data.replace('X',':')
+    data = data.replace('Y',';')
+    return data
+
+def stringScramble(dataToScramble):
+    length = len(dataToScramble)
+    shift = length % 26
+    dataToScramble = list(dataToScramble)
+    for i in range(len(dataToScramble)):
+        dataToScramble[i] = chr(ord(dataToScramble[i])+shift)
+    dataToScramble = listToString(dataToScramble)
+    print(dataToScramble)
+    dataToScramble = dataDBPrep(dataToScramble)
+    print(dataToScramble)
+    return(dataToScramble)
+
+
+def stringDeScramble(dataToDeScramble):
+    dataToDeScramble = dataScriptPrep(dataToDeScramble)
+    print(dataToDeScramble)
+    length = len(dataToDeScramble)
+    shift = length % 26
+    dataToDeScramble = list(dataToDeScramble)
+    for i in range(len(dataToDeScramble)):
+        dataToDeScramble[i] = chr(ord(dataToDeScramble[i])-shift)
+    dataToDeScramble = listToString(dataToDeScramble)
+    print(dataToDeScramble)
+    return(dataToDeScramble)
+
+def listToString(list):
+    word = ''
+    for letter in list:
+        word = word + str(letter)
+    return word
 
 initialise()
