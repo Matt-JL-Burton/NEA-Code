@@ -51,7 +51,7 @@ def invalidOSRunning():
 #defining certain default variables
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
-    global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet
+    global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
     primary = '#373f51'
     secondry = '#ffffff'
     tertiary = '#a9a9a9'
@@ -75,8 +75,9 @@ def definingDefaultVariables():
     bCapGainsTR = 18
     hCapGainsTR = 28
     aCapGainsTR = 28
-    normalSet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",'~','#',',','.','?','/','0','1','2','3','4','5','6','7','8','9']
+    normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
+    numericalMappingSet = ['7','1','5','2','3','8','4','6','0','9']
 
 #intialising page
 def initialiseWindow():
@@ -521,7 +522,8 @@ def createAccountPage():
     passwordEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
     passwordEntryBox.place(relx=0.75,rely=0.25,anchor=CENTER)
     passwordLabel = Label(root, text='Password',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.17,anchor=CENTER)
-    
+    #TODO: say that it is none caps sensitive
+
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.43,anchor=CENTER)
     global surnameEntryBox
     surnameEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
@@ -563,11 +565,6 @@ def hidePasswordLoginPage():
 
 def createAccount():
     email = emailEntryBox.get()
-    print(email)
-    email = stringScramble(email)
-    print(email)
-    email = stringDeScramble(email)
-    print(email)
     firstName = firstNameEntryBox.get()
     operationType = operationTypeMenu.get()
     otherIncomeEstimate = otherIncomeEntryBox.get()
@@ -579,10 +576,11 @@ def createAccount():
     account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
     createAccountArray = [account_ID,password,email,firstName,surname, operationType, title, getTaxRate(account_ID),otherIncomeEstimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,natInsuranceDue, primary, secondry, tertiary, font]
-    
+    for i in range(len(createAccountArray)):
+        createAccountArray[i] = scramble(createAccountArray[i])
+
     listOfDataValidationResults = []
     listOfDataValidationResults.append(uniqueDataCheck(email,'recovery_Email','accounts'))
-    print(listOfDataValidationResults)
 
     #TODO: entry validation
     #TODO: run SQL command to add data to database
@@ -632,21 +630,116 @@ def uniqueDataCheck(dataValue,fieldName,table):
     else:
         return False
 
-def stringScramble(data):
-    data = data.lower()
-    data = list(data)
-    for i in range(len(data)):
-        data[i] = mappingSet[normalSet.index(data[i])]
-    data = listToString(data)
-    data = data[::-1]
+def scramble(data):
+    if type(data) == list:
+        for i in range(len(data)):
+            if type(data[i]) == str: 
+                data[i] = data[i].lower()
+                data[i] = list(data[i])
+                for i in range(len(data[i])):
+                    data[i][i] = mappingSet[normalSet.index(data[i][i])]
+                data[i] = listToString(data[i])
+                data[i] = data[i][::-1]
+            elif type(data[i]) == int:
+                data[i] = str(data[i])
+                data[i] = data[i].replace(',','')
+                data[i] = list(data[i])
+                for i in range(len(data[i])):
+                    data[i][i] = numericalMappingSet[normalSet.index(data[i][i])]
+                data[i] = data[i][::-1]
+                data[i] = listToInt(data[i])
+            elif type(data[i]) == float:
+                data[i] = str(data[i])
+                data[i] = data[i].replace(',','')
+                data[i] = list(data[i])
+                for i in range(len(data[i])):
+                    if data[i][i] != '.':
+                        data[i][i] = numericalMappingSet[normalSet.index(data[i][i])]
+                data[i] = data[i][::-1]
+                data[i] = listToFloat(data[i])
+            else:
+                print(data[i],' unrecognised data type in string scrambling func')
+    else:
+        if type(data) == str: 
+            data = data.lower()
+            data = list(data)
+            for i in range(len(data)):
+                data[i] = mappingSet[normalSet.index(data[i])]
+            data = listToString(data)
+            data = data[::-1]
+        elif type(data) == int:
+            data = str(data)
+            data = list(data)
+            for i in range(len(data)):
+                data[i] = numericalMappingSet[normalSet.index(data[i])]
+            data = data[::-1]
+            data = listToInt(data)
+        elif type(data) == float:
+            data = str(data)
+            data = list(data)
+            for i in range(len(data)):
+                if data[i] != '.':
+                    data[i] = numericalMappingSet[normalSet.index(data[i])]
+            data = data[::-1]
+            data = listToFloat(data)
+        else:
+            print(data,' unrecognised data type in string descrambling func')
     return(data)
 
-def stringDeScramble(data):
-    data = list(data)
-    for i in range(len(data)):
-        data[i] = normalSet[mappingSet.index(data[i])]
-    data = listToString(data)
-    data = data[::-1]
+def deScramble(data):
+    if type(data) == list:
+        for i in range(len(data)):
+            if type(data[i]) == str: 
+                data[i] = data[i].lower()
+                data[i] = list(data[i])
+                for i in range(len(data[i])):
+                    data[i][i] = normalSet[mappingSet.index(data[i][i])]
+                data[i] = listToString(data[i])
+                data[i] = data[i][::-1]
+            elif type(data[i]) == int:
+                data[i] = str(data[i])
+                data[i] = data[i].replace(',','')
+                data[i] = list(data[i])
+                for i in range(len(data[i])):
+                    data[i][i] = normalSet[numericalMappingSet.index(data[i][i])]
+                data[i] = data[i][::-1]
+                data[i] = listToInt(data[i])
+            elif type(data[i]) == float:
+                data[i] = str(data[i])
+                data[i] = data[i].replace(',','')
+                data[i] = list(data[i])
+                for i in range(len(data[i])):
+                    if data[i][i] != '.':
+                        data[i][i] = normalSet[numericalMappingSet.index(data[i][i])]
+                data[i] = data[i][::-1]
+                data[i] = listToFloat(data[i])
+            else:
+                print(data[i],' unrecognised data type in string scrambling func')
+    else:
+        if type(data) == str: 
+            data = data.lower()
+            data = list(data)
+            for i in range(len(data)):
+                data[i] = normalSet[mappingSet.index(data[i])]
+            data = listToString(data)
+            data = data[::-1]
+        elif type(data) == int:
+            data = str(data)
+            data = list(data)
+            for i in range(len(data)):
+                data[i] = normalSet[numericalMappingSet.index(data[i])]
+            data = data[::-1]
+            data = listToInt(data)
+        elif type(data) == float:
+            data = str(data)
+            data = list(data)
+            for i in range(len(data)):
+                if data[i] != '.':
+                    data[i] = normalSet[numericalMappingSet.index(data[i])]
+            data = data[::-1]
+            data = listToFloat(data)
+        else:
+            print(data,' unrecognised data type in string descrambling func')
     return data
 
 def listToString(list):
@@ -654,5 +747,20 @@ def listToString(list):
     for letter in list:
         word = word + str(letter)
     return word
+
+def listToInt(list):
+    word = ''
+    for letter in list:
+        word = word + str(letter)
+    integer = int(word)
+    return integer
+
+def listToFloat(list):
+    word = ''
+    for letter in list:
+        word = word + str(letter)
+    floater = float(word)
+    return floater
+
 
 initialise()
