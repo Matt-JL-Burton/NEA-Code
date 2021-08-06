@@ -51,7 +51,7 @@ def invalidOSRunning():
 #defining certain default variables
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
-    global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR 
+    global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet
     primary = '#373f51'
     secondry = '#ffffff'
     tertiary = '#a9a9a9'
@@ -75,6 +75,8 @@ def definingDefaultVariables():
     bCapGainsTR = 18
     hCapGainsTR = 28
     aCapGainsTR = 28
+    normalSet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",'~','#',',','.','?','/','0','1','2','3','4','5','6','7','8','9']
+    mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
 
 #intialising page
 def initialiseWindow():
@@ -561,8 +563,11 @@ def hidePasswordLoginPage():
 
 def createAccount():
     email = emailEntryBox.get()
+    print(email)
     email = stringScramble(email)
+    print(email)
     email = stringDeScramble(email)
+    print(email)
     firstName = firstNameEntryBox.get()
     operationType = operationTypeMenu.get()
     otherIncomeEstimate = otherIncomeEntryBox.get()
@@ -627,87 +632,22 @@ def uniqueDataCheck(dataValue,fieldName,table):
     else:
         return False
 
-def dataDBPrep(data):
+def stringScramble(data):
     data = data.lower()
-    data = data.replace('.','A')
-    data = data.replace('@','B')
-    data = data.replace('-','C')
-    data = data.replace('|','D')
-    data = data.replace('!','E')
-    data = data.replace('#','F')
-    data = data.replace('$','G')
-    data = data.replace('%','H')
-    data = data.replace('&','I')
-    data = data.replace("'",'J')
-    data = data.replace('+','K')
-    data = data.replace('/','L')
-    data = data.replace('=','M')
-    data = data.replace('?','N')
-    data = data.replace('^','O')
-    data = data.replace('_','P')
-    data = data.replace('`','Q')
-    data = data.replace('{','R')
-    data = data.replace('}','S')
-    data = data.replace('~','T')
-    data = data.replace('(','U')
-    data = data.replace(')','V')
-    data = data.replace(',','W')
-    data = data.replace(':','X')
-    data = data.replace(';','Y')
+    data = list(data)
+    for i in range(len(data)):
+        data[i] = mappingSet[normalSet.index(data[i])]
+    data = listToString(data)
+    data = data[::-1]
+    return(data)
+
+def stringDeScramble(data):
+    data = list(data)
+    for i in range(len(data)):
+        data[i] = normalSet[mappingSet.index(data[i])]
+    data = listToString(data)
+    data = data[::-1]
     return data
-
-def dataScriptPrep(data):
-    data = data.replace('A','.')
-    data = data.replace('B','@')
-    data = data.replace('C','-')
-    data = data.replace('D','|')
-    data = data.replace('E','!')
-    data = data.replace('F','#')
-    data = data.replace('G','$')
-    data = data.replace('H','%')
-    data = data.replace('I','&')
-    data = data.replace("J","'")
-    data = data.replace('K','+')
-    data = data.replace('L','/')
-    data = data.replace('M','=')
-    data = data.replace('N','?')
-    data = data.replace('O','^')
-    data = data.replace('P','_')
-    data = data.replace('Q','`')
-    data = data.replace('R','{')
-    data = data.replace('S','}')
-    data = data.replace('T','~')
-    data = data.replace('U','(')
-    data = data.replace('V',')')
-    data = data.replace('W',',')
-    data = data.replace('X',':')
-    data = data.replace('Y',';')
-    return data
-
-def stringScramble(dataToScramble):
-    length = len(dataToScramble)
-    shift = length % 26
-    dataToScramble = list(dataToScramble)
-    for i in range(len(dataToScramble)):
-        dataToScramble[i] = chr(ord(dataToScramble[i])+shift)
-    dataToScramble = listToString(dataToScramble)
-    print(dataToScramble)
-    dataToScramble = dataDBPrep(dataToScramble)
-    print(dataToScramble)
-    return(dataToScramble)
-
-
-def stringDeScramble(dataToDeScramble):
-    dataToDeScramble = dataScriptPrep(dataToDeScramble)
-    print(dataToDeScramble)
-    length = len(dataToDeScramble)
-    shift = length % 26
-    dataToDeScramble = list(dataToDeScramble)
-    for i in range(len(dataToDeScramble)):
-        dataToDeScramble[i] = chr(ord(dataToDeScramble[i])-shift)
-    dataToDeScramble = listToString(dataToDeScramble)
-    print(dataToDeScramble)
-    return(dataToDeScramble)
 
 def listToString(list):
     word = ''
