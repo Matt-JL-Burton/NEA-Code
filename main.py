@@ -13,7 +13,7 @@ from pathlib import Path
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, get, text
+from matplotlib.pyplot import autoscale, flag, get, text
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
@@ -502,9 +502,10 @@ def createAccountPage():
     firstNameLabel = Label(root, text='First Name',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.35,anchor=CENTER)
     
     operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.61,anchor=CENTER)
-    options = ['Business','Personal']
+    global operationTypeOptions
+    operationTypeOptions = ['Business','Personal']
     global operationTypeMenu
-    operationTypeMenu = ttk.Combobox(root, value=options, justify=tkinter.CENTER, font=(font,18))
+    operationTypeMenu = ttk.Combobox(root, value=operationTypeOptions, justify=tkinter.CENTER, font=(font,18))
     operationTypeMenu.current(1)
     operationTypeMenu.place(relx=0.25,rely=0.61,anchor=CENTER)
     root.option_add('*TCombobox*Listbox.font', (font,14)) 
@@ -523,7 +524,6 @@ def createAccountPage():
     passwordEntryBox.place(relx=0.75,rely=0.25,anchor=CENTER)
     passwordLabel = Label(root, text='Password',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.17,anchor=CENTER)
     passwordSubLabel = Label(root, text='As with all user data input, the password is none case sensative',bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.75,rely=0.315,anchor=CENTER)
-
 
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.43,anchor=CENTER)
     global surnameEntryBox
@@ -573,6 +573,7 @@ def createAccount():
     surname = surnameEntryBox.get()
     title = titleEntryBox.get()
     natInsuranceDue = nationalInsuranceEntryBox.get()
+
     characters = (string.ascii_uppercase)+(string.digits)
     account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
@@ -619,17 +620,6 @@ def getTaxRate(accountID):
     # #TODO: need to find other income streams
     tax_Rate = 'b'
     return(tax_Rate)
-
-def uniqueDataCheck(dataValue,fieldName,table):
-    returnedValue = []
-    openDatabase()
-    for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(dataValue)+str("'")):
-        returnedValue.append(line[0])
-    closeDatabase()
-    if returnedValue == None or returnedValue == []:
-        return True
-    else:
-        return False
 
 def scramble(data):
     if type(data) == list:
@@ -763,5 +753,56 @@ def listToFloat(list):
     floater = float(word)
     return floater
 
+#data validation
+def menuOptionCheck(entry,globalMenuList):
+    if entry in globalMenuList:
+        return True
+    else:
+        return False 
+
+def castingTypeCheckFunc(dataInput,preferredType):
+    if preferredType == str:
+        if type(dataInput) == str:
+            return dataInput
+        else:
+            return False
+    try:
+        dataInput = preferredType(dataInput)
+        return dataInput
+    except:
+        return False
+
+def uniqueDataCheck(dataValue,fieldName,table):
+    returnedValue = []
+    openDatabase()
+    for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(dataValue)+str("'")):
+        returnedValue.append(line[0])
+    closeDatabase()
+    if returnedValue == None or returnedValue == []:
+        return True
+    else:
+        return False
+
+def pictureCheck(data,mustContain):
+    print(mustContain)
+    if type(mustContain) == list:
+        for i in range (len(mustContain)):
+            mustContain[i] = str(mustContain[i])
+        listOfContainResults = []
+        for i in range(len(mustContain)):
+            if (mustContain[i]) in data:
+                listOfContainResults.append(True)
+            else:
+                listOfContainResults.append(False)
+        if False in listOfContainResults:
+            return False
+        else:
+            return True
+    else:
+        mustContain = str(mustContain)
+        if mustContain in data:
+            return True
+        else:
+            return False
 
 initialise()
