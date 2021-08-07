@@ -522,7 +522,8 @@ def createAccountPage():
     passwordEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
     passwordEntryBox.place(relx=0.75,rely=0.25,anchor=CENTER)
     passwordLabel = Label(root, text='Password',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.75,rely=0.17,anchor=CENTER)
-    #TODO: say that it is none caps sensitive
+    passwordSubLabel = Label(root, text='As with all user data input, the password is none case sensative',bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.75,rely=0.315,anchor=CENTER)
+
 
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.43,anchor=CENTER)
     global surnameEntryBox
