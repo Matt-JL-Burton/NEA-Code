@@ -584,8 +584,7 @@ def createAccount():
         createAccountArray[i] = scramble(createAccountArray[i])
 
     listOfDataValidationResults = dict.fromkeys(accountFields)
-    
-    # listOfDataValidationResults.append(uniqueDataCheck(email,'recovery_Email','accounts'))
+
 
     #TODO: entry validation
     #TODO: run SQL command to add data to database
@@ -807,5 +806,28 @@ def pictureCheck(data,mustContain):
             return True
         else:
             return False
+
+def rangeCheck(data,lowerBound,upperBound):
+    #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
+    if (type(lowerBound) == float or type(lowerBound) == int or type(lowerBound) == None) and (type(upperBound) == float or type(upperBound) == int or type(upperBound) == None):
+        if lowerBound == None and upperBound != None:
+            if data <= upperBound:
+                return True
+            else:
+                return False
+        elif upperBound == None and lowerBound != None:
+            if data >= lowerBound:
+                return True
+            else:
+                return False
+        elif upperBound == None and lowerBound == None:
+            raise TypeError('Both Bounds cannot be None')
+        else:
+            if data >= lowerBound and data <= upperBound:
+                return True
+            else:
+                return False
+    else:
+        raise TypeError('Bounds where the incorrect data type') 
 
 initialise()
