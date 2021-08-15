@@ -578,11 +578,14 @@ def createAccount():
     account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
     createAccountArray = [account_ID,password,email,firstName,surname, operationType, title, getTaxRate(account_ID),otherIncomeEstimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,natInsuranceDue, primary, secondry, tertiary, font]
+    accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate', 'other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
+        
     for i in range(len(createAccountArray)):
         createAccountArray[i] = scramble(createAccountArray[i])
 
-    listOfDataValidationResults = []
-    listOfDataValidationResults.append(uniqueDataCheck(email,'recovery_Email','accounts'))
+    listOfDataValidationResults = dict.fromkeys(accountFields)
+    
+    # listOfDataValidationResults.append(uniqueDataCheck(email,'recovery_Email','accounts'))
 
     #TODO: entry validation
     #TODO: run SQL command to add data to database
