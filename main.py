@@ -785,7 +785,7 @@ def uniqueDataCheck(dataValue,fieldName,table):
     else:
         return False
 
-def pictureCheck(data,mustContain):
+def basicPictureCheck(data,mustContain):
     print(mustContain)
     if type(mustContain) == list:
         for i in range (len(mustContain)):
@@ -829,5 +829,11 @@ def rangeCheck(data,lowerBound,upperBound):
                 return False
     else:
         raise TypeError('Bounds where the incorrect data type') 
+
+def presenceCheck(data):
+    if data != None:
+        return True
+    else:
+        return False
 
 initialise()
