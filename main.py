@@ -785,7 +785,7 @@ def uniqueDataCheck(dataValue,fieldName,table):
     else:
         return False
 
-def basicPictureCheck(data,mustContain):
+def mustContainCheck(data,mustContain):
     print(mustContain)
     if type(mustContain) == list:
         for i in range (len(mustContain)):
@@ -835,5 +835,7 @@ def presenceCheck(data):
         return True
     else:
         return False
+
+#streak keeping
 
 initialise()
