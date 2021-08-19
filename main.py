@@ -95,8 +95,8 @@ def initialiseWindow():
 
 #Finding out what OS the device runs on and setting the path seperator approrialtly
 def findOS():
+    global path_seperator
     if platform.system() == 'Windows': #Windows (for me to develope the program)
-        global path_seperator
         path_seperator = '\\'
     elif platform.system() == 'Darwin': #MAC OS (for my end user to run the program)
         path_seperator = '/'
