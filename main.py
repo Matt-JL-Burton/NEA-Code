@@ -18,7 +18,6 @@ import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
 import string
-from dataValidationTests import rangeCheck, uniqueDataCheck, menuOptionCheck, castingTypeCheckFunc, howManySymbolsInStr, pictureCheck, presenceCheck, noNumbers, startsWith
 
 print('program started')
 
