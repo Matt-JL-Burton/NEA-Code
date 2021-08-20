@@ -836,6 +836,6 @@ def presenceCheck(data):
     else:
         return False
 
-#streak keeping
+#streak keeping 2
 
 initialise()
