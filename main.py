@@ -9,7 +9,7 @@ import tkinter
 import matplotlib
 import os
 from os import chdir, close, error, getcwd, name, system, terminal_size
-from pathlib import Path
+import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
@@ -26,6 +26,7 @@ def initialise():
     definingDefaultVariables()
     findOS()
     if path_seperator != None: #basically if the device is running on an accepted OS
+        os.chdir(pathlib.Path(__file__).parent.absolute())
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
@@ -785,15 +786,32 @@ def uniqueDataCheck(dataValue,fieldName,table):
     else:
         return False
 
-def pictureCheck(data,symbol,minimum, maximum):
-    if type(data) == string and type(symbol) == string:
-        numberOfSymbols = howManySymbolsInStr(data, symbol)
-        if numberOfSymbols >= minimum and numberOfSymbols <= maximum:
-            return True      
-        else: 
-            return False
-    else:
+def howManySymbolsInStr(data, symbolLookingFor):
+    if type(data) == string and type(symbolLookingFor) == string:
+        count = 0
+        for i in range(len(data)):
+            if data[i] == symbolLookingFor:
+                count = count + 1
+        return count
+    else: 
         raise TypeError('All data inputted must be a string')
+
+def pictureCheck(data,symbol,minimum, maximum):
+    if type(data) == str and type(symbol) == str:
+        if type(minimum) == int and type(maximum) == int:
+            numberOfSymbols = howManySymbolsInStr(data, symbol)
+            if maximum == None:
+                if numberOfSymbols >= minimum:
+                    return True      
+                else: 
+                    return False
+            else:
+                if numberOfSymbols >= minimum and numberOfSymbols <= maximum:
+                    return True      
+                else: 
+                    return False
+    else:
+        raise TypeError('Data and symbol parameters inputted must be a string')
 
 def rangeCheck(data,lowerBound,upperBound):
     #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
@@ -825,23 +843,22 @@ def presenceCheck(data):
         return False
 
 def noNumbers(data):
-    if type(data) == str:
+    if type(data) == string:
         if data.isalpha():
             return True
         else:
             return False
     else:
-        raise TypeError('Data enterrred must be a string')
-
-def howManySymbolsInStr(data, symbolLookingFor):
-    if type(data) == string and type(symbolLookingFor) == string:
-        count = 0
-        for i in range(len(data)):
-            if data[i] == symbolLookingFor:
-                count = count + 1
-        return count
-    else: 
         raise TypeError('All data inputted must be a string')
          
+def startswith(data, symbol):
+    if type(data) != str:
+        if data[0] == symbol:
+            return True
+        else:
+            return False
+    else:
+        raise TypeError('All data inputted must be a string')
+
 
 initialise()
