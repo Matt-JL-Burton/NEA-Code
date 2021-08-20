@@ -587,8 +587,14 @@ def createAccount():
         createAccountArray[i] = scramble(createAccountArray[i])
 
 
+    #running tests
     listOfDataValidationResults = dict.fromkeys(accountFields)
     listOfDataValidationResults['password'] = {'rangeCheck':rangeCheck(len(password),7,None)}
+    listOfDataValidationResults['first_Name'] = {'presenceCheck':presenceCheck(firstName),'pictureCheck':containsOnlyLetters(firstName)}
+    listOfDataValidationResults['last_Name'] = {'presenceCheck':presenceCheck(surname),'pictureCheck':containsOnlyLetters(surname)}
+    #listOfDataValidationResults['other_Income_Estimate'] = {'rangeCheck':rangeCheck(otherIncomeEstimate)}
+
+
 
     print(listOfDataValidationResults)
 
@@ -854,12 +860,12 @@ def rangeCheck(data,lowerBound,upperBound):
         raise TypeError('Bounds where the incorrect data type') 
 
 def presenceCheck(data):
-    if data != None:
+    if data != None or data != '':
         return True
     else:
         return False
 
-def noNumbers(data):
+def containsOnlyLetters(data):
     if type(data) == str:
         if data.isalpha():
             return True
@@ -867,7 +873,8 @@ def noNumbers(data):
             return False
     else:
         raise TypeError('All data inputted must be a string')
-         
+
+
 def startsWith(data, symbol):
     if type(data) != str:
         if data[0] == symbol:
