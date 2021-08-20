@@ -785,27 +785,15 @@ def uniqueDataCheck(dataValue,fieldName,table):
     else:
         return False
 
-def mustContainCheck(data,mustContain):
-    print(mustContain)
-    if type(mustContain) == list:
-        for i in range (len(mustContain)):
-            mustContain[i] = str(mustContain[i])
-        listOfContainResults = []
-        for i in range(len(mustContain)):
-            if (mustContain[i]) in data:
-                listOfContainResults.append(True)
-            else:
-                listOfContainResults.append(False)
-        if False in listOfContainResults:
+def pictureCheck(data,symbol,minimum, maximum):
+    if type(data) == string and type(symbol) == string:
+        numberOfSymbols = howManySymbolsInStr(data, symbol)
+        if numberOfSymbols >= minimum and numberOfSymbols <= maximum:
+            return True      
+        else: 
             return False
-        else:
-            return True
     else:
-        mustContain = str(mustContain)
-        if mustContain in data:
-            return True
-        else:
-            return False
+        raise TypeError('All data inputted must be a string')
 
 def rangeCheck(data,lowerBound,upperBound):
     #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
@@ -836,6 +824,24 @@ def presenceCheck(data):
     else:
         return False
 
-#streak keeping 2
+def noNumbers(data):
+    if type(data) == str:
+        if data.isalpha():
+            return True
+        else:
+            return False
+    else:
+        raise TypeError('Data enterrred must be a string')
+
+def howManySymbolsInStr(data, symbolLookingFor):
+    if type(data) == string and type(symbolLookingFor) == string:
+        count = 0
+        for i in range(len(data)):
+            if data[i] == symbolLookingFor:
+                count = count + 1
+        return count
+    else: 
+        raise TypeError('All data inputted must be a string')
+         
 
 initialise()
