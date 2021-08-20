@@ -18,6 +18,7 @@ import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
 import string
+from dataValidationTests import rangeCheck, uniqueDataCheck, menuOptionCheck, castingTypeCheckFunc, howManySymbolsInStr, pictureCheck, presenceCheck, noNumbers, startsWith
 
 print('program started')
 
@@ -577,6 +578,8 @@ def createAccount():
 
     characters = (string.ascii_uppercase)+(string.digits)
     account_ID =  (''.join(random.choice(characters) for i in range(10)))
+    while uniqueDataCheck(account_ID,'account_ID','accounts') == False:
+        account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
     createAccountArray = [account_ID,password,email,firstName,surname, operationType, title, getTaxRate(account_ID),otherIncomeEstimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,natInsuranceDue, primary, secondry, tertiary, font]
     accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate', 'other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
@@ -584,8 +587,11 @@ def createAccount():
     for i in range(len(createAccountArray)):
         createAccountArray[i] = scramble(createAccountArray[i])
 
-    listOfDataValidationResults = dict.fromkeys(accountFields)
 
+    listOfDataValidationResults = dict.fromkeys(accountFields)
+    listOfDataValidationResults['password'] = {'rangeCheck':rangeCheck(len(password),7,None)}
+
+    print(listOfDataValidationResults)
 
     #TODO: entry validation
     #TODO: run SQL command to add data to database
@@ -756,109 +762,7 @@ def listToFloat(list):
     floater = float(word)
     return floater
 
-#data validation
-def menuOptionCheck(entry,globalMenuList):
-    if entry in globalMenuList:
-        return True
-    else:
-        return False 
 
-def castingTypeCheckFunc(dataInput,preferredType):
-    if preferredType == str:
-        if type(dataInput) == str:
-            return dataInput
-        else:
-            return False
-    try:
-        dataInput = preferredType(dataInput)
-        return dataInput
-    except:
-        return False
-
-def uniqueDataCheck(dataValue,fieldName,table):
-    returnedValue = []
-    openDatabase()
-    for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(dataValue)+str("'")):
-        returnedValue.append(line[0])
-    closeDatabase()
-    if returnedValue == None or returnedValue == []:
-        return True
-    else:
-        return False
-
-def howManySymbolsInStr(data, symbolLookingFor):
-    if type(data) == string and type(symbolLookingFor) == string:
-        count = 0
-        for i in range(len(data)):
-            if data[i] == symbolLookingFor:
-                count = count + 1
-        return count
-    else: 
-        raise TypeError('All data inputted must be a string')
-
-def pictureCheck(data,symbol,minimum, maximum):
-    if type(data) == str and type(symbol) == str:
-        if type(minimum) == int and type(maximum) == int:
-            numberOfSymbols = howManySymbolsInStr(data, symbol)
-            if maximum == None:
-                if numberOfSymbols >= minimum:
-                    return True      
-                else: 
-                    return False
-            else:
-                if numberOfSymbols >= minimum and numberOfSymbols <= maximum:
-                    return True      
-                else: 
-                    return False
-    else:
-        raise TypeError('Data and symbol parameters inputted must be a string')
-
-def rangeCheck(data,lowerBound,upperBound):
-    #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
-    if (type(lowerBound) == float or type(lowerBound) == int or type(lowerBound) == None) and (type(upperBound) == float or type(upperBound) == int or type(upperBound) == None):
-        if lowerBound == None and upperBound != None:
-            if data <= upperBound:
-                return True
-            else:
-                return False
-        elif upperBound == None and lowerBound != None:
-            if data >= lowerBound:
-                return True
-            else:
-                return False
-        elif upperBound == None and lowerBound == None:
-            raise TypeError('Both Bounds cannot be None')
-        else:
-            if data >= lowerBound and data <= upperBound:
-                return True
-            else:
-                return False
-    else:
-        raise TypeError('Bounds where the incorrect data type') 
-
-def presenceCheck(data):
-    if data != None:
-        return True
-    else:
-        return False
-
-def noNumbers(data):
-    if type(data) == string:
-        if data.isalpha():
-            return True
-        else:
-            return False
-    else:
-        raise TypeError('All data inputted must be a string')
-         
-def startswith(data, symbol):
-    if type(data) != str:
-        if data[0] == symbol:
-            return True
-        else:
-            return False
-    else:
-        raise TypeError('All data inputted must be a string')
 
 
 initialise()
