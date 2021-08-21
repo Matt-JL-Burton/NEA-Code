@@ -590,9 +590,13 @@ def createAccount():
     #running tests
     listOfDataValidationResults = dict.fromkeys(accountFields)
     listOfDataValidationResults['password'] = {'rangeCheck':rangeCheck(len(password),7,None)}
-    listOfDataValidationResults['first_Name'] = {'presenceCheck':presenceCheck(firstName),'pictureCheck':containsOnlyLetters(firstName)}
-    listOfDataValidationResults['last_Name'] = {'presenceCheck':presenceCheck(surname),'pictureCheck':containsOnlyLetters(surname)}
-    #listOfDataValidationResults['other_Income_Estimate'] = {'rangeCheck':rangeCheck(otherIncomeEstimate)}
+    listOfDataValidationResults['first_Name'] = {'presenceCheck':presenceCheck(firstName),'containsOnlyLetters':containsOnlyLetters(firstName)}
+    listOfDataValidationResults['last_Name'] = {'presenceCheck':presenceCheck(surname),'containsOnlyLetters':containsOnlyLetters(surname)}
+    if castingTypeCheckFunc(otherIncomeEstimate,float) != False:
+        listOfDataValidationResults['other_Income_Estimate'] = {'typeCheck':True,'rangeCheck':rangeCheck(str(otherIncomeEstimate),0,1099511628),'presenceCheck':presenceCheck(otherIncomeEstimate)}
+    else:
+        listOfDataValidationResults['other_Income_Estimate'] = {'typeCheck':False,'rangeCheck':False,'presenceCheck':False}
+
 
 
 
@@ -860,7 +864,7 @@ def rangeCheck(data,lowerBound,upperBound):
         raise TypeError('Bounds where the incorrect data type') 
 
 def presenceCheck(data):
-    if data != None or data != '':
+    if data != None and data != '':
         return True
     else:
         return False
@@ -873,7 +877,6 @@ def containsOnlyLetters(data):
             return False
     else:
         raise TypeError('All data inputted must be a string')
-
 
 def startsWith(data, symbol):
     if type(data) != str:
