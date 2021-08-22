@@ -18,6 +18,7 @@ import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
 import string
+from dataObjectClass import uInputDataObj
 
 print('program started')
 
@@ -566,7 +567,7 @@ def hidePasswordLoginPage():
     pass
 
 def createAccount():
-    email = emailEntryBox.get()
+    email = uInputDataObj(emailEntryBox.get(),str)
     firstName = firstNameEntryBox.get()
     operationType = operationTypeMenu.get()
     otherIncomeEstimate = otherIncomeEntryBox.get()
