@@ -31,8 +31,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            createAccountPage()  
-            #displayTCs()
+            #createAccountPage()  
+            displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -54,29 +54,29 @@ def invalidOSRunning():
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
-    primary = '#373f51'
-    secondry = '#ffffff'
-    tertiary = '#a9a9a9'
+    primary = uInputDataObj('#373f51',str)
+    secondry = uInputDataObj('#ffffff',str)
+    tertiary = uInputDataObj('#a9a9a9',str)
     bannedColours = {'errorRed':'#','warningYellow':'#','activeTextColor':'dark grey'}
-    font = 'Bahnschrift SemiLight'
+    font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
     listOfIdealAssets = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico']
     connectionError = Tk()
     connectionError.destroy()
     previousPage = None
-    incPA = 12500.0
-    bIncTR = 20.0
-    hIncTR = 40.0
-    aIncTR = 45.0
-    bCapGainsAllowence = 12300.0
-    bIncCutOff = 50000.0
-    hIncCutOff = 150000.0
-    corpTR = 19
-    corpCapGainsTR = 20
-    bCapGainsTR = 18
-    hCapGainsTR = 28
-    aCapGainsTR = 28
+    incPA = uInputDataObj(12500.0,float)
+    bIncTR = uInputDataObj(20.0,float)
+    hIncTR = uInputDataObj(40.0,float)
+    aIncTR =  uInputDataObj(45.0,float)
+    bCapGainsAllowence =  uInputDataObj(12300.0,float)
+    bIncCutOff =  uInputDataObj(50000.0,float)
+    hIncCutOff =  uInputDataObj(150000.0,float)
+    corpTR =  uInputDataObj(19,float)
+    corpCapGainsTR =  uInputDataObj(20,float)
+    bCapGainsTR =  uInputDataObj(18,float)
+    hCapGainsTR =  uInputDataObj(28,float)
+    aCapGainsTR =  uInputDataObj(28,float)
     normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
     numericalMappingSet = ['7','1','5','2','3','8','4','6','0','9']
@@ -88,7 +88,7 @@ def initialiseWindow():
     root = Tk()
     root.title('Property managment system')
     root.geometry('1250x850')
-    root.configure(background=primary)
+    root.configure(background=primary.data)
     root.resizable(width=False, height=False) #Makes the window not be reziable becuase that mucks up the asthetics
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
         chdir(f'.{path_seperator}Assets')
@@ -172,10 +172,10 @@ def displayConnectionError():
     connectionError.title('Property managment system')
     connectionError.geometry('500x500')
     connectionError.resizable(width=False, height=False)
-    connectionError.configure(background=primary)
-    connectionErrorTitle = Label(connectionError, font=(font,'20','underline'), text='Connection Error', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.1, anchor=CENTER)
-    connectionErrorMessage = Label(connectionError, font=(font,'12'), text='we found a internet connection error, please check your \n connection and click restart program when you have a \n stable connection', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.5, anchor=CENTER)    
-    restart = Button(connectionError, font=(font,'12','underline'), text = 'restart program', command=restartFromConnectionError, bg = primary, fg = secondry, borderwidth=0, activeforeground=tertiary, activebackground=primary).place(relx=0.5, rely=0.8, anchor=CENTER)
+    connectionError.configure(background=primary.data)
+    connectionErrorTitle = Label(connectionError, font=(font,'20','underline'), text='Connection Error', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.1, anchor=CENTER)
+    connectionErrorMessage = Label(connectionError, font=(font,'12'), text='we found a internet connection error, please check your \n connection and click restart program when you have a \n stable connection', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)    
+    restart = Button(connectionError, font=(font,'12','underline'), text = 'restart program', command=restartFromConnectionError, bg = primary.data, fg = secondry.data, borderwidth=0, activeforeground=tertiary.data, activebackground=primary.data).place(relx=0.5, rely=0.8, anchor=CENTER)
     connectionError.mainloop()
 
 def createTables(): 
@@ -370,19 +370,19 @@ def displayTCs():
     global previousPage
     previousPage = 'Terms and Conditions'
     root.title('Property managment system - Terms and Condtions')
-    tCsTitle = Label(root, font=(font,'25'), text='TERMS & CONDITIONS', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.1, anchor=CENTER)
-    tCsSubTitle = Label(root,font=(font,'15'), text='By accepting the terms and condtions you agree to the following', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.15, anchor=CENTER)
-    tCsBP1 = Label(root,font=(font,'13'), text= '○ I will only enter personal data into this system when the person whom the data belongs to has given consent for their data to be stored', anchor='w',width='125', bg=primary,fg=secondry).place(relx=0.025, rely=0.25)
-    tCsBP2 = Label(root,font=(font,'13'), text= '○ I will keep all data stored accurate and upto date', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.3)
-    tCsBP3 = Label(root,font=(font,'13'), text= '○ I will not share the data stored on this system with any unauthorised person or an organisation', anchor='w',width='125', bg=primary,fg=secondry).place(relx=0.025, rely=0.35)
-    tCsBP4 = Label(root,font=(font,'13'), text= '○ I will not use this system to store data about a tenant that has left a unit', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.4)
-    tCsBP5 = Label(root,font=(font,'13'), text= '○ I will delete personal data on anyone as soon as it becomes unnecessary', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.45)
-    tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not alter any files relating to this system except through this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.5)
-    tCsBP6 = Label(root,font=(font,'13'), text= '○ I understand that the creator of this system is not responsible for the security of any data stored in this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.55)
-    tCsBP7 = Label(root,font=(font,'13'), text= '○ I have read, understand and accept the full terms and conditions of this system', width='125', bg=primary,fg=secondry, justify='left',anchor='w').place(relx=0.025, rely=0.6)
-    viewFullTCsB = Button(root, text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
-    acceptTCsB = Button(root, text='Accept', font=(font,'50','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.8, anchor=CENTER)
-    declineTCsB = Button(root, text='Decline', font=(font,'11','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=declineTCs).place(relx=0.5, rely=0.9, anchor=CENTER)
+    tCsTitle = Label(root, font=(font,'25'), text='TERMS & CONDITIONS', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.1, anchor=CENTER)
+    tCsSubTitle = Label(root,font=(font,'15'), text='By accepting the terms and condtions you agree to the following', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
+    tCsBP1 = Label(root,font=(font,'13'), text= '○ I will only enter personal data into this system when the person whom the data belongs to has given consent for their data to be stored', anchor='w',width='125', bg=primary.data,fg=secondry.data).place(relx=0.025, rely=0.25)
+    tCsBP2 = Label(root,font=(font,'13'), text= '○ I will keep all data stored accurate and upto date', width='125', bg=primary.data,fg=secondry.data, justify='left',anchor='w').place(relx=0.025, rely=0.3)
+    tCsBP3 = Label(root,font=(font,'13'), text= '○ I will not share the data stored on this system with any unauthorised person or an organisation', anchor='w',width='125', bg=primary.data,fg=secondry.data).place(relx=0.025, rely=0.35)
+    tCsBP4 = Label(root,font=(font,'13'), text= '○ I will not use this system to store data about a tenant that has left a unit', width='125', bg=primary.data,fg=secondry.data, justify='left',anchor='w').place(relx=0.025, rely=0.4)
+    tCsBP5 = Label(root,font=(font,'13'), text= '○ I will delete personal data on anyone as soon as it becomes unnecessary', width='125', bg=primary.data,fg=secondry.data, justify='left',anchor='w').place(relx=0.025, rely=0.45)
+    tCsBP6 = Label(root,font=(font,'13'), text= '○ I will not alter any files relating to this system except through this system', width='125', bg=primary.data,fg=secondry.data, justify='left',anchor='w').place(relx=0.025, rely=0.5)
+    tCsBP6 = Label(root,font=(font,'13'), text= '○ I understand that the creator of this system is not responsible for the security of any data stored in this system', width='125', bg=primary.data,fg=secondry.data, justify='left',anchor='w').place(relx=0.025, rely=0.55)
+    tCsBP7 = Label(root,font=(font,'13'), text= '○ I have read, understand and accept the full terms and conditions of this system', width='125', bg=primary.data,fg=secondry.data, justify='left',anchor='w').place(relx=0.025, rely=0.6)
+    viewFullTCsB = Button(root, text='View Full Terms & conditions', font=(font,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=viewFullTCs).place(relx=0.5, rely=0.7, anchor=CENTER)
+    acceptTCsB = Button(root, text='Accept', font=(font,'50','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=loginPage).place(relx=0.5, rely=0.8, anchor=CENTER)
+    declineTCsB = Button(root, text='Decline', font=(font,'11','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=declineTCs).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def viewFullTCs():
@@ -406,20 +406,20 @@ def loginPage():
     global previousPage
     previousPage = 'Login'
     root.title ('Property managment system - Login')
-    headerL = Label(root,text='Login',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
+    headerL = Label(root,text='Login',font=((font,'40')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.1, anchor=CENTER)
     #username input
-    usernameHeaderL = Label(root,text='Username',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.28, anchor=CENTER)
+    usernameHeaderL = Label(root,text='Username',font=((font,'15')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.28, anchor=CENTER)
     longNormal = PhotoImage(file = "Long-Normal.PNG")
     longNormalLabelU = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.37,anchor=CENTER)
-    usernameEntry = Entry(root, bg=primary, fg=secondry, width=42, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.37,anchor=CENTER)
+    usernameEntry = Entry(root, bg=primary.data, fg=secondry.data, width=42, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.37,anchor=CENTER)
     #password input
-    passwordHeaderL = Label(root,text='Password',font=((font,'15')),fg=secondry,bg=primary).place(relx=0.5,rely=0.55, anchor=CENTER)
+    passwordHeaderL = Label(root,text='Password',font=((font,'15')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.55, anchor=CENTER)
     longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.64,anchor=CENTER)
-    passwordEntry = Entry(root, bg=primary,fg=secondry, width=42, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.64,anchor=CENTER)
-    hidePasswordLoginPageB = Button(root, text='Hide', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=hidePasswordLoginPage).place(relx=0.15, rely=0.64, anchor=CENTER)
-    createAccountPageB = Button(root, text='Create Account', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
-    ForgottenPageB = Button(root, text='Forgotten Password?', font=(font,'15','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
-    submitLoginDetailsB = Button(root, text='L O G I N', font=(font,'20','underline','bold'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
+    passwordEntry = Entry(root, bg=primary.data,fg=secondry.data, width=42, font=(font,24),justify='center',relief='flat').place(relx=0.5,rely=0.64,anchor=CENTER)
+    hidePasswordLoginPageB = Button(root, text='Hide', font=(font,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=hidePasswordLoginPage).place(relx=0.15, rely=0.64, anchor=CENTER)
+    createAccountPageB = Button(root, text='Create Account', font=(font,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
+    ForgottenPageB = Button(root, text='Forgotten Password?', font=(font,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
+    submitLoginDetailsB = Button(root, text='L O G I N', font=(font,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def convertAssetColor(primaryHex,secondryHex):
@@ -428,8 +428,8 @@ def convertAssetColor(primaryHex,secondryHex):
     listOfAssets = os.listdir(os.getcwd())
     testAsset = listOfAssets[1]
     img = Image.open(testAsset)
-    newPrimary = list(ImageColor.getcolor(primaryHex, "RGBA"))
-    newSecondry = list(ImageColor.getcolor(secondryHex, "RGBA"))
+    newPrimary = list(ImageColor.getcolor(primaryHex.data, "RGBA"))
+    newSecondry = list(ImageColor.getcolor(secondryHex.data, "RGBA"))
     if testAsset == 'Long-Fat.PNG' and (newPrimary != list(img.getpixel((0,0))) or newSecondry != list(img.getpixel((9,112)))): #check to see if assets are already in the correct colours and so we shoudl not bother changing them
         for asset in listOfAssets:
             if (asset.split('.')[1]).lower() == 'png':
@@ -440,7 +440,7 @@ def convertAssetColor(primaryHex,secondryHex):
                 for x in range(img.size[0]):
                     if [x,y] == [0,0]:
                         oldPrimary = list(img.getpixel((x,y)))
-                        newPrimary =  list(ImageColor.getcolor(primaryHex, "RGBA"))
+                        newPrimary =  list(ImageColor.getcolor(primaryHex.data, "RGBA"))
                     for y in range(img.size[1]):
                         r,g,b,a = img.getpixel((x,y))
                         if [r,g,b,a] == oldPrimary:
@@ -449,7 +449,7 @@ def convertAssetColor(primaryHex,secondryHex):
                             # print(x,y)
                             # time.sleep(1000)
                             # listOfPixelsInForeground[x,y] = 0
-                            newSecondry = list(ImageColor.getcolor(secondryHex, "RGBA"))
+                            newSecondry = list(ImageColor.getcolor(secondryHex.data, "RGBA"))
                             img.putpixel((x,y),(newSecondry[0],newSecondry[1],newSecondry[2]))
                 # for pixel in list(listOfPixelsInForeground.keys()):
                 #     x,y = list(pixel)[0],list(pixel)[1]
@@ -474,11 +474,11 @@ def declineTCs():
     initialiseWindow()
     root.title('Property managment system - Terms and Condtions declined')
     root.geometry('500x500')
-    headerDTC = Label(root,text='You must accept the terms and\nconditions to use this system',font=((font,'20')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
-    messageDTC = Label(root,text='Unfortunatly you cannot use this system unless you have\naccept the terms and conditions of this system',font=((font,'12')),fg=secondry,bg=primary).place(relx=0.5,rely=0.3, anchor=CENTER)
-    returnToTCPageB = Button(root,text='Go Back To Terms And Conditions',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=displayTCs).place(relx=0.5,rely=0.5, anchor=CENTER)
-    confirmDeclineB = Button(root,text='Confrim Decline',font=((font,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary,fg=secondry,bg=primary,border=0,command=closeMainPage).place(relx=0.5,rely=0.7, anchor=CENTER)
-    acceptTCsB = Button(root, text='Accept Terms and Conditions', font=(font,'12','underline'),fg=secondry,bg=primary,activeforeground=bannedColours['activeTextColor'],activebackground=primary,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    headerDTC = Label(root,text='You must accept the terms and\nconditions to use this system',font=((font.data,'20')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.1, anchor=CENTER)
+    messageDTC = Label(root,text='Unfortunatly you cannot use this system unless you have\naccept the terms and conditions of this system',font=((font.data,'12')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.3, anchor=CENTER)
+    returnToTCPageB = Button(root,text='Go Back To Terms And Conditions',font=((font.data,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,fg=secondry.data,bg=primary.data,border=0,command=displayTCs).place(relx=0.5,rely=0.5, anchor=CENTER)
+    confirmDeclineB = Button(root,text='Confrim Decline',font=((font.data,'12','underline')),activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,fg=secondry.data,bg=primary.data,border=0,command=closeMainPage).place(relx=0.5,rely=0.7, anchor=CENTER)
+    acceptTCsB = Button(root, text='Accept Terms and Conditions', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def createAccountPage():
@@ -487,38 +487,38 @@ def createAccountPage():
     global previousPage
     previousPage = 'Create Account'
     root.title('Property managment system - Create Account')
-    headerL = Label(root,text='Create Account',font=((font,'40')),fg=secondry,bg=primary).place(relx=0.5,rely=0.1, anchor=CENTER)
+    headerL = Label(root,text='Create Account',font=((font.data,'40')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.1, anchor=CENTER)
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
     
     emailEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.25,anchor=CENTER)
     global emailEntryBox
-    emailEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    emailEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     emailEntryBox.place(relx=0.25,rely=0.25,anchor=CENTER)
-    emailLabel = Label(root, text='Email',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.17,anchor=CENTER)
-    emailSubLabel = Label(root, text='This will be used as your username, so make sure you can access it',bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.25,rely=0.315,anchor=CENTER)
+    emailLabel = Label(root, text='Email',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.25,rely=0.17,anchor=CENTER)
+    emailSubLabel = Label(root, text='This will be used as your username, so make sure you can access it',bg=primary.data, fg=secondry.data, width=60, font=(font.data,7), justify='center',relief='flat').place(relx=0.25,rely=0.315,anchor=CENTER)
 
     firstNameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.43,anchor=CENTER)
     global firstNameEntryBox
-    firstNameEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    firstNameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     firstNameEntryBox.place(relx=0.25,rely=0.43,anchor=CENTER)
-    firstNameLabel = Label(root, text='First Name',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.35,anchor=CENTER)
+    firstNameLabel = Label(root, text='First Name',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.25,rely=0.35,anchor=CENTER)
     
     operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.61,anchor=CENTER)
     global operationTypeOptions
     operationTypeOptions = ['Business','Personal']
     global operationTypeMenu
-    operationTypeMenu = ttk.Combobox(root, value=operationTypeOptions, justify=tkinter.CENTER, font=(font,18))
+    operationTypeMenu = ttk.Combobox(root, value=operationTypeOptions, justify=tkinter.CENTER, font=(font.data,18))
     operationTypeMenu.current(1)
     operationTypeMenu.place(relx=0.25,rely=0.61,anchor=CENTER)
-    root.option_add('*TCombobox*Listbox.font', (font,14)) 
-    operationTypeLabel = Label(root, text='Operation Type',bg=primary, fg=secondry, width=23, font=(font,18), justify='center',relief='flat').place(relx=0.25,rely=0.53,anchor=CENTER)
+    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
+    operationTypeLabel = Label(root, text='Operation Type',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.25,rely=0.53,anchor=CENTER)
     
     otherIncomeEstimateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.25,rely=0.79,anchor=CENTER)
     global otherIncomeEntryBox
-    otherIncomeEntryBox = Entry(root, bg=primary,fg=secondry, width=23, font=(font,18),justify='center',relief='flat')
+    otherIncomeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     otherIncomeEntryBox.place(relx=0.25,rely=0.79,anchor=CENTER)
-    otherIncomeLabel = Label(root, text='Other Income (Estimate in £)',bg=primary, fg=secondry, width=23, font=(font,15), justify='center',relief='flat').place(relx=0.25,rely=0.71,anchor=CENTER)
-    otherIncomeSubLabel = Label(root, text='This data is used for calcualting tax estiamtes, it is kept private and secure',bg=primary, fg=secondry, width=60, font=(font,7), justify='center',relief='flat').place(relx=0.25,rely=0.855,anchor=CENTER)
+    otherIncomeLabel = Label(root, text='Other Income (Estimate in £)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,15), justify='center',relief='flat').place(relx=0.25,rely=0.71,anchor=CENTER)
+    otherIncomeSubLabel = Label(root, text='This data is used for calcualting tax estiamtes, it is kept private and secure',bg=primary.data, fg=secondry.data, width=60, font=(font.data,7), justify='center',relief='flat').place(relx=0.25,rely=0.855,anchor=CENTER)
 
     passwordEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.25,anchor=CENTER)
     global passwordEntryBox
@@ -568,20 +568,20 @@ def hidePasswordLoginPage():
 
 def createAccount():
     email = uInputDataObj(emailEntryBox.get(),str)
-    firstName = firstNameEntryBox.get()
-    operationType = operationTypeMenu.get()
-    otherIncomeEstimate = otherIncomeEntryBox.get()
-    password = passwordEntryBox.get()
-    surname = surnameEntryBox.get()
-    title = titleEntryBox.get()
-    natInsuranceDue = nationalInsuranceEntryBox.get()
+    firstName = uInputDataObj(firstNameEntryBox.get(),str)
+    operationType = uInputDataObj(operationTypeMenu.get(),str)
+    otherIncomeEstimate = uInputDataObj(otherIncomeEntryBox.get(),float)
+    password = uInputDataObj(passwordEntryBox.get(),str)
+    surname = uInputDataObj(surnameEntryBox.get(),str)
+    title = uInputDataObj(titleEntryBox.get(),str)
+    natInsuranceDue = uInputDataObj(nationalInsuranceEntryBox.get(),float)
 
     characters = (string.ascii_uppercase)+(string.digits)
-    account_ID =  (''.join(random.choice(characters) for i in range(10)))
+    account_ID =  uInputDataObj(''.join(random.choice(characters) for i in range(10)),str)
     while uniqueDataCheck(account_ID,'account_ID','accounts') == False:
         account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
-    createAccountArray = [account_ID,password,email,firstName,surname, operationType, title, getTaxRate(account_ID),otherIncomeEstimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,natInsuranceDue, primary, secondry, tertiary, font]
+    createAccountArray = [account_ID.data,password.data,email.data,firstName.data,surname.data, operationType.data, title.data, getTaxRate(account_ID.data),otherIncomeEstimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,natInsuranceDue.data, primary.data, secondry.data, tertiary.data, font.data]
     accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate', 'other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
         
     for i in range(len(createAccountArray)):
@@ -784,10 +784,13 @@ def findOS():
 
 #data validation tests
 def menuOptionCheck(entry,globalMenuList):
-    if entry in globalMenuList:
-        return True
-    else:
-        return False 
+    if castingTypeCheckFunc(entry.data,entry.prefferredType) != False:
+        if entry.data in globalMenuList:
+            return True
+        else:
+            return False 
+    else: 
+        return False
 
 def castingTypeCheckFunc(dataInput,preferredType):
     if preferredType == str:
@@ -802,18 +805,21 @@ def castingTypeCheckFunc(dataInput,preferredType):
         return False
 
 def uniqueDataCheck(dataValue,fieldName,table):
-    returnedValue = []
-    openDatabase()
-    for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(dataValue)+str("'")):
-        returnedValue.append(line[0])
-    closeDatabase()
-    if returnedValue == None or returnedValue == []:
-        return True
+    if castingTypeCheckFunc(dataValue.data,dataValue.prefferredType) != False:
+        returnedValue = []
+        openDatabase()
+        for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(dataValue.data)+str("'")):
+            returnedValue.append(line[0])
+        closeDatabase()
+        if returnedValue == None or returnedValue == []:
+            return True
+        else:
+            return False
     else:
         return False
 
 def howManySymbolsInStr(data, symbolLookingFor):
-    if type(data) == string and type(symbolLookingFor) == string:
+    if type(data) == str and type(symbolLookingFor) == str:
         count = 0
         for i in range(len(data)):
             if data[i] == symbolLookingFor:
@@ -823,70 +829,85 @@ def howManySymbolsInStr(data, symbolLookingFor):
         raise TypeError('All data inputted must be a string')
 
 def pictureCheck(data,symbol,minimum, maximum):
-    if type(data) == str and type(symbol) == str:
-        if type(minimum) == int or minimum == None and type(maximum) == int or maximum == None:
-            numberOfSymbols = howManySymbolsInStr(data, symbol)
-            if maximum == None:
-                if numberOfSymbols >= minimum:
-                    return True      
-                else: 
-                    return False
+    if castingTypeCheckFunc(data.data,data.prefferredType) != False:
+        if type(data.data) == str and type(symbol) == str:
+            if type(minimum) == int or minimum == None and type(maximum) == int or maximum == None:
+                numberOfSymbols = howManySymbolsInStr(data.data, symbol)
+                if maximum == None:
+                    if numberOfSymbols >= minimum:
+                        return True      
+                    else: 
+                        return False
+                else:
+                    if numberOfSymbols >= minimum and numberOfSymbols <= maximum:
+                        return True      
+                    else: 
+                        return False
             else:
-                if numberOfSymbols >= minimum and numberOfSymbols <= maximum:
-                    return True      
-                else: 
-                    return False
+                raise TypeError('min and max (bound) parameters inputted must be ints or None')
         else:
-            raise TypeError('min and max (bound) parameters inputted must be ints or None')
+            raise TypeError('Data and symbol parameters inputted must be a string')
     else:
-        raise TypeError('Data and symbol parameters inputted must be a string')
+        return False
 
 def rangeCheck(data,lowerBound,upperBound):
-    #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
-    if (type(lowerBound) == float or type(lowerBound) == int or lowerBound == None) and (type(upperBound) == float or type(upperBound) == int or upperBound == None):
-        if lowerBound == None and upperBound != None:
-            if data <= upperBound:
-                return True
+    if castingTypeCheckFunc(data.data,data.prefferredType) != False:
+        #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
+        if (type(lowerBound) == float or type(lowerBound) == int or lowerBound == None) and (type(upperBound) == float or type(upperBound) == int or upperBound == None):
+            if lowerBound == None and upperBound != None:
+                if data.data <= upperBound:
+                    return True
+                else:
+                    return False
+            elif upperBound == None and lowerBound != None:
+                if data.data >= lowerBound:
+                    return True
+                else:
+                    return False
+            elif upperBound == None and lowerBound == None:
+                raise TypeError('Both Bounds cannot be None')
             else:
-                return False
-        elif upperBound == None and lowerBound != None:
-            if data >= lowerBound:
-                return True
-            else:
-                return False
-        elif upperBound == None and lowerBound == None:
-            raise TypeError('Both Bounds cannot be None')
+                if data.data >= lowerBound and data.data <= upperBound:
+                    return True
+                else:
+                    return False
         else:
-            if data >= lowerBound and data <= upperBound:
-                return True
-            else:
-                return False
+            raise TypeError('Bounds where the incorrect data type') 
     else:
-        raise TypeError('Bounds where the incorrect data type') 
+        return False
 
 def presenceCheck(data):
-    if data != None and data != '':
-        return True
+    if castingTypeCheckFunc(data.data,data.prefferredType) != False:
+        if data.data != None and data.data != '':
+            return True
+        else:
+            return False
     else:
         return False
 
 def containsOnlyLetters(data):
-    if type(data) == str:
-        if data.isalpha():
-            return True
+    if castingTypeCheckFunc(data.data,data.prefferredType) != False:
+        if type(data) == str:
+            if data.data.isalpha():
+                return True
+            else:
+                return False
         else:
-            return False
+            raise TypeError('All data inputted must be a string')
     else:
-        raise TypeError('All data inputted must be a string')
+        return False
 
 def startsWith(data, symbol):
-    if type(data) != str:
-        if data[0] == symbol:
-            return True
+    if castingTypeCheckFunc(data.data,data.prefferredType) != False:
+        if type(data.data) != str:
+            if data.data[0] == symbol:
+                return True
+            else:
+                return False
         else:
-            return False
+            raise TypeError('All data inputted must be a string')
     else:
-        raise TypeError('All data inputted must be a string')
+        return False
 
 
 initialise()
