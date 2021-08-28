@@ -54,10 +54,12 @@ def invalidOSRunning():
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
+    global errorMessgesDict
     primary = uInputDataObj('#373f51',str)
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     bannedColours = {'errorRed':'#','warningYellow':'#','activeTextColor':'dark grey'}
+    errorMessgesDict = {}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
@@ -593,7 +595,9 @@ def createAccount():
     listOfDataValidationResults['first_Name'] = {'presenceCheck':presenceCheck(firstName),'containsOnlyLetters':containsOnlyLetters(firstName)}
     listOfDataValidationResults['last_Name'] = {'presenceCheck':presenceCheck(surname),'containsOnlyLetters':containsOnlyLetters(surname)}
     listOfDataValidationResults['other_Income_Estimate'] = {'typeCheck':castingTypeCheckFunc(otherIncomeEstimate.data,otherIncomeEstimate.prefferredType),'rangeCheck':rangeCheck(otherIncomeEstimate,0,1099511628),'presenceCheck':presenceCheck(otherIncomeEstimate)}
-
+    listOfDataValidationResults['operation_Type'] = {'menuOptionCheck':menuOptionCheck(operationType,operationTypeOptions)}
+    listOfDataValidationResults['title'] = {'typeCheck':castingTypeCheckFunc(title.data,title.prefferredType),'containsOnlyLetters':containsOnlyLetters(title),'presenceCheck':presenceCheck(title)}
+    
     print(listOfDataValidationResults)
 
 
@@ -912,5 +916,8 @@ def startsWith(inputData, symbol):
             raise TypeError('All data inputted must be a string')
     else:
         return False
+
+def disaplayErrorMessages(errorType,x,y):
+
 
 initialise()
