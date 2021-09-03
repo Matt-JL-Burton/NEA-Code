@@ -552,7 +552,7 @@ def createAccountPage():
     submitLoginDetailsB = Button(root, text='C R E A T E   A C C O U N T ', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccount).place(relx=0.5, rely=0.93, anchor=CENTER)
     
     global accountPageEntryMessageBoxCords
-    accountPageEntryMessageBoxCords= {'password':{'x':0.75,'y':0.315},'recovery_Email':{'x':0.25,'y':0.315},'first_Name':{'x':0.25,'y':0.495},'last_Name':{'x':0.75,'y':0.495},'other_Income_Estimate':{'x':0.25,'y':0.855},'operation_Type':{'x':0.25,'y':0.855},'title':{'x':0.75,'y':0.675}}
+    accountPageEntryMessageBoxCords= {'password':{'x':0.75,'y':0.315},'recovery_Email':{'x':0.25,'y':0.315},'first_Name':{'x':0.25,'y':0.495},'last_Name':{'x':0.75,'y':0.495},'other_Income_Estimate':{'x':0.25,'y':0.855},'operation_Type':{'x':0.25,'y':0.855},'title':{'x':0.75,'y':0.675},'national_Insurance_Due':{'x':0.75,'y':0.855}}
     root.mainloop()
 
 def forgottenPasswordPageOne():
@@ -579,18 +579,19 @@ def createAccount():
     password = uInputDataObj(passwordEntryBox.get(),str)
     last_Name = uInputDataObj(surnameEntryBox.get(),str)
     title = uInputDataObj(titleEntryBox.get(),str)
-    natInsuranceDue = uInputDataObj(nationalInsuranceEntryBox.get(),float)
+    national_Insurance_Due = uInputDataObj(nationalInsuranceEntryBox.get(),float)
 
     characters = (string.ascii_uppercase)+(string.digits)
     account_ID =  uInputDataObj(''.join(random.choice(characters) for i in range(10)),str)
     while uniqueDataCheck(account_ID,'account_ID','accounts') == False:
         account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
-    createAccountArray = [account_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(account_ID.data),other_Income_Estimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,natInsuranceDue.data, primary.data, secondry.data, tertiary.data, font.data]
+    createAccountArray = [account_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(account_ID.data),other_Income_Estimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,national_Insurance_Due.data, primary.data, secondry.data, tertiary.data, font.data]
     accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate', 'other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
         
 
     #running tests
+    global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(accountFields)
     #dictOfDataValdationResults['account_ID'] = {'presenceCheck':presenceCheck(account_ID),'uniqueDataCheck':uniqueDataCheck(account_ID,'account_ID','accounts')}
     dictOfDataValdationResults['password'] = {'lengthOverSevenCheck':rangeCheck(password,7,None)}
@@ -600,7 +601,9 @@ def createAccount():
     dictOfDataValdationResults['other_Income_Estimate'] = {'typeCheck':castingTypeCheckFunc(other_Income_Estimate.data,other_Income_Estimate.prefferredType),'rangeCheck':rangeCheck(other_Income_Estimate,0,1099511628),'presenceCheck':presenceCheck(other_Income_Estimate)}
     dictOfDataValdationResults['operation_Type'] = {'menuOptionCheck':menuOptionCheck(operation_Type,operationTypeOptions)}
     dictOfDataValdationResults['title'] = {'typeCheck':castingTypeCheckFunc(title.data,title.prefferredType),'containsOnlyLetters':containsOnlyLetters(title),'presenceCheck':presenceCheck(title)}
-    
+    dictOfDataValdationResults['national_Insurance_Due'] = {'typeCheck':castingTypeCheckFunc(national_Insurance_Due.data,national_Insurance_Due.prefferredType),'presenceCheck':presenceCheck(national_Insurance_Due)}
+    #createAccountCoverUpErrorMessage()
+
     for entryboxData in dictOfDataValdationResults.keys():
         countOfFailedTests = 0
         if dictOfDataValdationResults[entryboxData] != None:
@@ -928,5 +931,10 @@ def startsWith(inputData, symbol):
 
 def disaplayEM(errorType,x,y):
     warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=75, fg = bannedColours['errorRed'], font=(font.data,7),justify='center').place(relx=x,rely=y,anchor=CENTER)
+
+def createAccountCoverUpErrorMessage():
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            presenceCheck(entryboxData)
 
 initialise()
