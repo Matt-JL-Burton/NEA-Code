@@ -59,7 +59,7 @@ def definingDefaultVariables():
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
-    errorMessgesDict = {'presenceCheck':'Please give an input','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain the @ symbol'}
+    errorMessgesDict = {'presenceCheck':'Please give an input','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain the @ symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
@@ -552,7 +552,7 @@ def createAccountPage():
     submitLoginDetailsB = Button(root, text='C R E A T E   A C C O U N T ', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccount).place(relx=0.5, rely=0.93, anchor=CENTER)
     
     global accountPageEntryMessageBoxCords
-    accountPageEntryMessageBoxCords= {'password':{'x':0.75,'y':0.315}}
+    accountPageEntryMessageBoxCords= {'password':{'x':0.75,'y':0.315},'recovery_Email':{'x':0.25,'y':0.315},'first_Name':{'x':0.25,'y':0.495},'last_Name':{'x':0.75,'y':0.495},'other_Income_Estimate':{'x':0.25,'y':0.855},'operation_Type':{'x':0.25,'y':0.855},'title':{'x':0.75,'y':0.675}}
     root.mainloop()
 
 def forgottenPasswordPageOne():
@@ -575,7 +575,7 @@ def createAccount():
     recovery_Email = uInputDataObj(emailEntryBox.get(),str)
     first_Name = uInputDataObj(firstNameEntryBox.get(),str)
     operation_Type = uInputDataObj(operationTypeMenu.get(),str)
-    otherIncomeEstimate = uInputDataObj(otherIncomeEntryBox.get(),float)
+    other_Income_Estimate = uInputDataObj(otherIncomeEntryBox.get(),float)
     password = uInputDataObj(passwordEntryBox.get(),str)
     last_Name = uInputDataObj(surnameEntryBox.get(),str)
     title = uInputDataObj(titleEntryBox.get(),str)
@@ -586,7 +586,7 @@ def createAccount():
     while uniqueDataCheck(account_ID,'account_ID','accounts') == False:
         account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
-    createAccountArray = [account_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(account_ID.data),otherIncomeEstimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,natInsuranceDue.data, primary.data, secondry.data, tertiary.data, font.data]
+    createAccountArray = [account_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(account_ID.data),other_Income_Estimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,natInsuranceDue.data, primary.data, secondry.data, tertiary.data, font.data]
     accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate', 'other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
         
 
@@ -594,16 +594,13 @@ def createAccount():
     dictOfDataValdationResults = dict.fromkeys(accountFields)
     #dictOfDataValdationResults['account_ID'] = {'presenceCheck':presenceCheck(account_ID),'uniqueDataCheck':uniqueDataCheck(account_ID,'account_ID','accounts')}
     dictOfDataValdationResults['password'] = {'lengthOverSevenCheck':rangeCheck(password,7,None)}
-    dictOfDataValdationResults['recovery_Email'] = {'lengthCheck':rangeCheck(email,3,0),'@check':pictureCheck(email,'@',1,None)}
-    dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(firstName),'containsOnlyLetters':containsOnlyLetters(firstName)}
-    dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(surname),'containsOnlyLetters':containsOnlyLetters(surname)}
-    dictOfDataValdationResults['other_Income_Estimate'] = {'typeCheck':castingTypeCheckFunc(otherIncomeEstimate.data,otherIncomeEstimate.prefferredType),'rangeCheck':rangeCheck(otherIncomeEstimate,0,1099511628),'presenceCheck':presenceCheck(otherIncomeEstimate)}
-    dictOfDataValdationResults['operation_Type'] = {'menuOptionCheck':menuOptionCheck(operationType,operationTypeOptions)}
+    dictOfDataValdationResults['recovery_Email'] = {'lengthCheck':rangeCheck(recovery_Email,3,0),'@check':pictureCheck(recovery_Email,'@',1,None)}
+    dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
+    dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(last_Name),'containsOnlyLetters':containsOnlyLetters(last_Name)}
+    dictOfDataValdationResults['other_Income_Estimate'] = {'typeCheck':castingTypeCheckFunc(other_Income_Estimate.data,other_Income_Estimate.prefferredType),'rangeCheck':rangeCheck(other_Income_Estimate,0,1099511628),'presenceCheck':presenceCheck(other_Income_Estimate)}
+    dictOfDataValdationResults['operation_Type'] = {'menuOptionCheck':menuOptionCheck(operation_Type,operationTypeOptions)}
     dictOfDataValdationResults['title'] = {'typeCheck':castingTypeCheckFunc(title.data,title.prefferredType),'containsOnlyLetters':containsOnlyLetters(title),'presenceCheck':presenceCheck(title)}
     
-    #FIXME: this bit is supposed to iterate over each data entry box displaying the first failed test it finds to the correct location
-    #for each entry box
-
     for entryboxData in dictOfDataValdationResults.keys():
         countOfFailedTests = 0
         if dictOfDataValdationResults[entryboxData] != None:
