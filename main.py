@@ -59,7 +59,7 @@ def definingDefaultVariables():
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
-    errorMessgesDict = {'presenceCheck':'Please give an input','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain the @ symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be positive','menuOptionCheck':'Please pick and option that is in the menu'}
+    errorMessgesDict = {'presenceCheck':'Please give an input','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
@@ -595,7 +595,7 @@ def createAccount():
     dictOfDataValdationResults = dict.fromkeys(accountFields)
     #dictOfDataValdationResults['account_ID'] = {'presenceCheck':presenceCheck(account_ID),'uniqueDataCheck':uniqueDataCheck(account_ID,'account_ID','accounts')}
     dictOfDataValdationResults['password'] = {'lengthOverSevenCheck':rangeCheck(password,7,None)}
-    dictOfDataValdationResults['recovery_Email'] = {'lengthCheck':rangeCheck(recovery_Email,3,0),'@check':pictureCheck(recovery_Email,'@',1,None)}
+    dictOfDataValdationResults['recovery_Email'] = {'lengthCheck':rangeCheck(recovery_Email,3,None),'@check':pictureCheck(recovery_Email,'@',1,1),'noSpaces':pictureCheck(recovery_Email,'',0,0)}
     dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
     dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(last_Name),'containsOnlyLetters':containsOnlyLetters(last_Name)}
     dictOfDataValdationResults['other_Income_Estimate'] = {'positiveCheck':rangeCheck(other_Income_Estimate,0,1099511628),'presenceCheck':presenceCheck(other_Income_Estimate)}
@@ -612,8 +612,8 @@ def createAccount():
                     disaplayEM(test,accountPageEntryMessageBoxCords[entryboxData]['x'],accountPageEntryMessageBoxCords[entryboxData]['y'])
                     countOfFailedTests = countOfFailedTests + 1
 
+    countOfFailedTests = 0
     for entryboxData in dictOfDataValdationResults.keys():
-        countOfFailedTests = 0
         if dictOfDataValdationResults[entryboxData] != None:
             for test in dictOfDataValdationResults[entryboxData].keys():
                 if test == False:
@@ -623,11 +623,6 @@ def createAccount():
         for i in range(len(createAccountArray)):
             createAccountArray[i] = scramble(createAccountArray[i])
 
-
-
-
-        #TODO: entry validation
-        #TODO: run SQL command to add data to database
         openDatabase()
         global accountsInsertionCommand
         accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, basic_Capital_Gains_Rate, basic_Capital_Gains_Allowence, high_Capital_Gains_Rate, additional_Capital_Gains_Rate, corporation_Capital_Gains_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
@@ -808,7 +803,7 @@ def findOS():
 #data validation tests
 def menuOptionCheck(entry,globalMenuList):
     if castingTypeCheckFunc(entry.data,entry.prefferredType) != False:
-        if entry.data in globalMenuList:
+        if castingTypeCheckFunc(entry.data,entry.prefferredType) in globalMenuList:
             return True
         else:
             return False 
@@ -821,6 +816,8 @@ def castingTypeCheckFunc(dataInput,preferredType):
             return dataInput
         else:
             return False
+    if preferredType == float or preferredType == int:
+        dataInput = dataInput.replace(',','')
     try:
         dataInput = preferredType(dataInput)
         return dataInput
@@ -831,7 +828,7 @@ def uniqueDataCheck(inputData,fieldName,table):
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
         returnedValue = []
         openDatabase()
-        for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(inputData.data)+str("'")):
+        for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(castingTypeCheckFunc(inputData.data,inputData.prefferredType))+str("'")):
             returnedValue.append(line[0])
         closeDatabase()
         if returnedValue == None or returnedValue == []:
@@ -878,7 +875,7 @@ def rangeCheck(inputData,lowerBound,upperBound):
         if inputData.prefferredType == str:
             dataToTest = len(castingTypeCheckFunc(inputData.data,inputData.prefferredType))
         else:
-            dataToTest = inputData.data
+            dataToTest = castingTypeCheckFunc(inputData.data,inputData.prefferredType)
         #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
         if (type(lowerBound) == float or type(lowerBound) == int or lowerBound == None) and (type(upperBound) == float or type(upperBound) == int or upperBound == None):
             if lowerBound == None and upperBound != None:
