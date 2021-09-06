@@ -634,8 +634,6 @@ def createAccount():
         displayConfirmation('loginPage')
 
 def displayBackButton():
-    global backButton
-    backButton = 'string'
     if previousPage == None:
         pass
     elif previousPage == 'Login':
@@ -646,7 +644,6 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=displayTCs).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Forgotten Password Page 1':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.05, rely=0.05, anchor=CENTER)
-    return backButton
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -952,8 +949,6 @@ def displayConfirmation(nextPage):
     root.resizable(width=False, height=False)
     DataAddedTitle = Label(root, font=(font.data,'20','underline'), text='Data succesfully added to database', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
     IVOOperatingSystem = Label(root, font=(font.data,'12'), text="The data you submitted in the previous page has been accepted\nby the system and added to the system's database", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)    
-    backButton = displayBackButton()
-    backButton.configure(text=' heelo')
     root.mainloop()
 
 initialise()
