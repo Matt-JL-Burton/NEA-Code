@@ -43,11 +43,11 @@ def invalidOSRunning():
     InvalidOSRoot.title('Property managment system')
     InvalidOSRoot.geometry('500x500')
     InvalidOSRoot.resizable(width=False, height=False)
-    InvalidOSRoot.configure(background=primary)
-    IVOSTitle = Label(InvalidOSRoot, font=(font,'20','underline'), text='Operating System not supported', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.1, anchor=CENTER)
-    IVOOperatingSystem = Label(InvalidOSRoot, font=(font,'12'), text='We have detected your device is running an unsupported\noperating system. '+platform.system()+' operating system is not supported\nby this software', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.5, anchor=CENTER)    
-    IVOSMainMessage = Label(InvalidOSRoot, font=(font,'12'), text='Sorry, but only Windows and MAC OS operating\nsystems are supported by this software', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.8, anchor=CENTER)
-    IVOSEmail = Label(InvalidOSRoot, font=(font,'12'), text='For more information please email\nmburton22@norwich-school.org.uk', justify='center', width='71', bg=primary,fg=secondry).place(relx=0.5, rely=0.9, anchor=CENTER)
+    InvalidOSRoot.configure(background=primary.data)
+    IVOSTitle = Label(InvalidOSRoot, font=(font,'20','underline'), text='Operating System not supported', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.1, anchor=CENTER)
+    IVOOperatingSystem = Label(InvalidOSRoot, font=(font,'12'), text='We have detected your device is running an unsupported\noperating system. '+platform.system()+' operating system is not supported\nby this software', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)    
+    IVOSMainMessage = Label(InvalidOSRoot, font=(font,'12'), text='Sorry, but only Windows and MAC OS operating\nsystems are supported by this software', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.8, anchor=CENTER)
+    IVOSEmail = Label(InvalidOSRoot, font=(font,'12'), text='For more information please email\nmburton22@norwich-school.org.uk', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.9, anchor=CENTER)
     InvalidOSRoot.mainloop()
  
 #defining certain default variables
@@ -595,7 +595,7 @@ def createAccount():
     dictOfDataValdationResults = dict.fromkeys(accountFields)
     #dictOfDataValdationResults['account_ID'] = {'presenceCheck':presenceCheck(account_ID),'uniqueDataCheck':uniqueDataCheck(account_ID,'account_ID','accounts')}
     dictOfDataValdationResults['password'] = {'lengthOverSevenCheck':rangeCheck(password,7,None)}
-    dictOfDataValdationResults['recovery_Email'] = {'lengthCheck':rangeCheck(recovery_Email,3,None),'@check':pictureCheck(recovery_Email,'@',1,1),'noSpaces':pictureCheck(recovery_Email,'',0,0)}
+    dictOfDataValdationResults['recovery_Email'] = {'lengthCheck':rangeCheck(recovery_Email,3,None),'@check':pictureCheck(recovery_Email,'@',1,1),'noSpaces':pictureCheck(recovery_Email,'',0,0),'uniqueDataCheck':uniqueDataCheck(recovery_Email,'recovery_Email','accounts')}
     dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
     dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(last_Name),'containsOnlyLetters':containsOnlyLetters(last_Name)}
     dictOfDataValdationResults['other_Income_Estimate'] = {'positiveCheck':rangeCheck(other_Income_Estimate,0,1099511628),'presenceCheck':presenceCheck(other_Income_Estimate)}
@@ -615,9 +615,10 @@ def createAccount():
     countOfFailedTests = 0
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
-            for test in dictOfDataValdationResults[entryboxData].keys():
+            for test in dictOfDataValdationResults[entryboxData].values():
                 if test == False:
                     countOfFailedTests = countOfFailedTests +1
+
 
     if countOfFailedTests == 0:
         for i in range(len(createAccountArray)):
@@ -630,8 +631,11 @@ def createAccount():
         cursor.execute(accountsInsertionCommand,createAccountArray)
         closeDatabase()
 
+        displayConfirmation('loginPage')
 
 def displayBackButton():
+    global backButton
+    backButton = 'string'
     if previousPage == None:
         pass
     elif previousPage == 'Login':
@@ -642,6 +646,7 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=displayTCs).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Forgotten Password Page 1':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.05, rely=0.05, anchor=CENTER)
+    return backButton
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -828,7 +833,7 @@ def uniqueDataCheck(inputData,fieldName,table):
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
         returnedValue = []
         openDatabase()
-        for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(castingTypeCheckFunc(inputData.data,inputData.prefferredType))+str("'")):
+        for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(scramble(castingTypeCheckFunc(inputData.data,inputData.prefferredType)))+str("'")):
             returnedValue.append(line[0])
         closeDatabase()
         if returnedValue == None or returnedValue == []:
@@ -933,7 +938,6 @@ def startsWith(inputData, symbol):
     else:
         return False
 
-
 def disaplayEM(errorType,x,y):
     warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=75, fg = bannedColours['errorRed'], font=(font.data,7),justify='center').place(relx=x,rely=y,anchor=CENTER)
 
@@ -941,5 +945,15 @@ def createAccountCoverUpErrorMessage():
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=accountPageEntryMessageBoxCords[entryboxData]['x'],rely=accountPageEntryMessageBoxCords[entryboxData]['y'],anchor=CENTER)
+
+def displayConfirmation(nextPage):
+    initialiseWindow()
+    root.geometry('500x500')
+    root.resizable(width=False, height=False)
+    DataAddedTitle = Label(root, font=(font.data,'20','underline'), text='Data succesfully added to database', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
+    IVOOperatingSystem = Label(root, font=(font.data,'12'), text="The data you submitted in the previous page has been accepted\nby the system and added to the system's database", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)    
+    backButton = displayBackButton()
+    backButton.configure(text=' heelo')
+    root.mainloop()
 
 initialise()
