@@ -13,7 +13,7 @@ import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, flag, get, text
+from matplotlib.pyplot import autoscale, flag, get, prism, text
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
@@ -873,6 +873,9 @@ def pictureCheck(inputData,symbol,minimum, maximum):
         return False
 
 def rangeCheck(inputData,lowerBound,upperBound):
+    print('--------')
+    print(inputData.data)
+    print(lowerBound)
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
         if inputData.prefferredType == str:
             dataToTest = len(castingTypeCheckFunc(inputData.data,inputData.prefferredType))
@@ -948,7 +951,8 @@ def displayConfirmation(nextPage):
     root.geometry('500x500')
     root.resizable(width=False, height=False)
     DataAddedTitle = Label(root, font=(font.data,'20','underline'), text='Data succesfully added to database', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
-    IVOOperatingSystem = Label(root, font=(font.data,'12'), text="The data you submitted in the previous page has been accepted\nby the system and added to the system's database", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)    
+    DataAddedMessage = Label(root, font=(font.data,'12'), text="The data you submitted in the previous page has been accepted\nby the system and added to the system's database", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)    
+    backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=nextPage).place(relx=0.05, rely=0.05, anchor=CENTER)
     root.mainloop()
 
 initialise()
