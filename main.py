@@ -631,7 +631,7 @@ def createAccount():
         cursor.execute(accountsInsertionCommand,createAccountArray)
         closeDatabase()
 
-        displayConfirmation('loginPage')
+        displayConfirmation('Login')
 
 def displayBackButton():
     if previousPage == None:
@@ -644,6 +644,20 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=displayTCs).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Forgotten Password Page 1':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.05, rely=0.05, anchor=CENTER)
+
+def displayNextButton(nextPageCommand):
+    if nextPageCommand == None:
+        pass
+    elif nextPageCommand == 'Login':
+        backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=loginPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Create Account':
+        backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Terms and Conditions':
+        backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=displayTCs).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Forgotten Password Page 1':
+        backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.5, rely=0.9, anchor=CENTER)
+
+
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -873,9 +887,6 @@ def pictureCheck(inputData,symbol,minimum, maximum):
         return False
 
 def rangeCheck(inputData,lowerBound,upperBound):
-    print('--------')
-    print(inputData.data)
-    print(lowerBound)
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
         if inputData.prefferredType == str:
             dataToTest = len(castingTypeCheckFunc(inputData.data,inputData.prefferredType))
@@ -907,7 +918,6 @@ def rangeCheck(inputData,lowerBound,upperBound):
 
 def presenceCheck(inputData):
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
-        print(inputData.data)
         if inputData.data != None and inputData.data != '':
             return True
         else:
@@ -947,13 +957,13 @@ def createAccountCoverUpErrorMessage():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=accountPageEntryMessageBoxCords[entryboxData]['x'],rely=accountPageEntryMessageBoxCords[entryboxData]['y'],anchor=CENTER)
 
-def displayConfirmation(nextPage):
+def displayConfirmation(nextPageCommand):
     initialiseWindow()
     root.geometry('500x500')
     root.resizable(width=False, height=False)
     DataAddedTitle = Label(root, font=(font.data,'20','underline'), text='Data succesfully added to database', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
-    DataAddedMessage = Label(root, font=(font.data,'12'), text="The data you submitted in the previous page has been accepted\nby the system and added to the system's database", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)    
-    backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=nextPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    DataAddedMessage = Label(root, font=(font.data,'12'), text="The data you submitted in the previous page has been accepted\nby the system and added to the system's database", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)
+    displayNextButton(nextPageCommand)
     root.mainloop()
 
 initialise()
