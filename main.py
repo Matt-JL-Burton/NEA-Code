@@ -13,7 +13,7 @@ import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, flag, get, prism, text
+from matplotlib.pyplot import autoscale, flag, get, pink, prism, text
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
@@ -560,6 +560,7 @@ def createAccountPage():
 
 def forgottenPasswordPageOne():
     initialiseWindow()
+    displayBackButton()
     global previousPage
     previousPage = 'Forgotten Password Page 1'
     root.title('Property managment system - Forgotten Password (Page 1 of 3)')
@@ -632,6 +633,14 @@ def createAccount():
 
         displayConfirmation('Login')
 
+def homePage():
+    initialiseWindow()
+    displayBackButton()
+    global previousPage
+    previousPage = 'Home'
+    root.title('Property managment system - Home Page')
+    root.mainloop()
+
 def displayBackButton():
     if previousPage == None:
         pass
@@ -643,6 +652,9 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=displayTCs).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Forgotten Password Page 1':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Home':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=homePage).place(relx=0.05, rely=0.05, anchor=CENTER)
+
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -655,6 +667,9 @@ def displayNextButton(nextPageCommand):
         backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=displayTCs).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Forgotten Password Page 1':
         backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Home':
+        backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=homePage).place(relx=0.5, rely=0.9, anchor=CENTER)
+
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -672,6 +687,7 @@ def getTaxRate(accountID):
     return(tax_Rate)
 
 def scramble(data):
+    data = str(data)
     data = data.lower()
     data = list(data)
     for i in range(len(data)):
@@ -681,8 +697,9 @@ def scramble(data):
     return(data)
 
 def deScramble(data):
-    data = data[::-1]
+    data = str(data)
     data = list(data)
+    data = data[::-1]
     for i in range(len(data)):
         data[i] = normalSet[mappingSet.index(data[i])]
     data = listToString(data)
@@ -864,29 +881,32 @@ def displayConfirmation(nextPageCommand):
     root.geometry('500x500')
     root.resizable(width=False, height=False)
     DataAddedTitle = Label(root, font=(font.data,'20','underline'), text='Data succesfully added to database', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
-    DataAddedMessage = Label(root, font=(font.data,'12'), text="The data you submitted in the previous page has been accepted\nby the system and added to the system's database", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)
+    DataAddedMessage = Label(root, font=(font.data,'12'), text="Your previous page's submission was successful", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)
     displayNextButton(nextPageCommand)
     root.mainloop()
 
 def login():
+    coverUp1 = Label(root,bg=primary.data,width=150,font=(font.data,7),justify='center').place(relx=0.5,rely=0.45,anchor=CENTER)
+    coverUp2 = Label(root,bg=primary.data,width=150,font=(font.data,7),justify='center').place(relx=0.5,rely=0.72,anchor=CENTER)
     password = uInputDataObj(passwordEntry.get(),str)
     recovery_Email = uInputDataObj(usernameEntry.get(),str)
     openDatabase()
-    storedPasswordForAccountObject = cursor.execute("SELECT password FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
+    storedPasswordForAccountObject = cursor.execute("SELECT password FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'"))
     storedPasswordForAccount = storedPasswordForAccountObject.fetchall()
+    closeDatabase()
     if len(storedPasswordForAccount) == 0:
+        warning = Label(root, text = 'Sorry an account with this username does not exsist',bg=primary.data,width=150, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.45,anchor=CENTER)
         validEmail = False
     else:
         validEmail = True
-        print(scramble('password'))
-        print(storedPasswordForAccount[0][0])
-        print(deScramble(storedPasswordForAccount[0][0]))
-        print(password.data)
         if deScramble(str(storedPasswordForAccount[0][0])) == password.data:
-            print('login succesful')
+            openDatabase()
+            account_ID_Dirty = cursor.execute("SELECT account_ID FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
+            global account_ID
+            account_ID = account_ID_Dirty[0][0]
+            displayConfirmation('Home')
         else:
-            print('login unseccesful')
-    closeDatabase()
+            warning = Label(root, text = 'Incorrect Password',bg=primary.data,width=150, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.72,anchor=CENTER)
     root.mainloop()
 
 
