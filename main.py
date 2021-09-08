@@ -564,6 +564,7 @@ def forgottenPasswordPageOne():
     global previousPage
     previousPage = 'Forgotten Password Page 1'
     root.title('Property managment system - Forgotten Password (Page 1 of 3)')
+    sadFace = Label(root, text=':(', font=(font.data,'40'),fg=secondry.data,bg=primary.data,justify='center').place(relx=0.5,rely=0.5,anchor=CENTER)
     root.mainloop()
 
 def hidePasswordLoginPage():
@@ -639,6 +640,7 @@ def homePage():
     global previousPage
     previousPage = 'Home'
     root.title('Property managment system - Home Page')
+    sadFace = Label(root, text=':(', font=(font.data,'40'),fg=secondry.data,bg=primary.data,justify='center').place(relx=0.5,rely=0.5,anchor=CENTER)
     root.mainloop()
 
 def displayBackButton():
@@ -880,7 +882,7 @@ def displayConfirmation(nextPageCommand):
     initialiseWindow()
     root.geometry('500x500')
     root.resizable(width=False, height=False)
-    DataAddedTitle = Label(root, font=(font.data,'20','underline'), text='Data succesfully added to database', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
+    DataAddedTitle = Label(root, font=(font.data,'20','underline'), text='Submission Success', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
     DataAddedMessage = Label(root, font=(font.data,'12'), text="Your previous page's submission was successful", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)
     displayNextButton(nextPageCommand)
     root.mainloop()
@@ -903,7 +905,7 @@ def login():
             openDatabase()
             account_ID_Dirty = cursor.execute("SELECT account_ID FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
             global account_ID
-            account_ID = account_ID_Dirty[0][0]
+            account_ID = account_ID_Dirty.fetchall()[0][0]
             displayConfirmation('Home')
         else:
             warning = Label(root, text = 'Incorrect Password',bg=primary.data,width=150, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.72,anchor=CENTER)
