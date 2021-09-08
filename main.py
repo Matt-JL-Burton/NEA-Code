@@ -31,7 +31,7 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            createAccountPage()  
+            loginPage()  
             #displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
@@ -81,7 +81,6 @@ def definingDefaultVariables():
     aCapGainsTR =  uInputDataObj(28,float)
     normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
-    numericalMappingSet = ['7','1','5','2','3','8','4','6','0','9']
 
 #intialising page
 def initialiseWindow():
@@ -413,11 +412,15 @@ def loginPage():
     usernameHeaderL = Label(root,text='Username',font=((font.data,'15')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.28, anchor=CENTER)
     longNormal = PhotoImage(file = "Long-Normal.PNG")
     longNormalLabelU = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.37,anchor=CENTER)
-    usernameEntry = Entry(root, bg=primary.data, fg=secondry.data, width=42, font=(font.data,24),justify='center',relief='flat').place(relx=0.5,rely=0.37,anchor=CENTER)
+    global usernameEntry
+    usernameEntry = Entry(root, bg=primary.data, fg=secondry.data, width=42, font=(font.data,24),justify='center',relief='flat')
+    usernameEntry.place(relx=0.5,rely=0.37,anchor=CENTER)
     #password input
     passwordHeaderL = Label(root,text='Password',font=((font.data,'15')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.55, anchor=CENTER)
     longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.64,anchor=CENTER)
-    passwordEntry = Entry(root, bg=primary.data,fg=secondry.data, width=42, font=(font.data,24),justify='center',relief='flat').place(relx=0.5,rely=0.64,anchor=CENTER)
+    global passwordEntry 
+    passwordEntry = Entry(root, bg=primary.data,fg=secondry.data, width=42, font=(font.data,24),justify='center',relief='flat')
+    passwordEntry.place(relx=0.5,rely=0.64,anchor=CENTER)
     hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=hidePasswordLoginPage).place(relx=0.15, rely=0.64, anchor=CENTER)
     createAccountPageB = Button(root, text='Create Account', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
     ForgottenPageB = Button(root, text='Forgotten Password?', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
@@ -562,10 +565,6 @@ def forgottenPasswordPageOne():
     root.title('Property managment system - Forgotten Password (Page 1 of 3)')
     root.mainloop()
 
-def login():
-    print('attempt login')
-    root.mainloop()
-
 def hidePasswordLoginPage():
     #TODO: hide the password 
     #TODO: replace the hide button with a show button and then code show button
@@ -657,8 +656,6 @@ def displayNextButton(nextPageCommand):
     elif nextPageCommand == 'Forgotten Password Page 1':
         backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.5, rely=0.9, anchor=CENTER)
 
-
-
 def displayGovermentNationalInsurancePage():
     try:
         webbrowser.open_new('https://www.gov.uk/government/collections/how-to-manually-check-your-payroll-calculations ')
@@ -675,115 +672,20 @@ def getTaxRate(accountID):
     return(tax_Rate)
 
 def scramble(data):
-    if type(data) == list:
-        for i in range(len(data)):
-            if type(data[i]) == str: 
-                data[i] = data[i].lower()
-                data[i] = list(data[i])
-                for i in range(len(data[i])):
-                    data[i][i] = mappingSet[normalSet.index(data[i][i])]
-                data[i] = listToString(data[i])
-                data[i] = data[i][::-1]
-            elif type(data[i]) == int:
-                data[i] = str(data[i])
-                data[i] = data[i].replace(',','')
-                data[i] = list(data[i])
-                for i in range(len(data[i])):
-                    data[i][i] = numericalMappingSet[normalSet.index(data[i][i])]
-                data[i] = data[i][::-1]
-                data[i] = listToInt(data[i])
-            elif type(data[i]) == float:
-                data[i] = str(data[i])
-                data[i] = data[i].replace(',','')
-                data[i] = list(data[i])
-                for i in range(len(data[i])):
-                    if data[i][i] != '.':
-                        data[i][i] = numericalMappingSet[normalSet.index(data[i][i])]
-                data[i] = data[i][::-1]
-                data[i] = listToFloat(data[i])
-            else:
-                print(data[i],' unrecognised data type in string scrambling func')
-    else:
-        if type(data) == str: 
-            data = data.lower()
-            data = list(data)
-            for i in range(len(data)):
-                data[i] = mappingSet[normalSet.index(data[i])]
-            data = listToString(data)
-            data = data[::-1]
-        elif type(data) == int:
-            data = str(data)
-            data = list(data)
-            for i in range(len(data)):
-                data[i] = numericalMappingSet[normalSet.index(data[i])]
-            data = data[::-1]
-            data = listToInt(data)
-        elif type(data) == float:
-            data = str(data)
-            data = list(data)
-            for i in range(len(data)):
-                if data[i] != '.':
-                    data[i] = numericalMappingSet[normalSet.index(data[i])]
-            data = data[::-1]
-            data = listToFloat(data)
-        else:
-            print(data,' unrecognised data type in string descrambling func')
+    data = data.lower()
+    data = list(data)
+    for i in range(len(data)):
+        data[i] = mappingSet[normalSet.index(data[i])]
+    data = listToString(data)
+    data = data[::-1]
     return(data)
 
 def deScramble(data):
-    if type(data) == list:
-        for i in range(len(data)):
-            if type(data[i]) == str: 
-                data[i] = data[i].lower()
-                data[i] = list(data[i])
-                for i in range(len(data[i])):
-                    data[i][i] = normalSet[mappingSet.index(data[i][i])]
-                data[i] = listToString(data[i])
-                data[i] = data[i][::-1]
-            elif type(data[i]) == int:
-                data[i] = str(data[i])
-                data[i] = data[i].replace(',','')
-                data[i] = list(data[i])
-                for i in range(len(data[i])):
-                    data[i][i] = normalSet[numericalMappingSet.index(data[i][i])]
-                data[i] = data[i][::-1]
-                data[i] = listToInt(data[i])
-            elif type(data[i]) == float:
-                data[i] = str(data[i])
-                data[i] = data[i].replace(',','')
-                data[i] = list(data[i])
-                for i in range(len(data[i])):
-                    if data[i][i] != '.':
-                        data[i][i] = normalSet[numericalMappingSet.index(data[i][i])]
-                data[i] = data[i][::-1]
-                data[i] = listToFloat(data[i])
-            else:
-                print(data[i],' unrecognised data type in string scrambling func')
-    else:
-        if type(data) == str: 
-            data = data.lower()
-            data = list(data)
-            for i in range(len(data)):
-                data[i] = normalSet[mappingSet.index(data[i])]
-            data = listToString(data)
-            data = data[::-1]
-        elif type(data) == int:
-            data = str(data)
-            data = list(data)
-            for i in range(len(data)):
-                data[i] = normalSet[numericalMappingSet.index(data[i])]
-            data = data[::-1]
-            data = listToInt(data)
-        elif type(data) == float:
-            data = str(data)
-            data = list(data)
-            for i in range(len(data)):
-                if data[i] != '.':
-                    data[i] = normalSet[numericalMappingSet.index(data[i])]
-            data = data[::-1]
-            data = listToFloat(data)
-        else:
-            print(data,' unrecognised data type in string descrambling func')
+    data = data[::-1]
+    data = list(data)
+    for i in range(len(data)):
+        data[i] = normalSet[mappingSet.index(data[i])]
+    data = listToString(data)
     return data
 
 def listToString(list):
@@ -965,5 +867,27 @@ def displayConfirmation(nextPageCommand):
     DataAddedMessage = Label(root, font=(font.data,'12'), text="The data you submitted in the previous page has been accepted\nby the system and added to the system's database", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)
     displayNextButton(nextPageCommand)
     root.mainloop()
+
+def login():
+    password = uInputDataObj(passwordEntry.get(),str)
+    recovery_Email = uInputDataObj(usernameEntry.get(),str)
+    openDatabase()
+    storedPasswordForAccountObject = cursor.execute("SELECT password FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
+    storedPasswordForAccount = storedPasswordForAccountObject.fetchall()
+    if len(storedPasswordForAccount) == 0:
+        validEmail = False
+    else:
+        validEmail = True
+        print(scramble('password'))
+        print(storedPasswordForAccount[0][0])
+        print(deScramble(storedPasswordForAccount[0][0]))
+        print(password.data)
+        if deScramble(str(storedPasswordForAccount[0][0])) == password.data:
+            print('login succesful')
+        else:
+            print('login unseccesful')
+    closeDatabase()
+    root.mainloop()
+
 
 initialise()
