@@ -598,7 +598,7 @@ def createAccount():
     dictOfDataValdationResults['recovery_Email'] = {'lengthCheck':rangeCheck(recovery_Email,3,None),'@check':pictureCheck(recovery_Email,'@',1,1),'noSpaces':pictureCheck(recovery_Email,'',0,0),'uniqueDataCheck':uniqueDataCheck(recovery_Email,'recovery_Email','accounts')}
     dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
     dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(last_Name),'containsOnlyLetters':containsOnlyLetters(last_Name)}
-    dictOfDataValdationResults['other_Income_Estimate'] = {'positiveCheck':rangeCheck(other_Income_Estimate,0,1099511628),'presenceCheck':presenceCheck(other_Income_Estimate)}
+    dictOfDataValdationResults['other_Income_Estimate'] = {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':rangeCheck(other_Income_Estimate,0,1099511628)}
     dictOfDataValdationResults['operation_Type'] = {'menuOptionCheck':menuOptionCheck(operation_Type,operationTypeOptions)}
     dictOfDataValdationResults['title'] = {'containsOnlyLetters':containsOnlyLetters(title),'presenceCheck':presenceCheck(title)}
     dictOfDataValdationResults['national_Insurance_Due'] = {'presenceCheck':presenceCheck(national_Insurance_Due),'positiveCheck':rangeCheck(national_Insurance_Due,0,None)}
@@ -907,6 +907,7 @@ def rangeCheck(inputData,lowerBound,upperBound):
 
 def presenceCheck(inputData):
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+        print(inputData.data)
         if inputData.data != None and inputData.data != '':
             return True
         else:
