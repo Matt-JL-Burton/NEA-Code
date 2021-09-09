@@ -31,8 +31,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            loginPage()  
-            #displayTCs()
+            #loginPage()  
+            displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -657,7 +657,6 @@ def displayBackButton():
     elif previousPage == 'Home':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=homePage).place(relx=0.05, rely=0.05, anchor=CENTER)
 
-
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
         pass
@@ -671,7 +670,6 @@ def displayNextButton(nextPageCommand):
         backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Home':
         backButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=homePage).place(relx=0.5, rely=0.9, anchor=CENTER)
-
 
 def displayGovermentNationalInsurancePage():
     try:
