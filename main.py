@@ -31,8 +31,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            homePage()  
-            #displayTCs()
+            #homePage()  
+            displayTCs()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -890,6 +890,7 @@ def displayConfirmation(nextPageCommand):
     initialiseWindow()
     root.geometry('500x500')
     root.resizable(width=False, height=False)
+    root.title('Property managment system - Confirmation Message')
     DataAddedTitle = Label(root, font=(font.data,'20','underline'), text='Submission Success', justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.15, anchor=CENTER)
     DataAddedMessage = Label(root, font=(font.data,'12'), text="Your previous page's submission was successful", justify='center', width='71', bg=primary.data,fg=secondry.data).place(relx=0.5, rely=0.5, anchor=CENTER)
     displayNextButton(nextPageCommand)
@@ -929,5 +930,13 @@ def menuPage():
     previousPage = 'Menu'
     homePageButtom = Button(root, text='Home Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.25, anchor=CENTER)
     homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
-
-initialise()
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
