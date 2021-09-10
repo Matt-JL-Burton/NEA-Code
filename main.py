@@ -639,13 +639,13 @@ def displayMenuButton():
 
 def homePage():
     initialiseWindow()
-    displayBackButton()
-    global previousPage
-    previousPage = 'Home'
     root.title('Property managment system - Home Page')
     root.configure(bg=secondry.data)
     topBorder = Label(root, text='Home', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayMenuButton()
+    displayBackButton()
+    global previousPage
+    previousPage = 'Home'
     happyFace = Label(root, text=':)', font=(font.data,'40'),fg=primary.data,bg=secondry.data,justify='center').place(relx=0.5,rely=0.5,anchor=CENTER)
     root.mainloop()
 
@@ -921,11 +921,13 @@ def login():
 
 def menuPage():
     initialiseWindow()
-    global previousPage
-    previousPage = 'Menu'
     root.title('Property managment system - Menu')
     root.configure(bg=secondry.data)
-    topBorder = Label(root, text='Home', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    topBorder = Label(root, text='Menu', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
+    global previousPage
+    previousPage = 'Menu'
+    homePageButtom = Button(root, text='Home Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.25, anchor=CENTER)
+    homePageButtom = Button(root, text='Properties Page', font=(font.data,'15','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.32, anchor=CENTER)
 
 initialise()
