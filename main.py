@@ -916,6 +916,7 @@ def login():
             global account_ID
             account_ID = account_ID_Dirty.fetchall()[0][0]
             displayConfirmation('Home')
+            #homePage
         else:
             warning = Label(root, text = 'Incorrect Password',bg=primary.data,width=150, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.72,anchor=CENTER)
     root.mainloop()
