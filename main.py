@@ -670,8 +670,14 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=newUnitPage).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Tenants':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=tenantsPage).place(relx=0.05, rely=0.05, anchor=CENTER)
-
-
+    elif previousPage == 'Add Tenant':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=newTenantPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Tax':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=taxPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Settings':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=settingsPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Contact':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=contactPage).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -694,10 +700,15 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=newUnitPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Tenants':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=tenantsPage).place(relx=0.5, rely=0.9, anchor=CENTER)
-
-
-        
-
+    elif nextPageCommand == 'Add Tenant':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=newTenantPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Tax':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=taxPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Settings':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=settingsPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Contact':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=contactPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+      
 def displayGovermentNationalInsurancePage():
     try:
         webbrowser.open_new('https://www.gov.uk/government/collections/how-to-manually-check-your-payroll-calculations ')
@@ -833,7 +844,7 @@ def pictureCheck(inputData,symbol,minimum, maximum):
         return False
 
 def rangeCheck(inputData,lowerBound,upperBound):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or inputData.data == '0':
         if inputData.prefferredType == str:
             dataToTest = len(castingTypeCheckFunc(inputData.data,inputData.prefferredType))
         else:
@@ -853,6 +864,7 @@ def rangeCheck(inputData,lowerBound,upperBound):
             elif upperBound == None and lowerBound == None:
                 raise TypeError('Both Bounds cannot be None')
             else:
+
                 if dataToTest >= lowerBound and dataToTest <= upperBound:
                     return True
                 else:
@@ -863,8 +875,11 @@ def rangeCheck(inputData,lowerBound,upperBound):
         return False
 
 def presenceCheck(inputData):
+    if inputData.data == '0':
+        return True
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
         if inputData.data != None and inputData.data != '':
+
             return True
         else:
             return False
@@ -927,7 +942,7 @@ def login():
         validEmail = False
     else:
         validEmail = True
-        if deScramble(str(storedPasswordForAccount[0][0])) == password.data:
+        if deScramble(str(storedPasswordForAccount[0][0])) == password.data.lower():
             openDatabase()
             account_ID_Dirty = cursor.execute("SELECT account_ID FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
             global account_ID
@@ -938,6 +953,7 @@ def login():
             warning = Label(root, text = 'Incorrect Password',bg=primary.data,width=150, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.72,anchor=CENTER)
     root.mainloop()
 
+#This menu page is for allowing access to a few of the most commonly used and most important pages in terms on navigation
 def menuPage():
     initialiseWindow()
     root.title('Property managment system - Menu')
@@ -950,12 +966,13 @@ def menuPage():
     properitesPageButton = Button(root, text='Properties Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=propertiesPage).place(relx=0.5, rely=0.325, anchor=CENTER)
     newUnitPageButton = Button(root, text='Add New Unit Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newUnitPage).place(relx=0.5, rely=0.4, anchor=CENTER)
     TenantPageButton = Button(root, text='Tenant Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=tenantsPage).place(relx=0.5, rely=0.475, anchor=CENTER)
-    addNewTenantButton = Button(root, text='Add New Tenant Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.55, anchor=CENTER)
-    taxPageButton = Button(root, text='Tax Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.625, anchor=CENTER)
-    settingsPageButton = Button(root, text='Settings Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.7, anchor=CENTER)
-    contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.775, anchor=CENTER)
+    addNewTenantButton = Button(root, text='Add New Tenant Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newTenantPage).place(relx=0.5, rely=0.55, anchor=CENTER)
+    taxPageButton = Button(root, text='Tax Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=taxPage).place(relx=0.5, rely=0.625, anchor=CENTER)
+    settingsPageButton = Button(root, text='Settings Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=settingsPage).place(relx=0.5, rely=0.7, anchor=CENTER)
+    contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=contactPage).place(relx=0.5, rely=0.775, anchor=CENTER)
     signOutButton = Button(root, text='Sign Out', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=loginPage).place(relx=0.5, rely=0.85, anchor=CENTER)
 
+#This page is for presenting data about the overall state of my end users portfolio aswell as a way to access data for each individual unit
 def propertiesPage():
     initialiseWindow()
     root.title('Property managment system - Properties Page')
@@ -966,15 +983,17 @@ def propertiesPage():
     previousPage = 'Properties'
     displayMenuButton()
 
+#This page is for adding a new units to a user's portfolio. It is very similar in desing and functionalty to the create account page and add new tenant page
 def newUnitPage():
     initialiseWindow()
-    root.title('Property managment system - Add New Page')
+    root.title('Property managment system - Add New Unit Page')
     topBorder = Label(root, text='Add Unit', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
     previousPage = 'Add unit'
     displayMenuButton()
 
+#This page is for accessing but not editing data relevant to all tenants e.g. averages aswell as a means of accessing each individual tenant's page
 def tenantsPage():
     initialiseWindow()
     root.title('Property managment system - Tenants Page')
@@ -983,6 +1002,43 @@ def tenantsPage():
     displayBackButton()
     global previousPage
     previousPage = 'Tenants'
+    displayMenuButton()
+
+#
+def newTenantPage():
+    initialiseWindow()
+    root.title('Property managment system - Add New Tenant Page')
+    topBorder = Label(root, text='Add Tenant', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Add Tenant'
+    displayMenuButton()
+
+def taxPage():
+    initialiseWindow()
+    root.title('Property managment system - Tax Page')
+    topBorder = Label(root, text='Tax', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Tax'
+    displayMenuButton()
+
+def settingsPage():
+    initialiseWindow()
+    root.title('Property managment system - Settings Page')
+    topBorder = Label(root, text='Settings', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Settings'
+    displayMenuButton()
+
+def contactPage():
+    initialiseWindow()
+    root.title('Property managment system - Contact Page')
+    topBorder = Label(root, text='Contact', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Contact'
     displayMenuButton()
 
 initialise()
