@@ -1020,6 +1020,7 @@ def newTenantPage():
     displayMenuButton()
     
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    shortFat = PhotoImage(file = "Short-Fat.PNG")
     tenantIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.15,rely=0.25,anchor=CENTER)
     global tenantIDEntryBox
     tenantIDEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
@@ -1029,8 +1030,29 @@ def newTenantPage():
     tileEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.15,rely=0.43,anchor=CENTER)
     global titleEntryBoxTenant
     titleEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    titleEntryBoxTenant.place(relx=0.15,rely=0.35,anchor=CENTER)
+    titleEntryBoxTenant.place(relx=0.15,rely=0.43,anchor=CENTER)
     titleEntryBoxTenantLabel = Label(root, text='Title',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.35,anchor=CENTER)
+
+    dateOfEntryBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.15,rely=0.61,anchor=CENTER)
+    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.10,rely=0.565)
+    slashLabel2 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.18,rely=0.565)
+    global dayEntryBox
+    dayEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=6, font=(font.data,18),justify='center',relief='flat')
+    dayEntryBox.place(relx=0.068,rely=0.61,anchor=CENTER)
+    global monthEntryBox
+    monthEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=5, font=(font.data,18),justify='center',relief='flat')
+    monthEntryBox.place(relx=0.152,rely=0.61, anchor=CENTER)
+    global yearEntryBox
+    yearEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=6, font=(font.data,18),justify='center',relief='flat')
+    yearEntryBox.place(relx=0.235,rely=0.61, anchor=CENTER)
+    dateEntryBoxTenantLabel = Label(root, text='Date of Birth',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.53,anchor=CENTER)
+
+    geneneralNotesEntryBoxbackground = Label(image = shortFat, border = 0).place(relx=0.15,rely=0.79,anchor=CENTER)
+    global geneneralNotesEntryBoxTenant
+    geneneralNotesEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    geneneralNotesEntryBoxTenant.place(relx=0.15,rely=0.79,anchor=CENTER)
+    geneneralNotesEntryBoxTenantLabel = Label(root, text='General Notes',bg=primary.data, height=3,fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.71,anchor=CENTER)
+
 
     root.mainloop()
 
