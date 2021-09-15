@@ -35,7 +35,7 @@
 }
 
 #fatShort{
-    width: calc(7cm);
+    width: calc(7cm*0.84);
     height: calc(3cm);
 }
 

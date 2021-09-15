@@ -1026,6 +1026,8 @@ def newTenantPage():
     tenantIDEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     tenantIDEntryBox.place(relx=0.15,rely=0.25,anchor=CENTER)
     tenantIDEntryLabel = Label(root, text='Tenant ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.17,anchor=CENTER)
+    tenantIDEntryBoxSubText = Label(root, text='This input is unchangable once submitted', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.15, rely=0.3175,anchor=CENTER)
+
 
     tileEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.15,rely=0.43,anchor=CENTER)
     global titleEntryBoxTenant
@@ -1046,12 +1048,13 @@ def newTenantPage():
     yearEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=6, font=(font.data,18),justify='center',relief='flat')
     yearEntryBox.place(relx=0.235,rely=0.61, anchor=CENTER)
     dateEntryBoxTenantLabel = Label(root, text='Date of Birth',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.53,anchor=CENTER)
+    dateEntryBoxSubText = Label(root, text='In the form DD/MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.15, rely=0.6775,anchor=CENTER)
 
-    geneneralNotesEntryBoxbackground = Label(image = shortFat, border = 0).place(relx=0.15,rely=0.79,anchor=CENTER)
+    geneneralNotesEntryBoxbackground = Label(image = shortFat, border = 0).place(relx=0.15,rely=0.84,anchor=CENTER)
     global geneneralNotesEntryBoxTenant
-    geneneralNotesEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    geneneralNotesEntryBoxTenant.place(relx=0.15,rely=0.79,anchor=CENTER)
-    geneneralNotesEntryBoxTenantLabel = Label(root, text='General Notes',bg=primary.data, height=3,fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.71,anchor=CENTER)
+    geneneralNotesEntryBoxTenant = Text(root, bg=primary.data,fg=secondry.data, width=22,height = 3,font=(font.data,18),relief='flat')
+    geneneralNotesEntryBoxTenant.place(relx=0.15,rely=0.84,anchor=CENTER)
+    geneneralNotesEntryBoxTenantLabel = Label(root, text='General Notes',bg=primary.data,fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.705,anchor=CENTER)
 
 
     root.mainloop()
