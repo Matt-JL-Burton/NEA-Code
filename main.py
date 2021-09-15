@@ -32,7 +32,8 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
             #homePage()  
-            displayTCs()
+            #displayTCs()
+            newTenantPage()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -971,6 +972,7 @@ def menuPage():
     settingsPageButton = Button(root, text='Settings Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=settingsPage).place(relx=0.5, rely=0.7, anchor=CENTER)
     contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=contactPage).place(relx=0.5, rely=0.775, anchor=CENTER)
     signOutButton = Button(root, text='Sign Out', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=loginPage).place(relx=0.5, rely=0.85, anchor=CENTER)
+    root.mainloop()
 
 #This page is for presenting data about the overall state of my end users portfolio aswell as a way to access data for each individual unit
 def propertiesPage():
@@ -982,6 +984,7 @@ def propertiesPage():
     global previousPage
     previousPage = 'Properties'
     displayMenuButton()
+    root.mainloop()
 
 #This page is for adding a new units to a user's portfolio. It is very similar in desing and functionalty to the create account page and add new tenant page
 def newUnitPage():
@@ -992,6 +995,7 @@ def newUnitPage():
     global previousPage
     previousPage = 'Add unit'
     displayMenuButton()
+    root.mainloop()
 
 #This page is for accessing but not editing data relevant to all tenants e.g. averages aswell as a means of accessing each individual tenant's page
 def tenantsPage():
@@ -1003,16 +1007,32 @@ def tenantsPage():
     global previousPage
     previousPage = 'Tenants'
     displayMenuButton()
+    root.mainloop()
 
-#
 def newTenantPage():
     initialiseWindow()
     root.title('Property managment system - Add New Tenant Page')
     topBorder = Label(root, text='Add Tenant', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    topMessage = Label(root, text='To add a tenant to a unit add go the edit unit page and select the tenant from the tenant menu',bg=primary.data, fg = secondry.data, font=(font.data,15), justify='center').place(relx=0.5,rely=0.02,anchor='center')
     displayBackButton()
     global previousPage
     previousPage = 'Add Tenant'
     displayMenuButton()
+    
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    tenantIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.15,rely=0.25,anchor=CENTER)
+    global tenantIDEntryBox
+    tenantIDEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    tenantIDEntryBox.place(relx=0.15,rely=0.25,anchor=CENTER)
+    tenantIDEntryLabel = Label(root, text='Tenant ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.17,anchor=CENTER)
+
+    tileEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.15,rely=0.43,anchor=CENTER)
+    global titleEntryBoxTenant
+    titleEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    titleEntryBoxTenant.place(relx=0.15,rely=0.35,anchor=CENTER)
+    titleEntryBoxTenantLabel = Label(root, text='Title',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.15,rely=0.35,anchor=CENTER)
+
+    root.mainloop()
 
 def taxPage():
     initialiseWindow()
@@ -1022,6 +1042,7 @@ def taxPage():
     global previousPage
     previousPage = 'Tax'
     displayMenuButton()
+    root.mainloop()
 
 def settingsPage():
     initialiseWindow()
@@ -1031,6 +1052,7 @@ def settingsPage():
     global previousPage
     previousPage = 'Settings'
     displayMenuButton()
+    root.mainloop()
 
 def contactPage():
     initialiseWindow()
@@ -1040,5 +1062,6 @@ def contactPage():
     global previousPage
     previousPage = 'Contact'
     displayMenuButton()
+    root.mainloop()
 
 initialise()
