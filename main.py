@@ -30,8 +30,7 @@ def initialise():
         os.chdir(pathlib.Path(__file__).parent.absolute())
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
-            ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc
-            #homePage()  
+            ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc  
             #displayTCs()
             newTenantPage()
 
@@ -55,7 +54,7 @@ def invalidOSRunning():
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
-    global errorMessgesDict
+    global errorMessgesDict, databaseCurrentAccount_ID
     primary = uInputDataObj('#373f51',str)
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
@@ -82,6 +81,7 @@ def definingDefaultVariables():
     aCapGainsTR =  uInputDataObj(28,float)
     normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
+    databaseCurrentAccount_ID = None
 
 #intialising page
 def initialiseWindow():
@@ -946,8 +946,9 @@ def login():
         if deScramble(str(storedPasswordForAccount[0][0])) == password.data.lower():
             openDatabase()
             account_ID_Dirty = cursor.execute("SELECT account_ID FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
-            global account_ID
-            account_ID = account_ID_Dirty.fetchall()[0][0]
+            #global databaseCurrentAccount_ID
+            databaseCurrentAccount_ID = account_ID_Dirty.fetchall()[0][0]
+            #print(databaseCurrentAccount_ID)
             #displayConfirmation('Home')
             homePage()
         else:
@@ -1075,6 +1076,33 @@ def newTenantPage():
     tenantsDepositEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
     tenantsDepositEntryBoxLabel = Label(root, text="Tenant's Deposit (£)",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
 
+    firstnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.25,anchor=CENTER)
+    global firstnameEntryBox
+    firstnameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    firstnameEntryBox.place(relx=0.825,rely=0.25,anchor=CENTER)
+    firstnameEntryLabel = Label(root, text='Forename',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.17,anchor=CENTER)
+
+    startOfLeaseDateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.43,anchor=CENTER)
+    slashLabel2 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.815,rely=0.385)
+    global startOfLeaseDateMonthEntryBoxTenant
+    startOfLeaseDateMonthEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
+    startOfLeaseDateMonthEntryBoxTenant.place(relx=0.76,rely=0.43,anchor=CENTER)
+    global startOfLeaseDateYearEntryBoxTenant
+    startOfLeaseDateYearEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
+    startOfLeaseDateYearEntryBoxTenant.place(relx=0.89,rely=0.43,anchor=CENTER)
+    startOfLeaseDateEntryBoxTenantLabel = Label(root, text='Start of lease date',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.35,anchor=CENTER)
+    startOfLeaseDateEntryBoxSubText = Label(root, text='In the form MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.4975,anchor=CENTER)
+
+    scoreEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.61,anchor=CENTER)
+    global scoreDepositEntryBox
+    scoreEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    scoreEntryBox.insert(END,'100')
+    scoreEntryBox.place(relx=0.825,rely=0.61,anchor=CENTER)
+    scoreEntryBoxLabel = Label(root, text="Score",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.53,anchor=CENTER)
+    scoreEntryBoxSubText = Label(root, text='Keep 100 unless you have previous experience with this tenant', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.6756,anchor=CENTER)
+
+    submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addTenant).place(relx=0.5, rely=0.93, anchor=CENTER)
+
     root.mainloop()
 
 def taxPage():
@@ -1106,5 +1134,13 @@ def contactPage():
     previousPage = 'Contact'
     displayMenuButton()
     root.mainloop()
+
+def addTenant():
+    tenant_ID = uInputDataObj(tenantIDEntryBox.get(),str)
+    global databaseCurrentAccount_ID
+    if (databaseCurrentAccount_ID) == None:
+        databaseCurrentAccount_ID = 'MLxCFaKADb'
+    account_ID = uInputDataObj(databaseCurrentAccount_ID,str)
+
 
 initialise()
