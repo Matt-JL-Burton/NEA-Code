@@ -1029,10 +1029,9 @@ def newTenantPage():
     tenantIDEntryLabel = Label(root, text='Tenant ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
     tenantIDEntryBoxSubText = Label(root, text='This input is unchangable once submitted', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.175, rely=0.3175,anchor=CENTER)
 
-
     tileEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
     global titleEntryBoxTenant
-    titleEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    titleEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23,font=(font.data,18),justify='center',relief='flat')
     titleEntryBoxTenant.place(relx=0.175,rely=0.43,anchor=CENTER)
     titleEntryBoxTenantLabel = Label(root, text='Title',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.35,anchor=CENTER)
 
@@ -1048,21 +1047,20 @@ def newTenantPage():
     global yearEntryBox
     yearEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=6, font=(font.data,18),justify='center',relief='flat')
     yearEntryBox.place(relx=0.26,rely=0.61, anchor=CENTER)
-    dateEntryBoxTenantLabel = Label(root, text='Date of Birth',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.53,anchor=CENTER)
+    dateEntryBoxTenantLabel = Label(root, text='Date of birth',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.53,anchor=CENTER)
     dateEntryBoxSubText = Label(root, text='In the form DD/MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.175, rely=0.6775,anchor=CENTER)
 
     geneneralNotesEntryBoxbackground = Label(image = shortFat, border = 0).place(relx=0.175,rely=0.84,anchor=CENTER)
     global geneneralNotesEntryBoxTenant
     geneneralNotesEntryBoxTenant = Text(root, bg=primary.data,fg=secondry.data, width=22,height = 3,font=(font.data,18),relief='flat')
     geneneralNotesEntryBoxTenant.place(relx=0.175,rely=0.84,anchor=CENTER)
-    geneneralNotesEntryBoxTenantLabel = Label(root, text='General Notes',bg=primary.data,fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.705,anchor=CENTER)
+    geneneralNotesEntryBoxTenantLabel = Label(root, text='General notes',bg=primary.data,fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.705,anchor=CENTER)
 
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.25,anchor=CENTER)
     global surnameEntryBox
     surnameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     surnameEntryBox.place(relx=0.5,rely=0.25,anchor=CENTER)
     surnameEntryLabel = Label(root, text='Surname',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
-
 
     nOtherOccupantsEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.43,anchor=CENTER)
     global nOtherOccupantsEntryBoxTenant
@@ -1074,7 +1072,7 @@ def newTenantPage():
     global tenantsDepositEntryBox
     tenantsDepositEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     tenantsDepositEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
-    tenantsDepositEntryBoxLabel = Label(root, text="Tenant's Deposit (£)",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
+    tenantsDepositEntryBoxLabel = Label(root, text="Tenant's deposit (£)",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
 
     firstnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.25,anchor=CENTER)
     global firstnameEntryBox
@@ -1094,12 +1092,18 @@ def newTenantPage():
     startOfLeaseDateEntryBoxSubText = Label(root, text='In the form MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.4975,anchor=CENTER)
 
     scoreEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.61,anchor=CENTER)
-    global scoreDepositEntryBox
+    global scoreEntryBox
     scoreEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     scoreEntryBox.insert(END,'100')
     scoreEntryBox.place(relx=0.825,rely=0.61,anchor=CENTER)
     scoreEntryBoxLabel = Label(root, text="Score",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.53,anchor=CENTER)
     scoreEntryBoxSubText = Label(root, text='Keep 100 unless you have previous experience with this tenant', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.6756,anchor=CENTER)
+
+    emailEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.79,anchor=CENTER)
+    global emailEntryBox
+    emailEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    emailEntryBox.place(relx=0.825,rely=0.79,anchor=CENTER)
+    emailEntryBoxLabel = Label(root, text="Tenant email",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.71,anchor=CENTER)
 
     submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addTenant).place(relx=0.5, rely=0.93, anchor=CENTER)
 
@@ -1140,7 +1144,22 @@ def addTenant():
     global databaseCurrentAccount_ID
     if (databaseCurrentAccount_ID) == None:
         databaseCurrentAccount_ID = 'MLxCFaKADb'
-    account_ID = uInputDataObj(databaseCurrentAccount_ID,str)
+    account_ID = uInputDataObj(databaseCurrentAccount_ID.get(),str)
+    tenant_Email = uInputDataObj(emailEntryBox.get(),str)
+    first_Name = uInputDataObj(firstnameEntryBox.get(),str)
+    title = uInputDataObj(titleEntryBoxTenant.get(),str)
+    day = uInputDataObj(dayEntryBox.get(),int)
+    month = uInputDataObj(monthEntryBox.get(),int)
+    year = uInputDataObj(yearEntryBox.get(),int)
+    score = uInputDataObj(scoreEntryBox.get(),float)
+    total_Residents = uInputDataObj(nOtherOccupantsEntryBoxTenant.get(),str)
+    startMonth = uInputDataObj(startOfLeaseDateMonthEntryBoxTenant.get(),int)
+    startYear = uInputDataObj(startOfLeaseDateYearEntryBoxTenant.get(),int)
+    deposit = uInputDataObj(tenantsDepositEntryBox.get(),float)
+    gerneral_Notes = uInputDataObj(geneneralNotesEntryBoxTenant.get(),str)
+
+    tenantsFields = ['tenant_ID','account_ID','tenant_Email','first_Name','title','date_Of_Birth','score','total_Residents','start_Date','deposit','gerneral_Notes']
+    
 
 
 initialise()
