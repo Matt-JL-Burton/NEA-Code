@@ -1159,7 +1159,7 @@ def addTenant():
     gerneral_Notes = uInputDataObj(geneneralNotesEntryBoxTenant.get(),str)
 
     tenantsFields = ['tenant_ID','account_ID','tenant_Email','first_Name','title','date_Of_Birth','score','total_Residents','start_Date','deposit','gerneral_Notes']
-    
+    #to keep streak
 
 
 initialise()
