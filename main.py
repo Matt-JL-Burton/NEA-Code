@@ -1144,7 +1144,7 @@ def addTenant():
     global databaseCurrentAccount_ID
     if (databaseCurrentAccount_ID) == None:
         databaseCurrentAccount_ID = 'MLxCFaKADb'
-    account_ID = uInputDataObj(databaseCurrentAccount_ID.get(),str)
+    account_ID = uInputDataObj(databaseCurrentAccount_ID,str)
     tenant_Email = uInputDataObj(emailEntryBox.get(),str)
     first_Name = uInputDataObj(firstnameEntryBox.get(),str)
     title = uInputDataObj(titleEntryBoxTenant.get(),str)
@@ -1156,10 +1156,13 @@ def addTenant():
     startMonth = uInputDataObj(startOfLeaseDateMonthEntryBoxTenant.get(),int)
     startYear = uInputDataObj(startOfLeaseDateYearEntryBoxTenant.get(),int)
     deposit = uInputDataObj(tenantsDepositEntryBox.get(),float)
-    gerneral_Notes = uInputDataObj(geneneralNotesEntryBoxTenant.get(),str)
+    gerneral_Notes = uInputDataObj(geneneralNotesEntryBoxTenant.get('1.0','end-1c'),str)
+    print(gerneral_Notes.data)
 
     tenantsFields = ['tenant_ID','account_ID','tenant_Email','first_Name','title','date_Of_Birth','score','total_Residents','start_Date','deposit','gerneral_Notes']
-    #to keep streak
+    global dictOfDataValdationResults
+    dictOfDataValdationResults = dict.fromkeys(tenantsFields)
+    print(dictOfDataValdationResults)
 
 
 initialise()
