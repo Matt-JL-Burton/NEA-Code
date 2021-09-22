@@ -1162,7 +1162,17 @@ def addTenant():
     tenantsFields = ['tenant_ID','account_ID','tenant_Email','first_Name','title','date_Of_Birth','score','total_Residents','start_Date','deposit','gerneral_Notes']
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(tenantsFields)
+    dictOfDataValdationResults['tenant_Email'] = {'lengthCheck':rangeCheck(tenant_Email,3,None),'@check':pictureCheck(tenant_Email,'@',1,1),'noSpaces':pictureCheck(tenant_Email,'',0,0),'uniqueDataCheck':uniqueDataCheck(tenant_Email,'tenant_Email','tenants')}
+    dictOfDataValdationResults['first_Name'] = {}
+    dictOfDataValdationResults['day'] = {}
+    dictOfDataValdationResults['month'] = {}
+    dictOfDataValdationResults['year'] = {}
+    dictOfDataValdationResults['score'] = {}
+    dictOfDataValdationResults['total_Residents'] = {}
+    dictOfDataValdationResults['startMonth'] = {}
+    dictOfDataValdationResults['startYear'] = {}
+    dictOfDataValdationResults['deposit'] = {}
+    dictOfDataValdationResults['gerneral_Notes'] = {}
     print(dictOfDataValdationResults)
-
 
 initialise()
