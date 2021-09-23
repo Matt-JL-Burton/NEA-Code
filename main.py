@@ -59,7 +59,7 @@ def definingDefaultVariables():
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
-    errorMessgesDict = {'presenceCheck':'Please give an input','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it'}
+    errorMessgesDict = {'presenceCheck':'Please give an input','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
@@ -899,18 +899,6 @@ def containsOnlyLetters(inputData):
     else:
         return False
 
-def startsWith(inputData, symbol):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
-        if type(inputData.data) != str:
-            if inputData.data[0] == symbol:
-                return True
-            else:
-                return False
-        else:
-            raise TypeError('All data inputted must be a string')
-    else:
-        return False
-
 def disaplayEM(errorType,x,y):
     warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=75, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=x,rely=y,anchor=CENTER)
 
@@ -1163,9 +1151,9 @@ def addTenant():
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(tenantsFields)
     dictOfDataValdationResults['tenant_Email'] = {'lengthCheck':rangeCheck(tenant_Email,3,None),'@check':pictureCheck(tenant_Email,'@',1,1),'noSpaces':pictureCheck(tenant_Email,'',0,0),'uniqueDataCheck':uniqueDataCheck(tenant_Email,'tenant_Email','tenants')}
-    dictOfDataValdationResults['first_Name'] = {}
-    dictOfDataValdationResults['day'] = {}
-    dictOfDataValdationResults['month'] = {}
+    dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
+    dictOfDataValdationResults['day'] = {'presenceCheck':presenceCheck(day),'dayBetween0/31':rangeCheck(day,0,31)}
+    dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
     dictOfDataValdationResults['year'] = {}
     dictOfDataValdationResults['score'] = {}
     dictOfDataValdationResults['total_Residents'] = {}
