@@ -30,7 +30,7 @@ def initialise():
         os.chdir(pathlib.Path(__file__).parent.absolute())
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
-            ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu etc  
+            ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
             newTenantPage()
 
@@ -239,6 +239,7 @@ def createTables():
         account_ID varchar(16) NOT NULL,
         tenant_Email varchar(32) NOT NULL,
         first_Name varchar(16) NOT NULL,
+        last_Name varchar(16) NOT NULL,
         title varchar(4) NOT NULL,
         date_Of_Birth char(10) NOT NULL,
         score float NOT NULL,
@@ -1045,16 +1046,16 @@ def newTenantPage():
     geneneralNotesEntryBoxTenantLabel = Label(root, text='General notes',bg=primary.data,fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.705,anchor=CENTER)
 
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.25,anchor=CENTER)
-    global surnameEntryBox
-    surnameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    surnameEntryBox.place(relx=0.5,rely=0.25,anchor=CENTER)
+    global surnameEntryBoxTenant
+    surnameEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    surnameEntryBoxTenant.place(relx=0.5,rely=0.25,anchor=CENTER)
     surnameEntryLabel = Label(root, text='Surname',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
 
     nOtherOccupantsEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.43,anchor=CENTER)
     global nOtherOccupantsEntryBoxTenant
     nOtherOccupantsEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     nOtherOccupantsEntryBoxTenant.place(relx=0.5,rely=0.43,anchor=CENTER)
-    nOtherOccupantsEntryBoxTenantLabel = Label(root, text='Number of other occupants',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.35,anchor=CENTER)
+    nOtherOccupantsEntryBoxTenantLabel = Label(root, text='Total Occupants',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.35,anchor=CENTER)
 
     tenantsDepositEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.61,anchor=CENTER)
     global tenantsDepositEntryBox
@@ -1092,6 +1093,9 @@ def newTenantPage():
     emailEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     emailEntryBox.place(relx=0.825,rely=0.79,anchor=CENTER)
     emailEntryBoxLabel = Label(root, text="Tenant email",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.71,anchor=CENTER)
+
+    global newTenantEntryBoxCords
+    newTenantEntryBoxCords = {'tenant_Email':{'x':0.825,'y':0.8575},'tenant_ID':{'x':0.175,'y':0.3175},'title':{'x':0.175,'y':4975},'day':{'x':0.175,'y':0.6775},'month':{'x':0.175,'y':0.6775},'year':{'x':0.175,'y':0.6775},'gerneral_Notes':{'x':0.175,'y':0.9},'last_Name':{'x':0.5,'y':0.3175},'total_Residents':{'x':0.5,'y':0.4975},'deposit':{'x':0.5,'y':0.6775},'first_Name':{'x':0.825,'y':8575}}
 
     submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addTenant).place(relx=0.5, rely=0.93, anchor=CENTER)
 
@@ -1135,6 +1139,7 @@ def addTenant():
     account_ID = uInputDataObj(databaseCurrentAccount_ID,str)
     tenant_Email = uInputDataObj(emailEntryBox.get(),str)
     first_Name = uInputDataObj(firstnameEntryBox.get(),str)
+    last_Name = uInputDataObj(surnameEntryBoxTenant.get(),str)
     title = uInputDataObj(titleEntryBoxTenant.get(),str)
     day = uInputDataObj(dayEntryBox.get(),int)
     month = uInputDataObj(monthEntryBox.get(),int)
@@ -1151,6 +1156,7 @@ def addTenant():
     dictOfDataValdationResults = dict.fromkeys(tenantsFields)
     dictOfDataValdationResults['tenant_Email'] = {'lengthCheck':rangeCheck(tenant_Email,3,None),'@check':pictureCheck(tenant_Email,'@',1,1),'noSpaces':pictureCheck(tenant_Email,'',0,0),'uniqueDataCheck':uniqueDataCheck(tenant_Email,'tenant_Email','tenants')}
     dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
+    dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(last_Name),'containsOnlyLetters':containsOnlyLetters(last_Name)}
     dictOfDataValdationResults['day'] = {'presenceCheck':presenceCheck(day),'dayBetween0/31':rangeCheck(day,0,31)}
     dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
     dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1000/9999':rangeCheck(year,1000,9999)}
