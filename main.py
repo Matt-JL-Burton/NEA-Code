@@ -59,7 +59,7 @@ def definingDefaultVariables():
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
-    errorMessgesDict = {'presenceCheck':'Please give an input','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12'}
+    errorMessgesDict = {'presenceCheck':'Please give an input','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1000/9999':'Please enter a year in 1000 and 9999','between0/100':'Please enter number between 0 and 100'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
@@ -1145,7 +1145,6 @@ def addTenant():
     startYear = uInputDataObj(startOfLeaseDateYearEntryBoxTenant.get(),int)
     deposit = uInputDataObj(tenantsDepositEntryBox.get(),float)
     gerneral_Notes = uInputDataObj(geneneralNotesEntryBoxTenant.get('1.0','end-1c'),str)
-    print(gerneral_Notes.data)
 
     tenantsFields = ['tenant_ID','account_ID','tenant_Email','first_Name','title','date_Of_Birth','score','total_Residents','start_Date','deposit','gerneral_Notes']
     global dictOfDataValdationResults
@@ -1154,13 +1153,13 @@ def addTenant():
     dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
     dictOfDataValdationResults['day'] = {'presenceCheck':presenceCheck(day),'dayBetween0/31':rangeCheck(day,0,31)}
     dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
-    dictOfDataValdationResults['year'] = {}
-    dictOfDataValdationResults['score'] = {}
-    dictOfDataValdationResults['total_Residents'] = {}
-    dictOfDataValdationResults['startMonth'] = {}
-    dictOfDataValdationResults['startYear'] = {}
-    dictOfDataValdationResults['deposit'] = {}
-    dictOfDataValdationResults['gerneral_Notes'] = {}
+    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1000/9999':rangeCheck(year,1000,9999)}
+    dictOfDataValdationResults['score'] = {'presenceCheck':presenceCheck(score),'between0/100':rangeCheck(score,0,100)}
+    dictOfDataValdationResults['total_Residents'] = {'presenceCheck':presenceCheck(total_Residents),'positiveCheck':rangeCheck(total_Residents,0,None)}
+    dictOfDataValdationResults['startMonth'] = {'presenceCheck':presenceCheck(startMonth),'monthBetween1/12':rangeCheck(startMonth,1,12)}
+    dictOfDataValdationResults['startYear'] = {'presenceCheck':presenceCheck(startYear),'yearBetween1000/9999':rangeCheck(startYear,1000,9999)}
+    dictOfDataValdationResults['deposit'] = {'presenceCheck':presenceCheck(deposit),'postiveCheck':rangeCheck(deposit,0,None)}
+    dictOfDataValdationResults['gerneral_Notes'] = {'presenceCheck':presenceCheck(gerneral_Notes),'lengthCheck':rangeCheck(gerneral_Notes,0,1024)}
     print(dictOfDataValdationResults)
 
 initialise()
