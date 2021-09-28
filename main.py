@@ -1056,7 +1056,9 @@ def newUnitPage():
     global intialLoanIDEntryBoxTenant
     intialLoanIDEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     intialLoanIDEntryBoxTenant.place(relx=0.825,rely=0.43,anchor=CENTER)
-    startOfLeaseDateEntryBoxTenantLabel = Label(root, text='Initail Loan',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.35,anchor=CENTER)
+    startOfLeaseDateEntryBoxTenantLabel = Label(root, text='Initail Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.35,anchor=CENTER)
+    startOfLeaseDateEntryBoxTenantLabelSubText = Label(root, text='This input is unchangable once submitted', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.4975,anchor=CENTER)
+
 
     mortageSizeEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.61,anchor=CENTER)
     global mortageSizeEntryBox
@@ -1079,8 +1081,7 @@ def newUnitPage():
 
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addUnit).place(relx=0.5, rely=0.93, anchor=CENTER)
 
-    #newUnitPageCords = {'unit_ID':{'x':0.175,'y':},'account_ID':{},'tenant_ID':{},'most_Recent_Valuation':{},'buy_Price':{},'address':{},'postcode':{},'buy_Month':{},'buy_Year':{},'property_Equity':{},'rent':{},'general_Notes':{}}
-
+    newUnitPageCords = {'unit_ID':{'x':0.175,'y':0.3175},'tenant_ID':{'x':0.5,'y':0.3175},'postcode':{'x':0.825,'y':0.3175},'monthOfPurchase':{'x':0.175,'y':0.4975},'dayOfPurchase':{'x':0.175,'y':0.4975},'intrest_Rate':{'x':0.5,'y':0.4975},'loan_ID':{'x':0.825,'y':0.4975},'property_Equity':{'x':0.175,'y':0.6775},'instalments':{'x':0.5,'y':0.6775},'capital_Owed':{'x':0.825,'y':0.6775},'address':{'x':0.175,'y':0.96},'rent':{'x':0.5,'y':0.8575},'general_Notes':{'x':0.825,'y':0.96}}
     root.mainloop()
 
 def addUnit():
