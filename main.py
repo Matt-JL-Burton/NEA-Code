@@ -1079,7 +1079,8 @@ def newUnitPage():
 
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addUnit).place(relx=0.5, rely=0.93, anchor=CENTER)
 
-    #TODO: need to define the coord for error messages to be displayed
+    #newUnitPageCords = {'unit_ID':{'x':0.175,'y':},'account_ID':{},'tenant_ID':{},'most_Recent_Valuation':{},'buy_Price':{},'address':{},'postcode':{},'buy_Month':{},'buy_Year':{},'property_Equity':{},'rent':{},'general_Notes':{}}
+
     root.mainloop()
 
 def addUnit():
@@ -1194,8 +1195,7 @@ def newTenantPage():
     emailEntryBoxLabel = Label(root, text="Tenant email",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.71,anchor=CENTER)
 
     global newTenantEntryBoxCords
-    newTenantEntryBoxCords = {'tenant_Email':{'x':0.825,'y':0.8575},'tenant_ID':{'x':0.175,'y':0.3175},'title':{'x':0.175,'y':0.4975},'day':{'x':0.175,'y':0.6775},'month':{'x':0.175,'y':0.6775},'year':{'x':0.175,'y':0.6775},'gerneral_Notes':{'x':0.175,'y':0.96},'last_Name':{'x':0.5,'y':0.3175},'total_Residents':{'x':0.5,'y':0.4975},'deposit':{'x':0.5,'y':0.6775},'first_Name':{'x':0.825,'y':0.3175},'startMonth':{'x':0.825,'y':0.4975},'startYear':{'x':0.825,'y':0.4975},'score':{'x':0.825,'y':6975}}
-
+    newTenantEntryBoxCords = {'tenant_Email':{'x':0.825,'y':0.8575},'tenant_ID':{'x':0.175,'y':0.3175},'title':{'x':0.175,'y':0.4975},'day':{'x':0.175,'y':0.6775},'month':{'x':0.175,'y':0.6775},'year':{'x':0.175,'y':0.6775},'gerneral_Notes':{'x':0.175,'y':0.96},'last_Name':{'x':0.5,'y':0.3175},'total_Residents':{'x':0.5,'y':0.4975},'deposit':{'x':0.5,'y':0.6775},'first_Name':{'x':0.825,'y':0.3175},'startMonth':{'x':0.825,'y':0.4975},'startYear':{'x':0.825,'y':0.4975},'score':{'x':0.825,'y':0.6775}}
 
     submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addTenant).place(relx=0.5, rely=0.93, anchor=CENTER)
 
@@ -1290,6 +1290,7 @@ def addTenant():
                 if test == False:
                     countOfFailedTests = countOfFailedTests +1
 
+    print(countOfFailedTests)
     if countOfFailedTests == 0:
         for i in range(len(newTenantArray)):
             newTenantArray[i] = scramble(newTenantArray[i])
