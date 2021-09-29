@@ -81,7 +81,8 @@ def definingDefaultVariables():
     aCapGainsTR =  uInputDataObj(28,float)
     normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
-    databaseCurrentAccount_ID = None
+    databaseCurrentAccount_ID = 'gKo3eMCowu'
+
 
 #intialising page
 def initialiseWindow():
@@ -1056,9 +1057,8 @@ def newUnitPage():
     global intialLoanIDEntryBoxTenant
     intialLoanIDEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     intialLoanIDEntryBoxTenant.place(relx=0.825,rely=0.43,anchor=CENTER)
-    startOfLeaseDateEntryBoxTenantLabel = Label(root, text='Initail Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.35,anchor=CENTER)
-    startOfLeaseDateEntryBoxTenantLabelSubText = Label(root, text='This input is unchangable once submitted', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.4975,anchor=CENTER)
-
+    intialLoanIDEntryBoxTenantLabel = Label(root, text='Initail Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.35,anchor=CENTER)
+    intialLoanIDEntryBoxTenantLabelSubText = Label(root, text='This input is unchangable once submitted', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.4975,anchor=CENTER)
 
     mortageSizeEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.61,anchor=CENTER)
     global mortageSizeEntryBox
@@ -1081,12 +1081,28 @@ def newUnitPage():
 
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addUnit).place(relx=0.5, rely=0.93, anchor=CENTER)
 
+    global newUnitPageCords
     newUnitPageCords = {'unit_ID':{'x':0.175,'y':0.3175},'tenant_ID':{'x':0.5,'y':0.3175},'postcode':{'x':0.825,'y':0.3175},'monthOfPurchase':{'x':0.175,'y':0.4975},'dayOfPurchase':{'x':0.175,'y':0.4975},'intrest_Rate':{'x':0.5,'y':0.4975},'loan_ID':{'x':0.825,'y':0.4975},'property_Equity':{'x':0.175,'y':0.6775},'instalments':{'x':0.5,'y':0.6775},'capital_Owed':{'x':0.825,'y':0.6775},'address':{'x':0.175,'y':0.96},'rent':{'x':0.5,'y':0.8575},'general_Notes':{'x':0.825,'y':0.96}}
     root.mainloop()
 
 def addUnit():
-    #TODO: will add the unit
-    pass
+    unit_ID = uInputDataObj(unitIDEntryBox.get(),str)
+    buy_Month = uInputDataObj(monthDateOfPurchaseEntryBoxTenant.get(),int)
+    buy_Year = uInputDataObj(yearDateOfPurchaseEntryBoxTenant.get(),int)
+    property_Equity = uInputDataObj(downPaymentEntryBox.get(),float)
+    address = uInputDataObj(addressEntryBoxTenant.get(),str)
+    tenant_ID = uInputDataObj(occupingTenantEntryBoxTenant.get(),str)
+    intrest_Rate = uInputDataObj(mortgageIntrestRateEntryBoxTenant.get(),float)
+    instalments = uInputDataObj(mortgageInstallmentsEntryBox.get(),float)
+    postcode = uInputDataObj(postCodeEntryBox.get(),str)
+    loan_ID =  uInputDataObj(intialLoanIDEntryBoxTenant.get(),str)
+    capital_Owed = uInputDataObj(mortageSizeEntryBox.get(),float)
+    general_Notes = uInputDataObj(generalNotesEntryBox.get('1.0','end-1c'),str)
+    rent = uInputDataObj(rentEntryBox2.get(),str)
+
+    newUnitArray = [unit_ID.data,databaseCurrentAccount_ID,tenant_ID.data,property_Equity.data+capital_Owed.data,property_Equity.data+capital_Owed.data,address.data,postcode.data,buy_Month.data,buy_Year.data,property_Equity.data(),rent.data,general_Notes.data]
+    newLoanArary = [loan_ID.data,unit_ID.data,intrest_Rate.data,instalments.data,capital_Owed.data]
+
 
 #This page is for accessing but not editing data relevant to all tenants e.g. averages aswell as a means of accessing each individual tenant's page
 def tenantsPage():
@@ -1234,9 +1250,6 @@ def contactPage():
 
 def addTenant():
     tenant_ID = uInputDataObj(tenantIDEntryBox.get(),str)
-    global databaseCurrentAccount_ID
-    if (databaseCurrentAccount_ID) == None:
-        databaseCurrentAccount_ID = 'gKo3eMCowu'
     account_ID = uInputDataObj(databaseCurrentAccount_ID,str)
     tenant_Email = uInputDataObj(emailEntryBox.get(),str)
     first_Name = uInputDataObj(firstnameEntryBox.get(),str)
