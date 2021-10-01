@@ -59,7 +59,7 @@ def definingDefaultVariables():
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
-    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100'}
+    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
@@ -82,7 +82,6 @@ def definingDefaultVariables():
     normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
     databaseCurrentAccount_ID = uInputDataObj('gKo3eMCowu',str)
-
 
 #intialising page
 def initialiseWindow():
@@ -910,6 +909,30 @@ def containsOnlyLetters(inputData):
     else:
         return False
 
+def containsLetters(inputData):
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+        if type(inputData.data) == str:
+            for i in range(len(inputData.data)):
+                if inputData.data[i].isalpha() == True:
+                    return True
+            return False
+        else:
+            raise TypeError('All data inputted muse be a string')    
+    else:
+        False
+
+def containsNumbers(inputData):
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+        if type(inputData.data) == str:
+            for i in range(len(inputData.data)):
+                if inputData.data[i].isnumeric() == True:
+                    return True
+            return False
+        else:
+            raise TypeError('All data inputted muse be a string')    
+    else:
+        False
+
 def disaplayEM(errorType,x,y):
     warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=75, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=x,rely=y,anchor=CENTER)
 
@@ -1030,9 +1053,22 @@ def newUnitPage():
     addressEntryBoxTenantLabel = Label(root, text='Address',bg=primary.data,fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.705,anchor=CENTER)
 
     occupingTenantEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.25,anchor=CENTER)
-    global occupingTenantEntryBoxTenant
-    occupingTenantEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    occupingTenantEntryBoxTenant.place(relx=0.5,rely=0.25,anchor=CENTER)
+    #global occupyingTenantOptions
+    openDatabase()
+    occpyingTenantsOptionsScrambled = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '"+scramble(databaseCurrentAccount_ID.data)+"'")
+    occpyingTenantsOptionsScrambled = occpyingTenantsOptionsScrambled.fetchall()
+    closeDatabase()
+    global occupyingTenantOptions
+    occupyingTenantOptions = []
+    for i in range(len(occpyingTenantsOptionsScrambled)):
+        print(occpyingTenantsOptionsScrambled[i][0])
+        occupyingTenant = deScramble(occpyingTenantsOptionsScrambled[i][0])
+        occupyingTenantOptions.append(occupyingTenant)
+    global occupyingTenantMenu
+    occupyingTenantMenu = ttk.Combobox(root, value=occupyingTenantOptions, justify=tkinter.CENTER, font=(font.data,18))
+    occupyingTenantMenu.current(1)
+    occupyingTenantMenu.place(relx=0.5,rely=0.25,anchor=CENTER)
+    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
     occupingTenantEntryLabel = Label(root, text='Occupying Tenant',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
 
     mortgageIntrestRateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.43,anchor=CENTER)
@@ -1091,7 +1127,7 @@ def addUnit():
     buy_Year = uInputDataObj(yearDateOfPurchaseEntryBoxTenant.get(),int)
     property_Equity = uInputDataObj(downPaymentEntryBox.get(),float)
     address = uInputDataObj(addressEntryBoxTenant.get('1.0','end-1c'),str)
-    tenant_ID = uInputDataObj(occupingTenantEntryBoxTenant.get(),str)
+    tenant_ID = uInputDataObj(occupyingTenantMenu.get(),str)
     intrest_Rate = uInputDataObj(mortgageIntrestRateEntryBoxTenant.get(),float)
     instalments = uInputDataObj(mortgageInstallmentsEntryBox.get(),float)
     postcode = uInputDataObj(postCodeEntryBox.get(),str)
@@ -1109,7 +1145,9 @@ def addUnit():
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(total_Fields)
     dictOfDataValdationResults['unit_ID'] = {'presenceCheck':presenceCheck(unit_ID),'noSpaces':pictureCheck(unit_ID,'',0,0),'uniqueDataCheck':uniqueDataCheck(unit_ID,'unit_ID','units')}
-    #dictOfDataValdationResults['account_ID'] = {'presenceCheck':presenceCheck(databaseCurrentAccount_ID.data)}
+    dictOfDataValdationResults['tenant_ID'] = {'menuOptionCheck':menuOptionCheck(tenant_ID,occupyingTenantOptions)}
+    dictOfDataValdationResults['postcode'] = {'presenceCheck':presenceCheck(postcode),'lengthCheck':rangeCheck(postcode,6,11),'mustContainsLetters':containsLetters(postcode),'mustContainNumbers':containsNumbers(postcode)}
+    print(dictOfDataValdationResults)
 
 #This page is for accessing but not editing data relevant to all tenants e.g. averages aswell as a means of accessing each individual tenant's page
 def tenantsPage():
