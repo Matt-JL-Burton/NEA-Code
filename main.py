@@ -79,7 +79,7 @@ def definingDefaultVariables():
     bCapGainsTR =  uInputDataObj(18,float)
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
-    normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','$','%','^','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
+    normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','\n','%','\t','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
     databaseCurrentAccount_ID = uInputDataObj('gKo3eMCowu',str)
 
@@ -934,7 +934,7 @@ def containsNumbers(inputData):
         False
 
 def disaplayEM(errorType,x,y):
-    warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=75, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=x,rely=y,anchor=CENTER)
+    warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=x,rely=y,anchor=CENTER)
 
 def createAccountCoverUpErrorMessage():
     for entryboxData in dictOfDataValdationResults.keys():
@@ -1061,7 +1061,6 @@ def newUnitPage():
     global occupyingTenantOptions
     occupyingTenantOptions = []
     for i in range(len(occpyingTenantsOptionsScrambled)):
-        print(occpyingTenantsOptionsScrambled[i][0])
         occupyingTenant = deScramble(occpyingTenantsOptionsScrambled[i][0])
         occupyingTenantOptions.append(occupyingTenant)
     global occupyingTenantMenu
@@ -1076,12 +1075,21 @@ def newUnitPage():
     mortgageIntrestRateEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     mortgageIntrestRateEntryBoxTenant.place(relx=0.5,rely=0.43,anchor=CENTER)
     mortgageIntrestRateEntryBoxTenantLabel = Label(root, text='Mortage Intrest Rate (%)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.35,anchor=CENTER)
+    imortgageIntrestRateEntryBoxTenantLabelSubText = Label(root, text='Enter the Annual Intrest Rate of The Mortgage', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.4975,anchor=CENTER)
 
     mortgageInstallmentsEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.61,anchor=CENTER)
     global mortgageInstallmentsEntryBox
     mortgageInstallmentsEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     mortgageInstallmentsEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
-    mortgageInstallmentsEntryBoxLabel = Label(root, text="Mortage Installments",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
+    mortgageInstallmentsEntryBoxLabel = Label(root, text="Mortage Installments size (£)",bg=primary.data, fg=secondry.data, width=24, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
+
+    rentEntryBoxBachground2 = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.79,anchor=CENTER)
+    global rentEntryBox2
+    rentEntryBox2 = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    rentEntryBox2.place(relx=0.5,rely=0.79,anchor=CENTER)
+    rentEntryBoxLabel2 = Label(root, text="Rent (£)",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.71,anchor=CENTER)
+    rentEntryBoxLabel2SubText = Label(root, text='Enter an approx value if the actual value is not yet known', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.8575,anchor=CENTER)
+
 
     postCodeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.25,anchor=CENTER)
     global postCodeEntryBox
@@ -1108,17 +1116,10 @@ def newUnitPage():
     generalNotesEntryBox.place(relx=0.825,rely=0.84,anchor=CENTER)
     generalNotesEntryBoxLabel = Label(root, text="General Notes",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.705,anchor=CENTER)
 
-    rentEntryBoxBachground2 = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.79,anchor=CENTER)
-    global rentEntryBox2
-    rentEntryBox2 = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    rentEntryBox2.place(relx=0.5,rely=0.79,anchor=CENTER)
-    rentEntryBoxLabel2 = Label(root, text="Rent (£)",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.71,anchor=CENTER)
-    rentEntryBoxLabel2SubText = Label(root, text='Enter an approx value if the actual value is not yet known', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.8575,anchor=CENTER)
-
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addUnit).place(relx=0.5, rely=0.93, anchor=CENTER)
 
     global newUnitPageCords
-    newUnitPageCords = {'unit_ID':{'x':0.175,'y':0.3175},'tenant_ID':{'x':0.5,'y':0.3175},'postcode':{'x':0.825,'y':0.3175},'monthOfPurchase':{'x':0.175,'y':0.4975},'dayOfPurchase':{'x':0.175,'y':0.4975},'intrest_Rate':{'x':0.5,'y':0.4975},'loan_ID':{'x':0.825,'y':0.4975},'property_Equity':{'x':0.175,'y':0.6775},'instalments':{'x':0.5,'y':0.6775},'capital_Owed':{'x':0.825,'y':0.6775},'address':{'x':0.175,'y':0.96},'rent':{'x':0.5,'y':0.8575},'general_Notes':{'x':0.825,'y':0.96}}
+    newUnitPageCords = {'unit_ID':{'x':0.175,'y':0.3175},'tenant_ID':{'x':0.5,'y':0.3175},'postcode':{'x':0.825,'y':0.3175},'buy_Month':{'x':0.175,'y':0.4975},'buy_Year':{'x':0.175,'y':0.4975},'dayOfPurchase':{'x':0.175,'y':0.4975},'intrest_Rate':{'x':0.5,'y':0.4975},'loan_ID':{'x':0.825,'y':0.4975},'property_Equity':{'x':0.175,'y':0.6775},'instalments':{'x':0.5,'y':0.6775},'capital_Owed':{'x':0.825,'y':0.6775},'address':{'x':0.175,'y':0.96},'rent':{'x':0.5,'y':0.8575},'general_Notes':{'x':0.825,'y':0.96}}
     root.mainloop()
 
 def addUnit():
@@ -1147,7 +1148,56 @@ def addUnit():
     dictOfDataValdationResults['unit_ID'] = {'presenceCheck':presenceCheck(unit_ID),'noSpaces':pictureCheck(unit_ID,'',0,0),'uniqueDataCheck':uniqueDataCheck(unit_ID,'unit_ID','units')}
     dictOfDataValdationResults['tenant_ID'] = {'menuOptionCheck':menuOptionCheck(tenant_ID,occupyingTenantOptions)}
     dictOfDataValdationResults['postcode'] = {'presenceCheck':presenceCheck(postcode),'lengthCheck':rangeCheck(postcode,6,11),'mustContainsLetters':containsLetters(postcode),'mustContainNumbers':containsNumbers(postcode)}
-    print(dictOfDataValdationResults)
+    dictOfDataValdationResults['buy_Month'] = {'presenceCheck':presenceCheck(buy_Month),'monthBetween1/12':rangeCheck(buy_Month,1,12)}
+    dictOfDataValdationResults['buy_Year'] = {'presenceCheck':presenceCheck(buy_Year),'yearBetween1900/2100':rangeCheck(buy_Year,1900,2100)}
+    dictOfDataValdationResults['intrest_Rate'] = {'presenceCheck':presenceCheck(intrest_Rate),'between0/100':rangeCheck(intrest_Rate,0,100)}
+    dictOfDataValdationResults['loan_ID'] = {'presenceCheck':presenceCheck(loan_ID),'noSpaces':pictureCheck(unit_ID,'',0,0),'uniqueDataCheck':uniqueDataCheck(loan_ID,'loan_ID','loan')}
+    dictOfDataValdationResults['property_Equity'] = {'presenceCheck':presenceCheck(property_Equity),'positiveCheck':rangeCheck(property_Equity,0,None)}
+    dictOfDataValdationResults['instalments'] = {'presenceCheck':presenceCheck(instalments),'positiveCheck':rangeCheck(property_Equity,0,None)}
+    dictOfDataValdationResults['capital_Owed'] = {'presenceCheck':presenceCheck(capital_Owed),'positiveCheck':rangeCheck(capital_Owed,0,None)}
+    dictOfDataValdationResults['address'] = {'presenceCheck':presenceCheck(address),'mustContainsLetters':containsLetters(address)}
+    dictOfDataValdationResults['rent'] = {'presenceCheck':presenceCheck(rent),'positiveCheck':rangeCheck(rent,0,None)}
+    dictOfDataValdationResults['general_Notes'] = {'presenceCheck':presenceCheck(general_Notes),'mustContainsLetters':containsLetters(general_Notes)}
+    newUntCoverUp()
+    
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,newUnitPageCords[entryboxData]['x'],newUnitPageCords[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+
+    countOfFailedTests = 0
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+    if countOfFailedTests == 0:
+        for i in range(len(newUnitArray)):
+            newUnitArray[i] = scramble(newUnitArray[i])
+        for i in range(len(newLoanArary)):
+            newLoanArary[i] = scramble(newLoanArary[i])
+
+        openDatabase()
+        global newLoanInsertionCommand
+        newLoanInsertionCommand = """INSERT INTO loan(loan_ID,unit_ID,interest_Rate,instalments,capital_Owed)
+        Values(?,?,?,?,?)"""
+        cursor.execute(newLoanInsertionCommand,newLoanArary)
+        global newUnitInsetionCommand
+        newUnitInsetionCommand = """INSERT INTO units(unit_ID,account_ID,tenant_ID,most_Recent_Valuation,buy_Price,address,postcode,buy_Month,buy_Year,property_Equity,rent,general_Notes)
+        Values(?,?,?,?,?,?,?,?,?,?,?,?)"""
+        cursor.execute(newUnitInsetionCommand,newUnitArray)
+        closeDatabase()
+        
+        displayConfirmation('Properties')
+
+def newUntCoverUp():
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            coverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=newUnitPageCords[entryboxData]['x'],rely=newUnitPageCords[entryboxData]['y'],anchor=CENTER)
 
 #This page is for accessing but not editing data relevant to all tenants e.g. averages aswell as a means of accessing each individual tenant's page
 def tenantsPage():
@@ -1349,7 +1399,6 @@ def addTenant():
                 if test == False:
                     countOfFailedTests = countOfFailedTests +1
 
-    print(countOfFailedTests)
     if countOfFailedTests == 0:
         for i in range(len(newTenantArray)):
             newTenantArray[i] = scramble(newTenantArray[i])
