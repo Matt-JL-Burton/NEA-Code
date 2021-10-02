@@ -25,8 +25,8 @@
 }
 
 #normalLong{
-    width: calc(14cm);
-    height: calc(1.7cm);
+    width: calc(14cm*0.95);
+    height: calc(1.7cm*0.84);
 }
 
 #normalShort{

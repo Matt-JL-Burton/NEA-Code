@@ -32,7 +32,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            newUnitPage()
+            settingsPage()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -572,6 +572,10 @@ def forgottenPasswordPageOne():
 def hidePasswordLoginPage():
     #TODO: hide the password 
     #TODO: replace the hide button with a show button and then code show button
+    pass
+
+def showPasswordLoginPage():
+    #TODO: same as above function
     pass
 
 def createAccount():
@@ -1331,6 +1335,64 @@ def settingsPage():
     global previousPage
     previousPage = 'Settings'
     displayMenuButton()
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    longNormal = PhotoImage(file = "Long-Normal.PNG")
+
+    primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
+    global primaryHexEntryBox
+    primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    closeDatabase()
+    primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
+
+    secondryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
+    global secondryHexEntryBox
+    openDatabase()
+    closeDatabase()
+    secondryHexEntryLabel = Label(root, text='Secondry Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.35,anchor=CENTER)
+
+    tertiaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.61,anchor=CENTER)
+    global tertiaryHexEntryBox
+    tertiaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    closeDatabase()
+    tertiaryHexEntryBox.place(relx=0.175,rely=0.61,anchor=CENTER)
+    tertiaryyHexEntryLabel = Label(root, text='Tertiary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.53,anchor=CENTER)
+
+    textFontBoxBackground = Label(image = longNormal, border = 0).place(relx=0.6625,rely=0.25,anchor=CENTER)
+    global fontEntryBox
+    fontEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    closeDatabase()
+    fontEntryBox.place(relx=0.6625,rely=0.25,anchor=CENTER)
+    fontEntryLabel = Label(root, text='Text Font',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.6625,rely=0.17,anchor=CENTER)
+
+    titleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.43,anchor=CENTER)
+    global titleEntryBox
+    titleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    closeDatabase()
+    titleEntryBox.place(relx=0.5,rely=0.43,anchor=CENTER)
+    titleEntryLabel = Label(root, text='Title',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.35,anchor=CENTER)
+
+    firstNameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.61,anchor=CENTER)
+    global firstNameEntryBox
+    firstNameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    closeDatabase()
+    firstNameEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
+    firstNameEntryLabel = Label(root, text='First Name',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
+
+    operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.83,rely=0.43,anchor=CENTER)
+    global operationTypeEntryBox
+    operationTypeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    closeDatabase()
+    operationTypeEntryBox.place(relx=0.83,rely=0.43,anchor=CENTER)
+    operationTypeEntryLabel = Label(root, text='Operation Type',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.83,rely=0.35,anchor=CENTER)
+
+
     root.mainloop()
 
 def contactPage():
