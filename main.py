@@ -63,7 +63,7 @@ def definingDefaultVariables():
     font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
-    listOfIdealAssets = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico']
+    listOfIdealAssets = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico','Long-Normal 2.PNG']
     connectionError = Tk()
     connectionError.destroy()
     previousPage = None
@@ -81,7 +81,7 @@ def definingDefaultVariables():
     aCapGainsTR =  uInputDataObj(28,float)
     normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','\n','%','\t','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
-    databaseCurrentAccount_ID = uInputDataObj('gKo3eMCowu',str)
+    databaseCurrentAccount_ID = uInputDataObj(deScramble('gKo3eMCowu'),str)
 
 #intialising page
 def initialiseWindow():
@@ -412,14 +412,14 @@ def loginPage():
     headerL = Label(root,text='Login',font=((font.data,'40')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.1, anchor=CENTER)
     #username input
     usernameHeaderL = Label(root,text='Username',font=((font.data,'15')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.28, anchor=CENTER)
-    longNormal = PhotoImage(file = "Long-Normal.PNG")
-    longNormalLabelU = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.37,anchor=CENTER)
+    longNormalTwo = PhotoImage(file = "Long-Normal 2.PNG")
+    longNormalLabelU = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.37,anchor=CENTER)
     global usernameEntry
     usernameEntry = Entry(root, bg=primary.data, fg=secondry.data, width=42, font=(font.data,24),justify='center',relief='flat')
     usernameEntry.place(relx=0.5,rely=0.37,anchor=CENTER)
     #password input
     passwordHeaderL = Label(root,text='Password',font=((font.data,'15')),fg=secondry.data,bg=primary.data).place(relx=0.5,rely=0.55, anchor=CENTER)
-    longNormalLabelP = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.64,anchor=CENTER)
+    longNormalLabelP = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.64,anchor=CENTER)
     global passwordEntry 
     passwordEntry = Entry(root, bg=primary.data,fg=secondry.data, width=42, font=(font.data,24),justify='center',relief='flat')
     passwordEntry.place(relx=0.5,rely=0.64,anchor=CENTER)
@@ -973,7 +973,7 @@ def login():
             openDatabase()
             account_ID_Dirty = cursor.execute("SELECT account_ID FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
             #global databaseCurrentAccount_ID
-            databaseCurrentAccount_ID = account_ID_Dirty.fetchall()[0][0]
+            databaseCurrentAccount_ID = uInputDataObj(account_ID_Dirty.fetchall()[0][0],str)
             #print(databaseCurrentAccount_ID)
             #displayConfirmation('Home')
             homePage()
@@ -1342,6 +1342,10 @@ def settingsPage():
     global primaryHexEntryBox
     primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
+    primaryColourD = cursor.execute("SELECT primary_colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    print("SELECT primary_colour FROM accounts WHERE account_ID ='" +scramble(databaseCurrentAccount_ID.data)+"'")
+    primaryColourD = primaryColourD.fetchall()
+    print(primaryColourD)
     closeDatabase()
     primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
@@ -1391,9 +1395,21 @@ def settingsPage():
     closeDatabase()
     operationTypeEntryBox.place(relx=0.83,rely=0.43,anchor=CENTER)
     operationTypeEntryLabel = Label(root, text='Operation Type',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.83,rely=0.35,anchor=CENTER)
+    
+    surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.83,rely=0.61,anchor=CENTER)
+    global surnameEntryBox
+    surnameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    closeDatabase()
+    surnameEntryBox.place(relx=0.83,rely=0.61,anchor=CENTER)
+    surnameEntryLabel = Label(root, text='Surname',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.83,rely=0.53,anchor=CENTER)
 
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateSetings).place(relx=0.5, rely=0.93, anchor=CENTER)
 
     root.mainloop()
+
+def updateSetings():
+    pass
 
 def contactPage():
     initialiseWindow()
