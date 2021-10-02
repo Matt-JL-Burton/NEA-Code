@@ -54,10 +54,11 @@ def invalidOSRunning():
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
-    global errorMessgesDict, databaseCurrentAccount_ID
+    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions
     primary = uInputDataObj('#373f51',str)
-    secondry = uInputDataObj('#ffffff',str)
+    secondry = uInputDataObj('white',str)
     tertiary = uInputDataObj('#a9a9a9',str)
+    listOfSecondryColourOptions = ['white','light grey','grey','dark grey','black']
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
     errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
@@ -1067,9 +1068,10 @@ def newUnitPage():
     for i in range(len(occpyingTenantsOptionsScrambled)):
         occupyingTenant = deScramble(occpyingTenantsOptionsScrambled[i][0])
         occupyingTenantOptions.append(occupyingTenant)
+    occupyingTenantOptions.append('None')
     global occupyingTenantMenu
     occupyingTenantMenu = ttk.Combobox(root, value=occupyingTenantOptions, justify=tkinter.CENTER, font=(font.data,18))
-    occupyingTenantMenu.current(1)
+    occupyingTenantMenu.current(0)
     occupyingTenantMenu.place(relx=0.5,rely=0.25,anchor=CENTER)
     root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
     occupingTenantEntryLabel = Label(root, text='Occupying Tenant',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
@@ -1342,17 +1344,24 @@ def settingsPage():
     global primaryHexEntryBox
     primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
-    primaryColourD = cursor.execute("SELECT primary_colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
-    print("SELECT primary_colour FROM accounts WHERE account_ID ='" +scramble(databaseCurrentAccount_ID.data)+"'")
-    primaryColourD = primaryColourD.fetchall()
-    print(primaryColourD)
+    primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    primaryColourD = deScramble(primaryColourD.fetchall()[0][0])
+    primaryHexEntryBox.insert(END,primaryColourD)
     closeDatabase()
     primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
 
     secondryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
-    global secondryHexEntryBox
     openDatabase()
+    secondryColourOptions = listOfSecondryColourOptions
+    openDatabase()
+    currentSecondryD = cursor.execute("SELECT secondry_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    currentSecondryD = deScramble(currentSecondryD.fetchall()[0][0])
+    global secondryColourMenu
+    secondryColourMenu = ttk.Combobox(root, value=secondryColourOptions, justify=tkinter.CENTER, font=(font.data,18))
+    secondryColourMenu.current(secondryColourOptions.index(currentSecondryD))
+    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
+    secondryColourMenu.place(relx=0.175,rely=0.43,anchor=CENTER)
     closeDatabase()
     secondryHexEntryLabel = Label(root, text='Secondry Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.35,anchor=CENTER)
 
@@ -1360,6 +1369,9 @@ def settingsPage():
     global tertiaryHexEntryBox
     tertiaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
+    tertiaryColourD = cursor.execute("SELECT tertiary_colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    tertiaryColourD = deScramble(tertiaryColourD.fetchall()[0][0])
+    tertiaryHexEntryBox.insert(END,tertiaryColourD)
     closeDatabase()
     tertiaryHexEntryBox.place(relx=0.175,rely=0.61,anchor=CENTER)
     tertiaryyHexEntryLabel = Label(root, text='Tertiary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.53,anchor=CENTER)
@@ -1368,6 +1380,9 @@ def settingsPage():
     global fontEntryBox
     fontEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
+    fontD = cursor.execute("SELECT font FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    fontD = deScramble(fontD.fetchall()[0][0]).title()
+    fontEntryBox.insert(END,fontD)
     closeDatabase()
     fontEntryBox.place(relx=0.6625,rely=0.25,anchor=CENTER)
     fontEntryLabel = Label(root, text='Text Font',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.6625,rely=0.17,anchor=CENTER)
@@ -1376,6 +1391,9 @@ def settingsPage():
     global titleEntryBox
     titleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
+    titleD = cursor.execute("SELECT title FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    titleD = deScramble(titleD.fetchall()[0][0]).title()
+    titleEntryBox.insert(END,titleD)
     closeDatabase()
     titleEntryBox.place(relx=0.5,rely=0.43,anchor=CENTER)
     titleEntryLabel = Label(root, text='Title',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.35,anchor=CENTER)
@@ -1384,22 +1402,33 @@ def settingsPage():
     global firstNameEntryBox
     firstNameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
+    firstD = cursor.execute("SELECT first_Name FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    firstD = deScramble(firstD.fetchall()[0][0]).title()
+    firstNameEntryBox.insert(END,firstD)
     closeDatabase()
     firstNameEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
     firstNameEntryLabel = Label(root, text='First Name',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
 
     operationTypeEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.83,rely=0.43,anchor=CENTER)
-    global operationTypeEntryBox
-    operationTypeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
+    operationTypeD = cursor.execute("SELECT operation_Type FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    operationTypeD = deScramble(operationTypeD.fetchall()[0][0])
+    operation_TypeOptions = ['Business','Personal']
+    global operationTypeMenu
+    operationTypeMenu = ttk.Combobox(root, value=operation_TypeOptions, justify=tkinter.CENTER, font=(font.data,18))
+    operationTypeMenu.current(operation_TypeOptions.index(operationTypeD.title()))
+    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
+    operationTypeMenu.place(relx=0.83,rely=0.43,anchor=CENTER)
     closeDatabase()
-    operationTypeEntryBox.place(relx=0.83,rely=0.43,anchor=CENTER)
     operationTypeEntryLabel = Label(root, text='Operation Type',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.83,rely=0.35,anchor=CENTER)
     
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.83,rely=0.61,anchor=CENTER)
     global surnameEntryBox
     surnameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
+    lastD = cursor.execute("SELECT last_Name FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    lastD = deScramble(lastD.fetchall()[0][0]).title()
+    surnameEntryBox.insert(END,lastD)
     closeDatabase()
     surnameEntryBox.place(relx=0.83,rely=0.61,anchor=CENTER)
     surnameEntryLabel = Label(root, text='Surname',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.83,rely=0.53,anchor=CENTER)
