@@ -54,13 +54,13 @@ def invalidOSRunning():
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
-    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions
+    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts
     primary = uInputDataObj('#373f51',str)
     secondry = uInputDataObj('white',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     listOfSecondryColourOptions = ['white','light grey','grey','dark grey','black']
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
-    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number'}
+    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
@@ -83,6 +83,8 @@ def definingDefaultVariables():
     normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','\n','%','\t','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
     databaseCurrentAccount_ID = uInputDataObj(deScramble('gKo3eMCowu'),str)
+    listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
+
 
 #intialising page
 def initialiseWindow():
@@ -924,7 +926,7 @@ def containsLetters(inputData):
         else:
             raise TypeError('All data inputted muse be a string')    
     else:
-        False
+        return False
 
 def containsNumbers(inputData):
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
@@ -936,7 +938,39 @@ def containsNumbers(inputData):
         else:
             raise TypeError('All data inputted muse be a string')    
     else:
-        False
+        return False
+
+def hexCodeCheck(inputData):
+    hexCodePossibleCharacters = ['1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
+    if castingTypeCheckFunc(inputData.data, inputData.prefferredType) != False:
+        if inputData.data[0] =='#' and len(inputData.data) == 7:
+            inputData.setData(inputData.data.title())
+            invalidChacracters = 0
+            for i in range(6):
+                if inputData.data[i+1] in hexCodePossibleCharacters:
+                    pass
+                else:
+                    invalidChacracters = invalidChacracters + 1
+            if invalidChacracters == 0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+def fontCheck(inputData):
+    listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
+    if castingTypeCheckFunc(inputData.data, inputData.prefferredType) != False:
+        try:
+            primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(inputData.data,18),justify='center',relief='flat')
+            primaryHexEntryBox.place(relx = 0, rely= 0)
+            print(primaryHexEntryBox.cget('font'))
+            return True
+        except:
+            return False
+    else:
+        return False
+
 
 def disaplayEM(errorType,x,y):
     warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=x,rely=y,anchor=CENTER)
@@ -1353,6 +1387,7 @@ def settingsPage():
 
     secondryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
     openDatabase()
+    global secondryColourOptions
     secondryColourOptions = listOfSecondryColourOptions
     openDatabase()
     currentSecondryD = cursor.execute("SELECT secondry_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
@@ -1377,14 +1412,15 @@ def settingsPage():
     tertiaryyHexEntryLabel = Label(root, text='Tertiary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.53,anchor=CENTER)
 
     textFontBoxBackground = Label(image = longNormal, border = 0).place(relx=0.6625,rely=0.25,anchor=CENTER)
-    global fontEntryBox
-    fontEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
     fontD = cursor.execute("SELECT font FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
     fontD = deScramble(fontD.fetchall()[0][0]).title()
-    fontEntryBox.insert(END,fontD)
+    global fontMenu
+    fontMenu = ttk.Combobox(root, value=listOfAcceptedFonts, justify=tkinter.CENTER, width = 50,font=(font.data,18))
+    fontMenu.current(listOfAcceptedFonts.index(fontD))
+    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
+    fontMenu.place(relx=0.6635,rely=0.25,anchor=CENTER)
     closeDatabase()
-    fontEntryBox.place(relx=0.6625,rely=0.25,anchor=CENTER)
     fontEntryLabel = Label(root, text='Text Font',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.6625,rely=0.17,anchor=CENTER)
 
     titleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.43,anchor=CENTER)
@@ -1438,7 +1474,29 @@ def settingsPage():
     root.mainloop()
 
 def updateSetings():
-    pass
+    primary_Colour = uInputDataObj(primaryHexEntryBox.get(),str)
+    secondry_Colour = uInputDataObj(secondryColourMenu.get(),str)
+    tertiary_Colour = uInputDataObj(tertiaryHexEntryBox.get(),str)
+    font = uInputDataObj(fontMenu.get(),str)
+    title = uInputDataObj(titleEntryBox.get(),str)
+    operation_Type = uInputDataObj(operationTypeMenu.get(),str)
+    first_Name = uInputDataObj(firstNameEntryBox.get(),str)
+    last_Name = uInputDataObj(surnameEntryBox.get(),str)
+    
+    accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate', 'other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
+
+    openDatabase()
+    listOfUnchangable = cursor.execute(" SELECT account_ID, password, recovery_Email, tax_Rate, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, basic_Capital_Gains_Rate, basic_Capital_Gains_Allowence, high_Capital_Gains_Rate, additional_Capital_Gains_Rate, corporation_Capital_Gains_Rate, national_Insurance_Due FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    listOfUnchangable = listOfUnchangable.fetchall()[0]
+    dictOfUnchangable = {'account_ID':listOfUnchangable[0],'password':listOfUnchangable[1],'recovery_Email':listOfUnchangable[2],'tax_Rate':listOfUnchangable[3],'other_Income_Estimate':listOfUnchangable[4],'basic_Income_Rate':listOfUnchangable[5],'high_Income_Rate':listOfUnchangable[6],'additional_Income_Rate':listOfUnchangable[7],'basic_Income_Cut_Off':listOfUnchangable[8],'high_Income_Cut_Off':listOfUnchangable[9],'corporation_Rate':listOfUnchangable[10],'basic_Capital_Gains_Rate':listOfUnchangable[11],'basic_Capital_Gains_Allowence':listOfUnchangable[12],'high_Capital_Gains_Rate':listOfUnchangable[13],'additional_Capital_Gains_Rate':listOfUnchangable[14],'corporation_Capital_Gains_Rate':listOfUnchangable[15],'national_Insurance_Due':listOfUnchangable[16]}
+    closeDatabase()
+
+    global dictOfDataValdationResults
+    dictOfDataValdationResults = dict.fromkeys(accountFields)
+    dictOfDataValdationResults['primary_Colour'] = {'presenceCheck':presenceCheck(primary_Colour),'hexCodeCheck':hexCodeCheck(primary_Colour)}
+    dictOfDataValdationResults['secondry_Colour'] = {'menuOptionCheck':menuOptionCheck(secondry_Colour,secondryColourOptions)}
+    dictOfDataValdationResults['tertiary_Colour'] = {'presenceCheck':presenceCheck(tertiary_Colour),'hexCodeCheck':hexCodeCheck(tertiary_Colour)}
+    dictOfDataValdationResults['font'] = {'menuOptionCheck':menuOptionCheck(font,listOfAcceptedFonts)}
 
 def contactPage():
     initialiseWindow()

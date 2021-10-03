@@ -5,3 +5,6 @@ class uInputDataObj():
     
     def setData(self,newData):
         self.data = newData
+
+    def getData(self):
+        return self.data
