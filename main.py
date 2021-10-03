@@ -957,20 +957,7 @@ def hexCodeCheck(inputData):
                 return False
     else:
         return False
-
-def fontCheck(inputData):
-    listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
-    if castingTypeCheckFunc(inputData.data, inputData.prefferredType) != False:
-        try:
-            primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(inputData.data,18),justify='center',relief='flat')
-            primaryHexEntryBox.place(relx = 0, rely= 0)
-            print(primaryHexEntryBox.cget('font'))
-            return True
-        except:
-            return False
-    else:
-        return False
-
+# end of data validation tests
 
 def disaplayEM(errorType,x,y):
     warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=x,rely=y,anchor=CENTER)
@@ -1469,6 +1456,8 @@ def settingsPage():
     surnameEntryBox.place(relx=0.83,rely=0.61,anchor=CENTER)
     surnameEntryLabel = Label(root, text='Surname',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.83,rely=0.53,anchor=CENTER)
 
+    global settingsCords
+    settingsCords = {'primary_Colour':{'x':0.175,'y':0.3175},'secondry_Colour':{'x':0.175,'y':4975},'tertiary_Colour':{'x':0.175,'y':0.6775},'font':{'x':0.6635,'y':0.3175},'title':{'x':0.5,'y':0.4975},'operation_Type':{'x':0.83,'y':0.4975},'first_Name':{'x':0.5,'y':0.6775},'last_Name':{'x':0.83,'y':0.6775}}
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateSetings).place(relx=0.5, rely=0.93, anchor=CENTER)
 
     root.mainloop()
@@ -1497,6 +1486,41 @@ def updateSetings():
     dictOfDataValdationResults['secondry_Colour'] = {'menuOptionCheck':menuOptionCheck(secondry_Colour,secondryColourOptions)}
     dictOfDataValdationResults['tertiary_Colour'] = {'presenceCheck':presenceCheck(tertiary_Colour),'hexCodeCheck':hexCodeCheck(tertiary_Colour)}
     dictOfDataValdationResults['font'] = {'menuOptionCheck':menuOptionCheck(font,listOfAcceptedFonts)}
+    settingsPageCoverUp()
+
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,settingsCords[entryboxData]['x'],settingsCords[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+
+    countOfFailedTests = 0
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+    # if countOfFailedTests == 0:
+    #     for i in range(len(newTenantArray)):
+    #         newTenantArray[i] = scramble(newTenantArray[i])
+
+    #     openDatabase()
+    #     global newTenantInsertionCommand
+    #     newTenantInsertionCommand = """INSERT INTO tenants(tenant_ID,account_ID,tenant_Email,first_Name,last_Name,title,date_Of_Birth,score,total_Residents,start_Date,deposit,gerneral_Notes)
+    #     Values(?,?,?,?,?,?,?,?,?,?,?,?)"""
+    #     cursor.execute(newTenantInsertionCommand,newTenantArray)
+    #     closeDatabase()
+
+    displayConfirmation('Settings')
+
+def settingsPageCoverUp():
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=settingsCords[entryboxData]['x'],rely=settingsCords[entryboxData]['y'],anchor=CENTER)
+
 
 def contactPage():
     initialiseWindow()
