@@ -21,7 +21,6 @@ from PIL import Image, ImageColor, ImageFilter
 import random
 import string
 from dataObjectClass import uInputDataObj
-from Crypto.Cipher import AES
 
 print('program started')
 
@@ -57,7 +56,7 @@ def invalidOSRunning():
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
-    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts, key, fernet
+    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts
     primary = uInputDataObj('#373f51',str)
     secondry = uInputDataObj('white',str)
     tertiary = uInputDataObj('#a9a9a9',str)
@@ -83,12 +82,8 @@ def definingDefaultVariables():
     bCapGainsTR =  uInputDataObj(18,float)
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
-    normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','\n','%','\t','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
-    mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
-    #databaseCurrentAccount_ID = uInputDataObj(deScramble('gKo3eMCowu'),str)
+    databaseCurrentAccount_ID = uInputDataObj(deScramble('gKo3eMCowu'),str)
     listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
-    key = b'r8nBeqEunkzdJ93rAOBse4dS3epWe4HKw6LD2dEQ0NM='
-    fernet = Fernet(key)
 
 #intialising page
 def initialiseWindow():
@@ -539,7 +534,7 @@ def createAccountPage():
     passwordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     passwordEntryBox.place(relx=0.75,rely=0.25,anchor=CENTER)
     passwordLabel = Label(root, text='Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.75,rely=0.17,anchor=CENTER)
-    passwordSubLabel = Label(root, text='As with all user data input, the password is none case sensative',bg=primary.data, fg=secondry.data, width=60, font=(font.data,7), justify='center',relief='flat').place(relx=0.75,rely=0.315,anchor=CENTER)
+    #passwordSubLabel = Label(root, text='As with all user data input, the password is none case sensative',bg=primary.data, fg=secondry.data, width=60, font=(font.data,7), justify='center',relief='flat').place(relx=0.75,rely=0.315,anchor=CENTER)
 
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.75,rely=0.43,anchor=CENTER)
     global surnameEntryBox
@@ -746,16 +741,27 @@ def getTaxRate(accountID):
         tax_Rate='b'
     return(tax_Rate)
 
+#scrambling alg used for encrpytin data so that it cannot be easily read straight from the DB file
 def scramble(data):
     print(data)
-    obj = AES.new('This is a key123', AES.MODE_CFB, 'This is an IV456')
-    ciphertext = obj.encrypt(data)
-    return ciphertext
+    data = list(str(data))
+    for i in range (len(data)):
+        data[i] = chr(ord(data[i])+len(data)) #uses a variable cipher to make it more complex
+    cipherText = listToString(data[::-1])
+    print(cipherText)
+    return cipherText
 
-def deScramble(data):
-    fernet = Fernet('r8nBeqEunkzdJ93rAOBse4dS3epWe4HKw6LD2dEQ0NM=')
-    decMessage = str(fernet.encrypt(data).decode())
-    return decMessage
+#used to decrypt the data from the db
+def deScramble(cipherText):
+    print(cipherText)
+    cipherText = list(str(cipherText))
+    cipherText = cipherText[::-1]
+    cipherText = list(cipherText)
+    for i in range(len(cipherText)):
+        cipherText[i] = chr(ord(cipherText[i]) - len(cipherText))
+    data = listToString(cipherText)
+    print(data)
+    return data
 
 def listToString(list):
     word = ''
@@ -987,7 +993,7 @@ def login():
         validEmail = False
     else:
         validEmail = True
-        if deScramble(str(storedPasswordForAccount[0][0])) == password.data.lower():
+        if deScramble(str(storedPasswordForAccount[0][0])) == password.data:
             openDatabase()
             account_ID_Dirty = cursor.execute("SELECT account_ID FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
             #global databaseCurrentAccount_ID
