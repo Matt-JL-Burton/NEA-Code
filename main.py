@@ -82,7 +82,7 @@ def definingDefaultVariables():
     bCapGainsTR =  uInputDataObj(18,float)
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
-    databaseCurrentAccount_ID = uInputDataObj(deScramble('gKo3eMCowu'),str)
+    databaseCurrentAccount_ID = uInputDataObj(deScramble("XBV;RR<T:\"),str)
     listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
 
 #intialising page
@@ -743,24 +743,20 @@ def getTaxRate(accountID):
 
 #scrambling alg used for encrpytin data so that it cannot be easily read straight from the DB file
 def scramble(data):
-    print(data)
     data = list(str(data))
     for i in range (len(data)):
         data[i] = chr(ord(data[i])+len(data)) #uses a variable cipher to make it more complex
     cipherText = listToString(data[::-1])
-    print(cipherText)
     return cipherText
 
 #used to decrypt the data from the db
 def deScramble(cipherText):
-    print(cipherText)
     cipherText = list(str(cipherText))
     cipherText = cipherText[::-1]
     cipherText = list(cipherText)
     for i in range(len(cipherText)):
         cipherText[i] = chr(ord(cipherText[i]) - len(cipherText))
     data = listToString(cipherText)
-    print(data)
     return data
 
 def listToString(list):
@@ -997,7 +993,8 @@ def login():
             openDatabase()
             account_ID_Dirty = cursor.execute("SELECT account_ID FROM ACCOUNTS WHERE recovery_Email = '" + str(scramble(castingTypeCheckFunc(recovery_Email.data,recovery_Email.prefferredType)))+str("'") )
             #global databaseCurrentAccount_ID
-            databaseCurrentAccount_ID = uInputDataObj(account_ID_Dirty.fetchall()[0][0],str)
+            global databaseCurrentAccount_ID
+            databaseCurrentAccount_ID.setData(deScramble(account_ID_Dirty.fetchall()[0][0]))
             #print(databaseCurrentAccount_ID)
             #displayConfirmation('Home')
             homePage()
@@ -1367,7 +1364,8 @@ def settingsPage():
     global primaryHexEntryBox
     primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
-    primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    print("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
     primaryColourD = deScramble(primaryColourD.fetchall()[0][0])
     primaryHexEntryBox.insert(END,primaryColourD)
     closeDatabase()
@@ -1379,7 +1377,7 @@ def settingsPage():
     global secondryColourOptions
     secondryColourOptions = listOfSecondryColourOptions
     openDatabase()
-    currentSecondryD = cursor.execute("SELECT secondry_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    currentSecondryD = cursor.execute("SELECT secondry_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
     currentSecondryD = deScramble(currentSecondryD.fetchall()[0][0])
     global secondryColourMenu
     secondryColourMenu = ttk.Combobox(root, value=secondryColourOptions, justify=tkinter.CENTER, font=(font.data,18))
@@ -1517,8 +1515,9 @@ def updateSetings():
             newListOfAccount[i] = scramble(newListOfAccount[i])
 
         openDatabase()
-        accocountUpdateommand = "UPDATE accounts SET primary_Colour = '" + str(primary_Colour) + "', secondry_Colour = '" + str(secondry_Colour) + "', tertairy_Colour = '" + str(tertiary_Colour) + "', font = '" + str(font) + "', operation_Type = '" + str(operation_Type) + "', title = '" + str(title) + "', first_Name = '" + str(first_Name) + "', last_Name = '" + str(last_Name) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data))
-        cursor.execute(accocountUpdateommand)
+        accocountUpdateCommand = ("UPDATE accounts SET primary_Colour = '" + str(primary_Colour) + "', secondry_Colour = '" + str(secondry_Colour) + "', tertairy_Colour = '" + str(tertiary_Colour) + "', font = '" + str(font) + "', operation_Type = '" + str(operation_Type) + "', title = '" + str(title) + "', first_Name = '" + str(first_Name) + "', last_Name = '" + str(last_Name) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)))
+        print(accocountUpdateCommand)
+        cursor.execute(accocountUpdateCommand)
         closeDatabase()
 
     displayConfirmation('Settings')
