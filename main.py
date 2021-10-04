@@ -1,4 +1,6 @@
 #importing modules
+from email import message
+from http.client import GATEWAY_TIMEOUT
 from sqlite3.dbapi2 import Connection
 from tkinter import *
 from tkinter import ttk
@@ -19,6 +21,7 @@ from PIL import Image, ImageColor, ImageFilter
 import random
 import string
 from dataObjectClass import uInputDataObj
+from Crypto.Cipher import AES
 
 print('program started')
 
@@ -31,8 +34,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
-            #displayTCs()
-            settingsPage()
+            displayTCs()
+            #settingsPage()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -54,7 +57,7 @@ def invalidOSRunning():
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
-    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts
+    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts, key, fernet
     primary = uInputDataObj('#373f51',str)
     secondry = uInputDataObj('white',str)
     tertiary = uInputDataObj('#a9a9a9',str)
@@ -82,9 +85,10 @@ def definingDefaultVariables():
     aCapGainsTR =  uInputDataObj(28,float)
     normalSet = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','`','¬','!','"','£','\n','%','\t','&','*','(',')','_','-','=','+',';',':','@',"'",' ','#',',','.','?','/']
     mappingSet = ['m', '3', '4', 'A', 'e', 'b', 'o', 'B', 'u', 'w', 'C', 'a', '2', 'i', 'D', 'E', 'F', '9', "G", 'g', 'H', 'I', '7', 'J', 'h', 'K', '6', 'L', 'M', 'x', 's', 'N', 'O', 'p', 'P', '5', 'r','Q', '0', 'c', 'R', 't', 'd', 'q', 'f', 'S', 'z', 'k', 'T', 'y', 'j', 'U', 'V', 'n', 'W', '8', 'l', 'X', 'Y', 'Z', '1', 'v']
-    databaseCurrentAccount_ID = uInputDataObj(deScramble('gKo3eMCowu'),str)
+    #databaseCurrentAccount_ID = uInputDataObj(deScramble('gKo3eMCowu'),str)
     listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
-
+    key = b'r8nBeqEunkzdJ93rAOBse4dS3epWe4HKw6LD2dEQ0NM='
+    fernet = Fernet(key)
 
 #intialising page
 def initialiseWindow():
@@ -743,23 +747,15 @@ def getTaxRate(accountID):
     return(tax_Rate)
 
 def scramble(data):
-    data = str(data)
-    data = data.lower()
-    data = list(data)
-    for i in range(len(data)):
-        data[i] = mappingSet[normalSet.index(data[i])]
-    data = listToString(data)
-    data = data[::-1]
-    return(data)
+    print(data)
+    obj = AES.new('This is a key123', AES.MODE_CFB, 'This is an IV456')
+    ciphertext = obj.encrypt(data)
+    return ciphertext
 
 def deScramble(data):
-    data = str(data)
-    data = list(data)
-    data = data[::-1]
-    for i in range(len(data)):
-        data[i] = normalSet[mappingSet.index(data[i])]
-    data = listToString(data)
-    return data
+    fernet = Fernet('r8nBeqEunkzdJ93rAOBse4dS3epWe4HKw6LD2dEQ0NM=')
+    decMessage = str(fernet.encrypt(data).decode())
+    return decMessage
 
 def listToString(list):
     word = ''
@@ -1436,6 +1432,7 @@ def settingsPage():
     openDatabase()
     operationTypeD = cursor.execute("SELECT operation_Type FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
     operationTypeD = deScramble(operationTypeD.fetchall()[0][0])
+    global operation_TypeOptions
     operation_TypeOptions = ['Business','Personal']
     global operationTypeMenu
     operationTypeMenu = ttk.Combobox(root, value=operation_TypeOptions, justify=tkinter.CENTER, font=(font.data,18))
@@ -1480,12 +1477,18 @@ def updateSetings():
     dictOfUnchangable = {'account_ID':listOfUnchangable[0],'password':listOfUnchangable[1],'recovery_Email':listOfUnchangable[2],'tax_Rate':listOfUnchangable[3],'other_Income_Estimate':listOfUnchangable[4],'basic_Income_Rate':listOfUnchangable[5],'high_Income_Rate':listOfUnchangable[6],'additional_Income_Rate':listOfUnchangable[7],'basic_Income_Cut_Off':listOfUnchangable[8],'high_Income_Cut_Off':listOfUnchangable[9],'corporation_Rate':listOfUnchangable[10],'basic_Capital_Gains_Rate':listOfUnchangable[11],'basic_Capital_Gains_Allowence':listOfUnchangable[12],'high_Capital_Gains_Rate':listOfUnchangable[13],'additional_Capital_Gains_Rate':listOfUnchangable[14],'corporation_Capital_Gains_Rate':listOfUnchangable[15],'national_Insurance_Due':listOfUnchangable[16]}
     closeDatabase()
 
+    newListOfAccount = [dictOfUnchangable['account_ID'],dictOfUnchangable['password'],dictOfUnchangable['recovery_Email'],first_Name,last_Name,operation_Type,title,dictOfUnchangable['tax_Rate'],dictOfUnchangable['other_Income_Estimate'],dictOfUnchangable['basic_Income_Rate'],dictOfUnchangable['high_Income_Rate'],dictOfUnchangable['additional_Income_Rate'],dictOfUnchangable['basic_Income_Cut_Off'],dictOfUnchangable['high_Income_Cut_Off'],dictOfUnchangable['corporation_Rate'],dictOfUnchangable['basic_Capital_Gains_Rate'],dictOfUnchangable['basic_Capital_Gains_Allowence'],dictOfUnchangable['high_Capital_Gains_Rate'],dictOfUnchangable['additional_Capital_Gains_Rate'],dictOfUnchangable['corporation_Capital_Gains_Rate'],dictOfUnchangable['national_Insurance_Due']]
+
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(accountFields)
     dictOfDataValdationResults['primary_Colour'] = {'presenceCheck':presenceCheck(primary_Colour),'hexCodeCheck':hexCodeCheck(primary_Colour)}
     dictOfDataValdationResults['secondry_Colour'] = {'menuOptionCheck':menuOptionCheck(secondry_Colour,secondryColourOptions)}
     dictOfDataValdationResults['tertiary_Colour'] = {'presenceCheck':presenceCheck(tertiary_Colour),'hexCodeCheck':hexCodeCheck(tertiary_Colour)}
     dictOfDataValdationResults['font'] = {'menuOptionCheck':menuOptionCheck(font,listOfAcceptedFonts)}
+    dictOfDataValdationResults['operation_Type'] = {'menuOptionCheck':menuOptionCheck(operation_Type,operation_TypeOptions)}
+    dictOfDataValdationResults['title'] = {'presenceCheck':presenceCheck(title),'containsOnlyLetters':containsOnlyLetters(title),'noSpaces':pictureCheck(title,'',0,0)}
+    dictOfDataValdationResults['first_Name'] ={'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name),'noSpaces':pictureCheck(first_Name,'',0,0)}
+    dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(last_Name),'containsOnlyLetters':containsOnlyLetters(last_Name),'noSpaces':pictureCheck(last_Name,'',0,0)}
     settingsPageCoverUp()
 
     for entryboxData in dictOfDataValdationResults.keys():
@@ -1503,16 +1506,14 @@ def updateSetings():
                 if test == False:
                     countOfFailedTests = countOfFailedTests +1
 
-    # if countOfFailedTests == 0:
-    #     for i in range(len(newTenantArray)):
-    #         newTenantArray[i] = scramble(newTenantArray[i])
+    if countOfFailedTests == 0:
+        for i in range(len(newListOfAccount)):
+            newListOfAccount[i] = scramble(newListOfAccount[i])
 
-    #     openDatabase()
-    #     global newTenantInsertionCommand
-    #     newTenantInsertionCommand = """INSERT INTO tenants(tenant_ID,account_ID,tenant_Email,first_Name,last_Name,title,date_Of_Birth,score,total_Residents,start_Date,deposit,gerneral_Notes)
-    #     Values(?,?,?,?,?,?,?,?,?,?,?,?)"""
-    #     cursor.execute(newTenantInsertionCommand,newTenantArray)
-    #     closeDatabase()
+        openDatabase()
+        accocountUpdateommand = "UPDATE accounts SET primary_Colour = '" + str(primary_Colour) + "', secondry_Colour = '" + str(secondry_Colour) + "', tertairy_Colour = '" + str(tertiary_Colour) + "', font = '" + str(font) + "', operation_Type = '" + str(operation_Type) + "', title = '" + str(title) + "', first_Name = '" + str(first_Name) + "', last_Name = '" + str(last_Name) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data))
+        cursor.execute(accocountUpdateommand)
+        closeDatabase()
 
     displayConfirmation('Settings')
 
@@ -1520,7 +1521,6 @@ def settingsPageCoverUp():
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=settingsCords[entryboxData]['x'],rely=settingsCords[entryboxData]['y'],anchor=CENTER)
-
 
 def contactPage():
     initialiseWindow()
