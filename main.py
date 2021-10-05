@@ -82,8 +82,10 @@ def definingDefaultVariables():
     bCapGainsTR =  uInputDataObj(18,float)
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
-    databaseCurrentAccount_ID = uInputDataObj(deScramble("XBV;RR<T:\"),str)
+    databaseCurrentAccount_ID = uInputDataObj(deScramble('XTN:[?]NVS'),str) #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
     listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
+    for i in range(len(listOfAcceptedFonts)):
+        listOfAcceptedFonts[i] = listOfAcceptedFonts[i].title()
 
 #intialising page
 def initialiseWindow():
@@ -745,7 +747,10 @@ def getTaxRate(accountID):
 def scramble(data):
     data = list(str(data))
     for i in range (len(data)):
-        data[i] = chr(ord(data[i])+len(data)) #uses a variable cipher to make it more complex
+        ascii_Code = ord(data[i])+len(data)
+        if ascii_Code == 92: #This takes out the \ character because this messes with the SQL as it is used in f stirngs
+            ascii_Code = 0
+        data[i] = chr(ascii_Code) #uses a variable cipher to make it more complex
     cipherText = listToString(data[::-1])
     return cipherText
 
@@ -755,7 +760,10 @@ def deScramble(cipherText):
     cipherText = cipherText[::-1]
     cipherText = list(cipherText)
     for i in range(len(cipherText)):
-        cipherText[i] = chr(ord(cipherText[i]) - len(cipherText))
+        ascii_Code = ord(cipherText[i])
+        if ascii_Code == 0: #subs back in the \ character so that data is not lost
+            ascii_Code = 92
+        cipherText[i] = chr(ascii_Code - len(cipherText))
     data = listToString(cipherText)
     return data
 
@@ -1364,9 +1372,11 @@ def settingsPage():
     global primaryHexEntryBox
     primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
-    print("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    print(("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'"))
     primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    primaryColourD = deScramble(primaryColourD.fetchall()[0][0])
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    print(primaryColourD)
     primaryHexEntryBox.insert(END,primaryColourD)
     closeDatabase()
     primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
@@ -1415,7 +1425,7 @@ def settingsPage():
     titleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
     titleD = cursor.execute("SELECT title FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
-    titleD = deScramble(titleD.fetchall()[0][0]).title()
+    titleD = deScramble(titleD.fetchall()[0][0])
     titleEntryBox.insert(END,titleD)
     closeDatabase()
     titleEntryBox.place(relx=0.5,rely=0.43,anchor=CENTER)
@@ -1426,7 +1436,7 @@ def settingsPage():
     firstNameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
     firstD = cursor.execute("SELECT first_Name FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
-    firstD = deScramble(firstD.fetchall()[0][0]).title()
+    firstD = deScramble(firstD.fetchall()[0][0])
     firstNameEntryBox.insert(END,firstD)
     closeDatabase()
     firstNameEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
@@ -1440,7 +1450,7 @@ def settingsPage():
     operation_TypeOptions = ['Business','Personal']
     global operationTypeMenu
     operationTypeMenu = ttk.Combobox(root, value=operation_TypeOptions, justify=tkinter.CENTER, font=(font.data,18))
-    operationTypeMenu.current(operation_TypeOptions.index(operationTypeD.title()))
+    operationTypeMenu.current(operation_TypeOptions.index(operationTypeD))
     root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
     operationTypeMenu.place(relx=0.83,rely=0.43,anchor=CENTER)
     closeDatabase()
@@ -1451,7 +1461,7 @@ def settingsPage():
     surnameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
     lastD = cursor.execute("SELECT last_Name FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
-    lastD = deScramble(lastD.fetchall()[0][0]).title()
+    lastD = deScramble(lastD.fetchall()[0][0])
     surnameEntryBox.insert(END,lastD)
     closeDatabase()
     surnameEntryBox.place(relx=0.83,rely=0.61,anchor=CENTER)
@@ -1481,7 +1491,7 @@ def updateSetings():
     dictOfUnchangable = {'account_ID':listOfUnchangable[0],'password':listOfUnchangable[1],'recovery_Email':listOfUnchangable[2],'tax_Rate':listOfUnchangable[3],'other_Income_Estimate':listOfUnchangable[4],'basic_Income_Rate':listOfUnchangable[5],'high_Income_Rate':listOfUnchangable[6],'additional_Income_Rate':listOfUnchangable[7],'basic_Income_Cut_Off':listOfUnchangable[8],'high_Income_Cut_Off':listOfUnchangable[9],'corporation_Rate':listOfUnchangable[10],'basic_Capital_Gains_Rate':listOfUnchangable[11],'basic_Capital_Gains_Allowence':listOfUnchangable[12],'high_Capital_Gains_Rate':listOfUnchangable[13],'additional_Capital_Gains_Rate':listOfUnchangable[14],'corporation_Capital_Gains_Rate':listOfUnchangable[15],'national_Insurance_Due':listOfUnchangable[16]}
     closeDatabase()
 
-    newListOfAccount = [dictOfUnchangable['account_ID'],dictOfUnchangable['password'],dictOfUnchangable['recovery_Email'],first_Name,last_Name,operation_Type,title,dictOfUnchangable['tax_Rate'],dictOfUnchangable['other_Income_Estimate'],dictOfUnchangable['basic_Income_Rate'],dictOfUnchangable['high_Income_Rate'],dictOfUnchangable['additional_Income_Rate'],dictOfUnchangable['basic_Income_Cut_Off'],dictOfUnchangable['high_Income_Cut_Off'],dictOfUnchangable['corporation_Rate'],dictOfUnchangable['basic_Capital_Gains_Rate'],dictOfUnchangable['basic_Capital_Gains_Allowence'],dictOfUnchangable['high_Capital_Gains_Rate'],dictOfUnchangable['additional_Capital_Gains_Rate'],dictOfUnchangable['corporation_Capital_Gains_Rate'],dictOfUnchangable['national_Insurance_Due']]
+    newListOfAccount = [dictOfUnchangable['account_ID'],dictOfUnchangable['password'],dictOfUnchangable['recovery_Email'],first_Name.data,last_Name.data,operation_Type.data,title.data,dictOfUnchangable['tax_Rate'],dictOfUnchangable['other_Income_Estimate'],dictOfUnchangable['basic_Income_Rate'],dictOfUnchangable['high_Income_Rate'],dictOfUnchangable['additional_Income_Rate'],dictOfUnchangable['basic_Income_Cut_Off'],dictOfUnchangable['high_Income_Cut_Off'],dictOfUnchangable['corporation_Rate'],dictOfUnchangable['basic_Capital_Gains_Rate'],dictOfUnchangable['basic_Capital_Gains_Allowence'],dictOfUnchangable['high_Capital_Gains_Rate'],dictOfUnchangable['additional_Capital_Gains_Rate'],dictOfUnchangable['corporation_Capital_Gains_Rate'],dictOfUnchangable['national_Insurance_Due']]
 
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(accountFields)
@@ -1515,8 +1525,7 @@ def updateSetings():
             newListOfAccount[i] = scramble(newListOfAccount[i])
 
         openDatabase()
-        accocountUpdateCommand = ("UPDATE accounts SET primary_Colour = '" + str(primary_Colour) + "', secondry_Colour = '" + str(secondry_Colour) + "', tertairy_Colour = '" + str(tertiary_Colour) + "', font = '" + str(font) + "', operation_Type = '" + str(operation_Type) + "', title = '" + str(title) + "', first_Name = '" + str(first_Name) + "', last_Name = '" + str(last_Name) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)))
-        print(accocountUpdateCommand)
+        accocountUpdateCommand = ("UPDATE accounts SET primary_Colour = '" + str(primary_Colour.data) + "', secondry_Colour = '" + str(secondry_Colour.data) + "', tertiary_Colour = '" + str(tertiary_Colour.data) + "', font = '" + str(font.data) + "', operation_Type = '" + str(operation_Type.data) + "', title = '" + str(title.data) + "', first_Name = '" + str(first_Name.data) + "', last_Name = '" + str(last_Name.data) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) +"'")
         cursor.execute(accocountUpdateCommand)
         closeDatabase()
 
