@@ -745,27 +745,29 @@ def getTaxRate(accountID):
 
 #scrambling alg used for encrpytin data so that it cannot be easily read straight from the DB file
 def scramble(data):
-    data = list(str(data))
-    for i in range (len(data)):
-        ascii_Code = ord(data[i])+len(data)
-        if ascii_Code == 92: #This takes out the \ character because this messes with the SQL as it is used in f stirngs
-            ascii_Code = 0
-        data[i] = chr(ascii_Code) #uses a variable cipher to make it more complex
-    cipherText = listToString(data[::-1])
-    return cipherText
+    # data = list(str(data))
+    # for i in range (len(data)):
+    #     ascii_Code = ord(data[i])+len(data)
+    #     if ascii_Code == 92: #This takes out the \ character because this messes with the SQL as it is used in f stirngs
+    #         ascii_Code = 0
+    #     data[i] = chr(ascii_Code) #uses a variable cipher to make it more complex
+    # cipherText = listToString(data[::-1])
+    #return cipherText
+    return data
 
 #used to decrypt the data from the db
 def deScramble(cipherText):
-    cipherText = list(str(cipherText))
-    cipherText = cipherText[::-1]
-    cipherText = list(cipherText)
-    for i in range(len(cipherText)):
-        ascii_Code = ord(cipherText[i])
-        if ascii_Code == 0: #subs back in the \ character so that data is not lost
-            ascii_Code = 92
-        cipherText[i] = chr(ascii_Code - len(cipherText))
-    data = listToString(cipherText)
-    return data
+    # cipherText = list(str(cipherText))
+    # cipherText = cipherText[::-1]
+    # cipherText = list(cipherText)
+    # for i in range(len(cipherText)):
+    #     ascii_Code = ord(cipherText[i])
+    #     if ascii_Code == 0: #subs back in the \ character so that data is not lost
+    #         ascii_Code = 92
+    #     cipherText[i] = chr(ascii_Code - len(cipherText))
+    # data = listToString(cipherText)
+    # return data
+    return cipherText
 
 def listToString(list):
     word = ''
@@ -1529,6 +1531,7 @@ def updateSetings():
         cursor.execute(accocountUpdateCommand)
         closeDatabase()
 
+    redoConfigureAccountSettingsVariables()
     displayConfirmation('Settings')
 
 def settingsPageCoverUp():
@@ -1619,5 +1622,8 @@ def newTenantCoverUp():
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=newTenantEntryBoxCords[entryboxData]['x'],rely=newTenantEntryBoxCords[entryboxData]['y'],anchor=CENTER)
+
+def redoConfigureAccountSettingsVariables():
+    cursor.execute
 
 initialise()
