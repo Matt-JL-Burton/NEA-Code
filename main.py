@@ -1624,6 +1624,6 @@ def newTenantCoverUp():
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=newTenantEntryBoxCords[entryboxData]['x'],rely=newTenantEntryBoxCords[entryboxData]['y'],anchor=CENTER)
 
 def redoConfigureAccountSettingsVariables():
-    cursor.execute
+    pass
 
 initialise()
