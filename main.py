@@ -1374,11 +1374,9 @@ def settingsPage():
     global primaryHexEntryBox
     primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
-    print(("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'"))
     primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
     data_To_Descrmable = primaryColourD.fetchall()[0][0]
     primaryColourD = deScramble(data_To_Descrmable)
-    print(primaryColourD)
     primaryHexEntryBox.insert(END,primaryColourD)
     closeDatabase()
     primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
@@ -1624,6 +1622,10 @@ def newTenantCoverUp():
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=newTenantEntryBoxCords[entryboxData]['x'],rely=newTenantEntryBoxCords[entryboxData]['y'],anchor=CENTER)
 
 def redoConfigureAccountSettingsVariables():
-    pass
+    openDatabase()
+    allAcoountData = cursor.execute("SELECT * FROM accounts WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + "'")
+    allAcoountData = allAcoountData.fetchall[0]
+    print(allAcoountData)
+    closeDatabase()
 
 initialise()
