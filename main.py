@@ -15,7 +15,7 @@ import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, flag, get, pink, prism, text
+from matplotlib.pyplot import autoscale, flag, get, pink, prism, text, title
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
@@ -33,8 +33,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
-            displayTCs()
-            #settingsPage()
+            #displayTCs()
+            settingsPage()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -56,7 +56,8 @@ def invalidOSRunning():
 def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
-    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts
+    global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts, operation_Type, recovery_Email, first_Name, last_Name, password, title
+    global tax_Rate, other_Income_Estimate, national_Insurance_Due
     primary = uInputDataObj('#373f51',str)
     secondry = uInputDataObj('white',str)
     tertiary = uInputDataObj('#a9a9a9',str)
@@ -64,12 +65,21 @@ def definingDefaultVariables():
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
     errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
+    operation_Type = uInputDataObj(None,str)
+    recovery_Email = uInputDataObj(None,str)
+    first_Name = uInputDataObj(None, str)
+    last_Name = uInputDataObj(None,str)
+    password = uInputDataObj(None,str)
+    title = uInputDataObj(None,str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
     listOfIdealAssets = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico','Long-Normal 2.PNG']
     connectionError = Tk()
     connectionError.destroy()
     previousPage = None
+    other_Income_Estimate = uInputDataObj(None,str)
+    national_Insurance_Due = uInputDataObj(None,str)
+    tax_Rate = uInputDataObj(None,str)
     incPA = uInputDataObj(12500.0,float)
     bIncTR = uInputDataObj(20.0,float)
     hIncTR = uInputDataObj(40.0,float)
@@ -82,7 +92,7 @@ def definingDefaultVariables():
     bCapGainsTR =  uInputDataObj(18,float)
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
-    databaseCurrentAccount_ID = uInputDataObj(deScramble('XTN:[?]NVS'),str) #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
+    databaseCurrentAccount_ID = uInputDataObj('KOMVXH1LY8',str) #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
     listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
     for i in range(len(listOfAcceptedFonts)):
         listOfAcceptedFonts[i] = listOfAcceptedFonts[i].title()
@@ -1624,8 +1634,10 @@ def newTenantCoverUp():
 def redoConfigureAccountSettingsVariables():
     openDatabase()
     allAcoountData = cursor.execute("SELECT * FROM accounts WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + "'")
-    allAcoountData = allAcoountData.fetchall[0]
-    print(allAcoountData)
+    allAcoountData = allAcoountData.fetchall()[0]
+    accountArray = [databaseCurrentAccount_ID,password,recovery_Email,first_Name,last_Name, operation_Type, title, tax_Rate, other_Income_Estimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,national_Insurance_Due, primary, secondry, tertiary, font]
+
+
     closeDatabase()
 
 initialise()
