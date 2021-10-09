@@ -94,7 +94,7 @@ def definingDefaultVariables():
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
     databaseCurrentAccount_ID = uInputDataObj('KOMVXH1LY8',str) #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
-    listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri','Comic Sans MS']
+    listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri']
     for i in range(len(listOfAcceptedFonts)):
         listOfAcceptedFonts[i] = listOfAcceptedFonts[i].title()
 
@@ -1392,7 +1392,7 @@ def settingsPage():
     openDatabase()
     primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
     data_To_Descrmable = primaryColourD.fetchall()[0][0]
-    primaryColourD = deScramble(data_To_Descrmable)
+    primaryColourD = deScramble(data_To_Descrmable).upper()
     primaryHexEntryBox.insert(END,primaryColourD)
     closeDatabase()
     primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
@@ -1405,7 +1405,7 @@ def settingsPage():
     openDatabase()
     primaryColourD = cursor.execute("SELECT secondry_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
     data_To_Descrmable = primaryColourD.fetchall()[0][0]
-    secondryHexData = deScramble(data_To_Descrmable)
+    secondryHexData = deScramble(data_To_Descrmable).upper()
     secondryHexEntryBox.insert(END,secondryHexData)
     closeDatabase()
     secondryHexEntryBox.place(relx=0.175,rely=0.43,anchor=CENTER)
@@ -1416,7 +1416,7 @@ def settingsPage():
     tertiaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
     tertiaryColourD = cursor.execute("SELECT tertiary_colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
-    tertiaryColourD = deScramble(tertiaryColourD.fetchall()[0][0])
+    tertiaryColourD = deScramble(tertiaryColourD.fetchall()[0][0]).upper()
     tertiaryHexEntryBox.insert(END,tertiaryColourD)
     closeDatabase()
     tertiaryHexEntryBox.place(relx=0.175,rely=0.61,anchor=CENTER)
