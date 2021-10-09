@@ -58,12 +58,12 @@ def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
     global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts, operation_Type, recovery_Email, first_Name, last_Name, password, title
-    global tax_Rate, other_Income_Estimate, national_Insurance_Due
+    global tax_Rate, other_Income_Estimate, national_Insurance_Due, style
     primary = uInputDataObj('#373f51',str)
     secondry = uInputDataObj('white',str)
     tertiary = uInputDataObj('#a9a9a9',str)
-    listOfSecondryColourOptions = ['white','light grey','grey','dark grey','black']
-    bannedColours = {'errorRed':'#FF0000','warningYellow':'#','activeTextColor':'dark grey'}
+    listOfSecondryColourOptions = ['white','grey','black']
+    bannedColours = {'errorRed':'#FF0000','warningYellow':'#ffff00','activeTextColor':'dark grey'}
     errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     operation_Type = uInputDataObj(None,str)
@@ -960,7 +960,7 @@ def containsNumbers(inputData):
         return False
 
 def hexCodeCheck(inputData):
-    hexCodePossibleCharacters = ['1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
+    hexCodePossibleCharacters = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','a','b','c','d','e','f']
     if castingTypeCheckFunc(inputData.data, inputData.prefferredType) != False:
         if len(inputData.data) != 0:
             if inputData.data[0] =='#' and len(inputData.data) == 7:
@@ -975,6 +975,8 @@ def hexCodeCheck(inputData):
                     return True
                 else:
                     return False
+            else:
+                return False
         else:
             return False
     else:
@@ -1396,20 +1398,18 @@ def settingsPage():
     primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
 
+
     secondryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
+    global secondryHexEntryBox
+    secondryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
-    global secondryColourOptions
-    secondryColourOptions = listOfSecondryColourOptions
-    openDatabase()
-    currentSecondryD = cursor.execute("SELECT secondry_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    currentSecondryD = deScramble(currentSecondryD.fetchall()[0][0])
-    global secondryColourMenu
-    secondryColourMenu = ttk.Combobox(root, value=secondryColourOptions, justify=tkinter.CENTER, font=(font.data,18))
-    secondryColourMenu.current(secondryColourOptions.index(currentSecondryD))
-    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
-    secondryColourMenu.place(relx=0.175,rely=0.43,anchor=CENTER)
+    primaryColourD = cursor.execute("SELECT secondry_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    secondryHexData = deScramble(data_To_Descrmable)
+    secondryHexEntryBox.insert(END,secondryHexData)
     closeDatabase()
-    secondryHexEntryLabel = Label(root, text='Secondry Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.35,anchor=CENTER)
+    secondryHexEntryBox.place(relx=0.175,rely=0.43,anchor=CENTER)
+    secondryHexEntryBoxLabel = Label(root, text='Secondry Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.35,anchor=CENTER)
 
     tertiaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.61,anchor=CENTER)
     global tertiaryHexEntryBox
@@ -1482,14 +1482,14 @@ def settingsPage():
     surnameEntryLabel = Label(root, text='Surname',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.83,rely=0.53,anchor=CENTER)
 
     global settingsCords
-    settingsCords = {'primary_Colour':{'x':0.175,'y':0.3175},'secondry_Colour':{'x':0.175,'y':4975},'tertiary_Colour':{'x':0.175,'y':0.6775},'font':{'x':0.6635,'y':0.3175},'title':{'x':0.5,'y':0.4975},'operation_Type':{'x':0.83,'y':0.4975},'first_Name':{'x':0.5,'y':0.6775},'last_Name':{'x':0.83,'y':0.6775}}
+    settingsCords = {'primary_Colour':{'x':0.175,'y':0.3175},'secondry_Colour':{'x':0.175,'y':0.4975},'tertiary_Colour':{'x':0.175,'y':0.6775},'font':{'x':0.6635,'y':0.3175},'title':{'x':0.5,'y':0.4975},'operation_Type':{'x':0.83,'y':0.4975},'first_Name':{'x':0.5,'y':0.6775},'last_Name':{'x':0.83,'y':0.6775}}
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateSetings).place(relx=0.5, rely=0.93, anchor=CENTER)
 
     root.mainloop()
 
 def updateSetings():
     primary_Colour = uInputDataObj(primaryHexEntryBox.get(),str)
-    secondry_Colour = uInputDataObj(secondryColourMenu.get(),str)
+    secondry_Colour = uInputDataObj(secondryHexEntryBox.get(),str)
     tertiary_Colour = uInputDataObj(tertiaryHexEntryBox.get(),str)
     font = uInputDataObj(fontMenu.get(),str)
     title = uInputDataObj(titleEntryBox.get(),str)
@@ -1510,7 +1510,7 @@ def updateSetings():
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(accountFields)
     dictOfDataValdationResults['primary_Colour'] = {'presenceCheck':presenceCheck(primary_Colour),'hexCodeCheck':hexCodeCheck(primary_Colour)}
-    dictOfDataValdationResults['secondry_Colour'] = {'menuOptionCheck':menuOptionCheck(secondry_Colour,secondryColourOptions)}
+    dictOfDataValdationResults['secondry_Colour'] = {'presenceCheck':presenceCheck(secondry_Colour),'hexCodeCheck':hexCodeCheck(secondry_Colour)}
     dictOfDataValdationResults['tertiary_Colour'] = {'presenceCheck':presenceCheck(tertiary_Colour),'hexCodeCheck':hexCodeCheck(tertiary_Colour)}
     dictOfDataValdationResults['font'] = {'menuOptionCheck':menuOptionCheck(font,listOfAcceptedFonts)}
     dictOfDataValdationResults['operation_Type'] = {'menuOptionCheck':menuOptionCheck(operation_Type,operation_TypeOptions)}
@@ -1534,9 +1534,8 @@ def updateSetings():
                 if test == False:
                     countOfFailedTests = countOfFailedTests +1
 
-    print(countOfFailedTests)
-
     if countOfFailedTests == 0:
+        timeLabel = Label(root,text="This submit may take some time please be patient",bg=primary.data,fg=bannedColours['warningYellow'], width=75, font=(font.data,12), justify='center',relief='flat').place(relx=0.5, rely=0.8 ,anchor=CENTER)
         for i in range(len(newListOfAccount)):
             newListOfAccount[i] = scramble(newListOfAccount[i])
 
@@ -1647,7 +1646,6 @@ def redoConfigureAccountSettingsVariables():
     accountArray = [databaseCurrentAccount_ID,password,recovery_Email,first_Name,last_Name, operation_Type, title, tax_Rate, other_Income_Estimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,national_Insurance_Due, primary, secondry, tertiary, font]
     for i in range(len(accountArray)):
         accountArray[i] = accountArray[i].setData(allAcoountData[i]) 
-
     closeDatabase()
 
 initialise()
