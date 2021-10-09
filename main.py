@@ -31,6 +31,7 @@ def initialise():
     if path_seperator != None: #basically if the device is running on an accepted OS
         os.chdir(pathlib.Path(__file__).parent.absolute())
         if fileCreation() == 'Correct Files Created':
+            redoConfigureAccountSettingsVariables()
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
@@ -961,18 +962,21 @@ def containsNumbers(inputData):
 def hexCodeCheck(inputData):
     hexCodePossibleCharacters = ['1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
     if castingTypeCheckFunc(inputData.data, inputData.prefferredType) != False:
-        if inputData.data[0] =='#' and len(inputData.data) == 7:
-            inputData.setData(inputData.data.title())
-            invalidChacracters = 0
-            for i in range(6):
-                if inputData.data[i+1] in hexCodePossibleCharacters:
-                    pass
+        if len(inputData.data) != 0:
+            if inputData.data[0] =='#' and len(inputData.data) == 7:
+                inputData.setData(inputData.data.title())
+                invalidChacracters = 0
+                for i in range(6):
+                    if inputData.data[i+1] in hexCodePossibleCharacters:
+                        pass
+                    else:
+                        invalidChacracters = invalidChacracters + 1
+                if invalidChacracters == 0:
+                    return True
                 else:
-                    invalidChacracters = invalidChacracters + 1
-            if invalidChacracters == 0:
-                return True
-            else:
-                return False
+                    return False
+        else:
+            return False
     else:
         return False
 # end of data validation tests
@@ -1490,7 +1494,7 @@ def updateSetings():
     font = uInputDataObj(fontMenu.get(),str)
     title = uInputDataObj(titleEntryBox.get(),str)
     operation_Type = uInputDataObj(operationTypeMenu.get(),str)
-    first_Name = uInputDataObj(firstNameEntryBox.get(),str)
+    first_Name = uInputDataObj(firstNameEntryBox.get(),str) 
     last_Name = uInputDataObj(surnameEntryBox.get(),str)
     
     accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate', 'other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
@@ -1530,6 +1534,8 @@ def updateSetings():
                 if test == False:
                     countOfFailedTests = countOfFailedTests +1
 
+    print(countOfFailedTests)
+
     if countOfFailedTests == 0:
         for i in range(len(newListOfAccount)):
             newListOfAccount[i] = scramble(newListOfAccount[i])
@@ -1539,8 +1545,11 @@ def updateSetings():
         cursor.execute(accocountUpdateCommand)
         closeDatabase()
 
-    redoConfigureAccountSettingsVariables()
-    displayConfirmation('Settings')
+        redoConfigureAccountSettingsVariables()
+        convertAssetColor(primary,secondry)
+        if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+            chdir(f'.{path_seperator}Assets')
+        displayConfirmation('Settings')
 
 def settingsPageCoverUp():
     for entryboxData in dictOfDataValdationResults.keys():
@@ -1636,7 +1645,8 @@ def redoConfigureAccountSettingsVariables():
     allAcoountData = cursor.execute("SELECT * FROM accounts WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + "'")
     allAcoountData = allAcoountData.fetchall()[0]
     accountArray = [databaseCurrentAccount_ID,password,recovery_Email,first_Name,last_Name, operation_Type, title, tax_Rate, other_Income_Estimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,national_Insurance_Due, primary, secondry, tertiary, font]
-
+    for i in range(len(accountArray)):
+        accountArray[i] = accountArray[i].setData(allAcoountData[i]) 
 
     closeDatabase()
 
