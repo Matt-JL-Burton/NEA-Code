@@ -108,7 +108,6 @@ def initialiseWindow():
     root.configure(background=primary.data)
     root.resizable(width=False, height=False) #Makes the window not be reziable becuase that mucks up the asthetics
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
-        print(os.getcwd())
         chdir(f'.{path_seperator}Assets')
     root.iconbitmap("House.ico")
     root.bind("=", escapeProgram)
@@ -439,7 +438,7 @@ def loginPage():
     global passwordEntry 
     passwordEntry = Entry(root, bg=primary.data,fg=secondry.data, width=42, font=(font.data,24),justify='center',relief='flat')
     passwordEntry.place(relx=0.5,rely=0.64,anchor=CENTER)
-    hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordEntry,0.15,0.64)).place(relx=0.15, rely=0.64, anchor=CENTER)
+    hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordEntry,0.14,0.64)).place(relx=0.14, rely=0.64, anchor=CENTER)
     createAccountPageB = Button(root, text='Create Account', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
     ForgottenPageB = Button(root, text='Forgotten Password?', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
     submitLoginDetailsB = Button(root, text='L O G I N', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
@@ -1696,25 +1695,28 @@ def changePasswordPage():
     orignalPasswordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     orignalPasswordEntryBox.place(relx=0.5,rely=0.33,anchor=CENTER)
     orignalPasswordEntryBoxLabel = Label(root, text='Current Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.24,anchor=CENTER)
-    hidePasswordChangePOG = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(orignalPasswordEntryBox,0.15,0.33)).place(relx=0.15, rely=0.33, anchor=CENTER)
 
     newPasswordBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.55,anchor=CENTER)
     global newPasswordEntryBox
     newPasswordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     newPasswordEntryBox.place(relx=0.5,rely=0.55,anchor=CENTER)
     newPasswordEntryBoxLabel = Label(root, text='New Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.46,anchor=CENTER)
-    hidePasswordChangePN = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(newPasswordEntryBox,0.15,0.55)).place(relx=0.15, rely=0.55, anchor=CENTER)
 
     newPasswordCBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.77,anchor=CENTER)
     global newPasswordConfirmEntryBox
     newPasswordConfirmEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     newPasswordConfirmEntryBox.place(relx=0.5,rely=0.77,anchor=CENTER)
-    newPasswordConfirmEntryBoxLabel = Label(root, text='New Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.68,anchor=CENTER)
-    hidePasswordChangePCN = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(newPasswordConfirmEntryBox,0.15,0.77)).place(relx=0.15, rely=0.77, anchor=CENTER)
+    newPasswordConfirmEntryBoxLabel = Label(root, text='Confirm New Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.68,anchor=CENTER)
 
-    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateSetings).place(relx=0.5, rely=0.93, anchor=CENTER)
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePassword).place(relx=0.5, rely=0.93, anchor=CENTER)
+    hidePasswordChangePOG = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(orignalPasswordEntryBox,0.14,0.33)).place(relx=0.14, rely=0.33, anchor=CENTER)
+    hidePasswordChangePN = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(newPasswordEntryBox,0.14,0.55)).place(relx=0.14, rely=0.55, anchor=CENTER)
+    hidePasswordChangePCN = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(newPasswordConfirmEntryBox,0.14,0.77)).place(relx=0.14, rely=0.77, anchor=CENTER)
 
     root.mainloop()
+
+def changePassword():
+    pass
 
 def deleteAccountPage():
     initialiseWindow()
@@ -1742,7 +1744,7 @@ def hideEntryBox(globalEntryBox,xcord,ycord): #x and y cord of the hide/show but
 
 def showEntryBox(globalEntryBox,xcord,ycord): #x and y cord of the hide/show button
     globalEntryBox.config(show='')
-    hidePasswordB = Button(root, text='Show', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: hideEntryBox(globalEntryBox,xcord,ycord)).place(relx=xcord, rely=ycord, anchor=CENTER)
+    hidePasswordB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: hideEntryBox(globalEntryBox,xcord,ycord)).place(relx=xcord, rely=ycord, anchor=CENTER)
 
 initialise()
 print('Program Finished')
