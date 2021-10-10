@@ -15,7 +15,7 @@ import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, flag, get, pink, prism, text, title
+from matplotlib.pyplot import autoscale, flag, get, pink, prism, show, text, title
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
@@ -439,7 +439,7 @@ def loginPage():
     global passwordEntry 
     passwordEntry = Entry(root, bg=primary.data,fg=secondry.data, width=42, font=(font.data,24),justify='center',relief='flat')
     passwordEntry.place(relx=0.5,rely=0.64,anchor=CENTER)
-    hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=hidePasswordLoginPage).place(relx=0.15, rely=0.64, anchor=CENTER)
+    hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordEntry,0.15,0.64)).place(relx=0.15, rely=0.64, anchor=CENTER)
     createAccountPageB = Button(root, text='Create Account', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
     ForgottenPageB = Button(root, text='Forgotten Password?', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
     submitLoginDetailsB = Button(root, text='L O G I N', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
@@ -1506,9 +1506,11 @@ def settingsPage():
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateSetings).place(relx=0.5, rely=0.93, anchor=CENTER)
     timeLabel = Label(root,text="This submit may take some time please be patient",bg=primary.data,fg=secondry.data, width=75, font=(font.data,12), justify='center',relief='flat').place(relx=0.5, rely=0.97 ,anchor=CENTER)
     
-    changePasswordPageButton = Button(root, text='Want to change your password?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.172, rely=0.8, anchor=CENTER)
-    deleteAccountPageButton = Button(root, text='Want to delete your account?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.172, rely=0.85, anchor=CENTER)
-    changeUsernamePageButton = Button(root, text='Want to change your username?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.172, rely=0.9, anchor=CENTER)
+    changePasswordPageButton = Button(root, text='Want to change your password?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.825, rely=0.8, anchor=CENTER)
+    deleteAccountPageButton = Button(root, text='Want to delete your account?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteAccountPage).place(relx=0.825, rely=0.85, anchor=CENTER)
+    changeUsernamePageButton = Button(root, text='Want to change your username?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.825, rely=0.9, anchor=CENTER)
+
+    hexCodeB = Button(root, text='Unsure about hex codes?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=hexCodeInfoPage).place(relx=0.175, rely=0.85, anchor=CENTER)
 
     root.mainloop()
 
@@ -1576,6 +1578,14 @@ def settingsPageCoverUp():
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=settingsCords[entryboxData]['x'],rely=settingsCords[entryboxData]['y'],anchor=CENTER)
+
+def hexCodeInfoPage():
+    try:
+        webbrowser.open_new('https://htmlcolorcodes.com/color-picker/')
+        webbrowser.open_new('https://www.pluralsight.com/blog/tutorials/understanding-hexadecimal-colors-simple')
+    except OSError:
+        if connectionError.state() != 'Normal':
+                displayConnectionError()
 
 def contactPage():
     initialiseWindow()
@@ -1673,17 +1683,43 @@ def redoConfigureAccountSettingsVariables():
 def changePasswordPage():
     initialiseWindow()
     root.title('Property managment system - Change Password')
-    topBorder = Label(root, text='Contact', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    topBorder = Label(root, text='Change Password', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
     previousPage = 'Change Password'
     displayMenuButton()
+
+    longNormalTwo = PhotoImage(file = "Long-Normal 2.PNG")
+    
+    orignalPasswordBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.33,anchor=CENTER)
+    global orignalPasswordEntryBox
+    orignalPasswordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    orignalPasswordEntryBox.place(relx=0.5,rely=0.33,anchor=CENTER)
+    orignalPasswordEntryBoxLabel = Label(root, text='Current Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.24,anchor=CENTER)
+    hidePasswordChangePOG = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(orignalPasswordEntryBox,0.15,0.33)).place(relx=0.15, rely=0.33, anchor=CENTER)
+
+    newPasswordBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.55,anchor=CENTER)
+    global newPasswordEntryBox
+    newPasswordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    newPasswordEntryBox.place(relx=0.5,rely=0.55,anchor=CENTER)
+    newPasswordEntryBoxLabel = Label(root, text='New Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.46,anchor=CENTER)
+    hidePasswordChangePN = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(newPasswordEntryBox,0.15,0.55)).place(relx=0.15, rely=0.55, anchor=CENTER)
+
+    newPasswordCBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.77,anchor=CENTER)
+    global newPasswordConfirmEntryBox
+    newPasswordConfirmEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    newPasswordConfirmEntryBox.place(relx=0.5,rely=0.77,anchor=CENTER)
+    newPasswordConfirmEntryBoxLabel = Label(root, text='New Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.68,anchor=CENTER)
+    hidePasswordChangePCN = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(newPasswordConfirmEntryBox,0.15,0.77)).place(relx=0.15, rely=0.77, anchor=CENTER)
+
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateSetings).place(relx=0.5, rely=0.93, anchor=CENTER)
+
     root.mainloop()
 
 def deleteAccountPage():
     initialiseWindow()
     root.title('Property managment system - Delete Account')
-    topBorder = Label(root, text='Contact', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    topBorder = Label(root, text='Delete Account', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
     previousPage = 'Delete Account'
@@ -1693,11 +1729,20 @@ def deleteAccountPage():
 def changeUsername():
     initialiseWindow()
     root.title('Property managment system - Change Username')
-    topBorder = Label(root, text='Contact', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    topBorder = Label(root, text='Change Username', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
     previousPage = 'Change Username'
     displayMenuButton()
     root.mainloop()
 
+def hideEntryBox(globalEntryBox,xcord,ycord): #x and y cord of the hide/show button
+    globalEntryBox.config(show='\u2022')
+    showPasswordB = Button(root, text='Show', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: showEntryBox(globalEntryBox,xcord,ycord)).place(relx=xcord, rely=ycord, anchor=CENTER)
+
+def showEntryBox(globalEntryBox,xcord,ycord): #x and y cord of the hide/show button
+    globalEntryBox.config(show='')
+    hidePasswordB = Button(root, text='Show', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: hideEntryBox(globalEntryBox,xcord,ycord)).place(relx=xcord, rely=ycord, anchor=CENTER)
+
 initialise()
+print('Program Finished')
