@@ -443,7 +443,7 @@ def loginPage():
     createAccountPageB = Button(root, text='Create Account', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
     ForgottenPageB = Button(root, text='Forgotten Password?', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
     submitLoginDetailsB = Button(root, text='L O G I N', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
-    timeLabel = Label(root,text="Loggin in may take some time please be patient",bg=primary.data,fg=secondry.data, width=75, font=(font.data,12), justify='center',relief='flat').place(relx=0.5, rely=0.97 ,anchor=CENTER)
+    timeLabel = Label(root,text="Logging in may take some time please be patient",bg=primary.data,fg=secondry.data, width=75, font=(font.data,12), justify='center',relief='flat').place(relx=0.5, rely=0.95 ,anchor=CENTER)
 
     root.mainloop()
 
@@ -704,6 +704,13 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=settingsPage).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Contact':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=contactPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Change Password':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Delete Account':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteAccountPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Change Username':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.05, rely=0.05, anchor=CENTER)
+
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -734,7 +741,13 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=settingsPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Contact':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=contactPage).place(relx=0.5, rely=0.9, anchor=CENTER)
-      
+    elif nextPageCommand == 'Change Password':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Delete Account':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteAccountPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Change Username':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.5, rely=0.9, anchor=CENTER)
+
 def displayGovermentNationalInsurancePage():
     try:
         webbrowser.open_new('https://www.gov.uk/government/collections/how-to-manually-check-your-payroll-calculations ')
@@ -1492,6 +1505,10 @@ def settingsPage():
     settingsCords = {'primary_Colour':{'x':0.175,'y':0.3175},'secondry_Colour':{'x':0.175,'y':0.4975},'tertiary_Colour':{'x':0.175,'y':0.6775},'font':{'x':0.6635,'y':0.3175},'title':{'x':0.5,'y':0.4975},'operation_Type':{'x':0.83,'y':0.4975},'first_Name':{'x':0.5,'y':0.6775},'last_Name':{'x':0.83,'y':0.6775}}
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateSetings).place(relx=0.5, rely=0.93, anchor=CENTER)
     timeLabel = Label(root,text="This submit may take some time please be patient",bg=primary.data,fg=secondry.data, width=75, font=(font.data,12), justify='center',relief='flat').place(relx=0.5, rely=0.97 ,anchor=CENTER)
+    
+    changePasswordPageButton = Button(root, text='Want to change your password?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.172, rely=0.8, anchor=CENTER)
+    deleteAccountPageButton = Button(root, text='Want to delete your account?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.172, rely=0.85, anchor=CENTER)
+    changeUsernamePageButton = Button(root, text='Want to change your username?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.172, rely=0.9, anchor=CENTER)
 
     root.mainloop()
 
@@ -1652,5 +1669,35 @@ def redoConfigureAccountSettingsVariables():
     for i in range(len(accountArray)):
         accountArray[i] = accountArray[i].setData(allAcoountData[i]) 
     closeDatabase()
+
+def changePasswordPage():
+    initialiseWindow()
+    root.title('Property managment system - Change Password')
+    topBorder = Label(root, text='Contact', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Change Password'
+    displayMenuButton()
+    root.mainloop()
+
+def deleteAccountPage():
+    initialiseWindow()
+    root.title('Property managment system - Delete Account')
+    topBorder = Label(root, text='Contact', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Delete Account'
+    displayMenuButton()
+    root.mainloop()
+
+def changeUsername():
+    initialiseWindow()
+    root.title('Property managment system - Change Username')
+    topBorder = Label(root, text='Contact', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Change Username'
+    displayMenuButton()
+    root.mainloop()
 
 initialise()
