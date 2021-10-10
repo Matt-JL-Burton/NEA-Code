@@ -108,6 +108,7 @@ def initialiseWindow():
     root.configure(background=primary.data)
     root.resizable(width=False, height=False) #Makes the window not be reziable becuase that mucks up the asthetics
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        print(os.getcwd())
         chdir(f'.{path_seperator}Assets')
     root.iconbitmap("House.ico")
     root.bind("=", escapeProgram)
@@ -414,7 +415,7 @@ def closeMainPage():
     try:
         if root.state() == 'normal':
             root.destroy()
-            chdir('..')
+            #chdir('..')
     except NameError: #this means that the page is not defined and thus there is no previous page
         pass 
 
@@ -442,6 +443,8 @@ def loginPage():
     createAccountPageB = Button(root, text='Create Account', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.2, rely=0.9, anchor=CENTER)
     ForgottenPageB = Button(root, text='Forgotten Password?', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.8, rely=0.9, anchor=CENTER)
     submitLoginDetailsB = Button(root, text='L O G I N', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=login).place(relx=0.5, rely=0.9, anchor=CENTER)
+    timeLabel = Label(root,text="Loggin in may take some time please be patient",bg=primary.data,fg=secondry.data, width=75, font=(font.data,12), justify='center',relief='flat').place(relx=0.5, rely=0.97 ,anchor=CENTER)
+
     root.mainloop()
 
 def convertAssetColor(primaryHex,secondryHex):
@@ -992,6 +995,8 @@ def createAccountCoverUpErrorMessage():
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=accountPageEntryMessageBoxCords[entryboxData]['x'],rely=accountPageEntryMessageBoxCords[entryboxData]['y'],anchor=CENTER)
 
 def displayConfirmation(nextPageCommand):
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        chdir(f'.{path_seperator}Assets')
     initialiseWindow()
     root.geometry('500x500')
     root.resizable(width=False, height=False)
@@ -1021,6 +1026,8 @@ def login():
             #global databaseCurrentAccount_ID
             global databaseCurrentAccount_ID
             databaseCurrentAccount_ID.setData(deScramble(account_ID_Dirty.fetchall()[0][0]))
+            redoConfigureAccountSettingsVariables()
+            convertAssetColor(primary,secondry)
             #print(databaseCurrentAccount_ID)
             #displayConfirmation('Home')
             homePage()
@@ -1484,6 +1491,7 @@ def settingsPage():
     global settingsCords
     settingsCords = {'primary_Colour':{'x':0.175,'y':0.3175},'secondry_Colour':{'x':0.175,'y':0.4975},'tertiary_Colour':{'x':0.175,'y':0.6775},'font':{'x':0.6635,'y':0.3175},'title':{'x':0.5,'y':0.4975},'operation_Type':{'x':0.83,'y':0.4975},'first_Name':{'x':0.5,'y':0.6775},'last_Name':{'x':0.83,'y':0.6775}}
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateSetings).place(relx=0.5, rely=0.93, anchor=CENTER)
+    timeLabel = Label(root,text="This submit may take some time please be patient",bg=primary.data,fg=secondry.data, width=75, font=(font.data,12), justify='center',relief='flat').place(relx=0.5, rely=0.97 ,anchor=CENTER)
 
     root.mainloop()
 
@@ -1535,7 +1543,6 @@ def updateSetings():
                     countOfFailedTests = countOfFailedTests +1
 
     if countOfFailedTests == 0:
-        timeLabel = Label(root,text="This submit may take some time please be patient",bg=primary.data,fg=bannedColours['warningYellow'], width=75, font=(font.data,12), justify='center',relief='flat').place(relx=0.5, rely=0.8 ,anchor=CENTER)
         for i in range(len(newListOfAccount)):
             newListOfAccount[i] = scramble(newListOfAccount[i])
 
@@ -1546,8 +1553,6 @@ def updateSetings():
 
         redoConfigureAccountSettingsVariables()
         convertAssetColor(primary,secondry)
-        if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
-            chdir(f'.{path_seperator}Assets')
         displayConfirmation('Settings')
 
 def settingsPageCoverUp():
