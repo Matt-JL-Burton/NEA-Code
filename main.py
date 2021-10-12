@@ -64,7 +64,7 @@ def definingDefaultVariables():
     tertiary = uInputDataObj('#a9a9a9',str)
     listOfSecondryColourOptions = ['white','grey','black']
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#ffff00','activeTextColor':'dark grey'}
-    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password'}
+    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password','matchesNewPassword':'Your new passwords are not matching, please enter matching passwords'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     operation_Type = uInputDataObj(None,str)
     recovery_Email = uInputDataObj(None,str)
@@ -996,6 +996,12 @@ def hexCodeCheck(inputData):
             return False
     else:
         return False
+
+def matchesCheck(x,y):
+    if x.data == y.data:
+        return True
+    else:
+        return False
 # end of data validation tests
 
 def disaplayEM(errorType,x,y):
@@ -1732,19 +1738,43 @@ def changePassword():
 
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(listOfPassword)
-    if orignalPassword == password:
+    if orignalPassword.data == password:
         dictOfDataValdationResults['orignalPassword'] = {'checkPassword':True}
     else:
         dictOfDataValdationResults['orignalPassword'] = {'checkPassword':False}
     dictOfDataValdationResults['newPassword'] = {'presenceCheck':presenceCheck(newPassword),'lengthOverSevenCheck':rangeCheck(newPassword,7,None)}
-    dictOfDataValdationResults['confirmNewPassword'] = {'presenceCheck':presenceCheck(confirmNewPassword),'lengthOverSevenCheck':rangeCheck(confirmNewPassword,7,None)}
+    dictOfDataValdationResults['confirmNewPassword'] = {'presenceCheck':presenceCheck(confirmNewPassword),'matchesNewPassword':matchesCheck(confirmNewPassword,newPassword)}
     coverUpChangePassword()
     
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,changePasswordCord[entryboxData]['x'],changePasswordCord[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+
+    countOfFailedTests = 0
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+    if countOfFailedTests == 0:
+        password = scramble(newPassword.data)
+
+        openDatabase()
+        accocountUpdateCommand = ("UPDATE accounts SET password = '" + str(password) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) +"'")
+        cursor.execute(accocountUpdateCommand)
+        closeDatabase()
+
+        displayConfirmation('Settings')
+
 def coverUpChangePassword():
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=changePasswordCord[entryboxData]['x'],rely=changePasswordCord[entryboxData]['y'],anchor=CENTER)
-
 
 def deleteAccountPage():
     initialiseWindow()
