@@ -35,7 +35,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            settingsPage()
+            deleteAccountPage()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -93,7 +93,7 @@ def definingDefaultVariables():
     bCapGainsTR =  uInputDataObj(18,float)
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
-    databaseCurrentAccount_ID = uInputDataObj('KOMVXH1LY8',str) #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
+    databaseCurrentAccount_ID = uInputDataObj('M1OPULQ207',str) #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
     listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri']
     for i in range(len(listOfAcceptedFonts)):
         listOfAcceptedFonts[i] = listOfAcceptedFonts[i].title()
@@ -709,7 +709,6 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteAccountPage).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Change Username':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.05, rely=0.05, anchor=CENTER)
-
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1733,7 +1732,7 @@ def changePassword():
 
     openDatabase()
     passwordD = cursor.execute("SELECT password FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    password = passwordD.fetchall()[0][0]
+    password = deScramble(passwordD.fetchall()[0][0])
     closeDatabase()
 
     global dictOfDataValdationResults
@@ -1784,7 +1783,50 @@ def deleteAccountPage():
     global previousPage
     previousPage = 'Delete Account'
     displayMenuButton()
+
+    longNormalTwo = PhotoImage(file = "Long-Normal 2.PNG")
+    cautionLabel = Label(root, text='Caution',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18,'bold'), justify='center',relief='flat').place(relx=0.5,rely=0.28,anchor=CENTER)
+    cautionSubLabel = Label(root, text='Once an account is deleted all data linked to that account is lost. There is no way to retrieve an\naccount once it is deleted! Once an account is deleted it is gone for ever.',bg=primary.data, fg=secondry.data, width=100, font=(font.data,14), justify='center',relief='flat').place(relx=0.5,rely=0.33,anchor=CENTER)
+
+    passwordForConfirmationBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.55,anchor=CENTER)
+    global passwordForConfirmationEntryBox
+    passwordForConfirmationEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    passwordForConfirmationEntryBox.place(relx=0.5,rely=0.55,anchor=CENTER)
+    passwordForConfirmationEntryBoxLabel = Label(root, text='Enter password as confirmation',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.46,anchor=CENTER)
+    hidePasswordChangePN = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordForConfirmationEntryBox,0.14,0.55)).place(relx=0.14, rely=0.55, anchor=CENTER)
+
+    deleteAccountButton = Button(root, text='Delete Account', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteAccount).place(relx=0.5, rely=0.8, anchor=CENTER)
+    canceldeleteAccountButton = Button(root, text='Cancel Deletion', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=settingsPage).place(relx=0.5, rely=0.9, anchor=CENTER)
+
     root.mainloop()
+
+def deleteAccount():
+    passwordForConfirmation = uInputDataObj(passwordForConfirmationEntryBox.get(),str)
+    
+    openDatabase()
+    passwordD = cursor.execute("SELECT password FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    password = deScramble(passwordD.fetchall()[0][0])
+    closeDatabase()
+
+    if passwordForConfirmation.data == password:
+        coverUpLabel = Label(root,bg=primary.data, width=60, justify='center',relief='flat').place(relx=0.5,rely=0.63,anchor=CENTER)
+        openDatabase()
+        cursor.execute("DELETE FROM accounts WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.getData()) + "'"))
+        unitIDs = cursor.execute("SELECT unit_ID FROM units WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.getData()) + "'")).fetchall()[0]
+        for i in range (len(unitIDs)):
+            cursor.execute("DELETE FROM units_Monthly WHERE unit_ID = '" + str((unitIDs[i]) + "'")) #I used a sneaky trick where I do not descramble the unit as I would just rescramble them again for there purpose.
+            cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + str((unitIDs[i]) + "'"))
+            cursor.execute("DELETE FROM loan WHERE unit_ID = '" + str((unitIDs[i]) + "'"))
+        cursor.execute("DELETE FROM sold_Units WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.getData()) + "'"))
+        tenant_IDs = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.getData()) + "'")).fetchall()[0]
+        for i in range(len(tenant_IDs)):
+            cursor.execute("DELETE FROM complaints WHERE tenant_ID = '" + str(tenant_IDs[i] + "'"))
+        cursor.execute("DELETE FROM units WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.getData()) + "'"))
+        cursor.execute("DELETE FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.getData()) + "'"))
+        closeDatabase()
+        displayConfirmation('Login')
+    else:
+        warning = Label(root, text = 'Password incorrect',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=0.5,rely=0.63,anchor=CENTER)
 
 def changeUsernamePage():
     initialiseWindow()
@@ -1832,7 +1874,7 @@ def changeUsername():
 
     openDatabase()
     passwordD = cursor.execute("SELECT password FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    password = passwordD.fetchall()[0][0]
+    password = deScramble(passwordD.fetchall()[0][0])
     closeDatabase()
 
     global dictOfDataValdationResults
