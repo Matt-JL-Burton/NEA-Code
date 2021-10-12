@@ -1513,7 +1513,7 @@ def settingsPage():
     
     changePasswordPageButton = Button(root, text='Want to change your password?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changePasswordPage).place(relx=0.825, rely=0.8, anchor=CENTER)
     deleteAccountPageButton = Button(root, text='Want to delete your account?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteAccountPage).place(relx=0.825, rely=0.85, anchor=CENTER)
-    changeUsernamePageButton = Button(root, text='Want to change your username?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.825, rely=0.9, anchor=CENTER)
+    changeUsernamePageButton = Button(root, text='Want to change your username?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsernamePage).place(relx=0.825, rely=0.9, anchor=CENTER)
 
     hexCodeB = Button(root, text='Unsure about hex codes?', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=hexCodeInfoPage).place(relx=0.175, rely=0.85, anchor=CENTER)
 
@@ -1774,7 +1774,7 @@ def changePassword():
 def coverUpChangePassword():
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
-            coverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=changePasswordCord[entryboxData]['x'],rely=changePasswordCord[entryboxData]['y'],anchor=CENTER)
+            coverUp = Label(root,bg=primary.data,width=100,font=(font.data,7),justify='center').place(relx=changePasswordCord[entryboxData]['x'],rely=changePasswordCord[entryboxData]['y'],anchor=CENTER)
 
 def deleteAccountPage():
     initialiseWindow()
@@ -1786,7 +1786,7 @@ def deleteAccountPage():
     displayMenuButton()
     root.mainloop()
 
-def changeUsername():
+def changeUsernamePage():
     initialiseWindow()
     root.title('Property managment system - Change Username')
     topBorder = Label(root, text='Change Username', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
@@ -1794,7 +1794,86 @@ def changeUsername():
     global previousPage
     previousPage = 'Change Username'
     displayMenuButton()
+
+    longNormalTwo = PhotoImage(file = "Long-Normal 2.PNG")
+    
+    passwordBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.33,anchor=CENTER)
+    global passwordEntryBox
+    passwordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    passwordEntryBox.place(relx=0.5,rely=0.33,anchor=CENTER)
+    passwordEntryBoxLabel = Label(root, text='Password',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.24,anchor=CENTER)
+
+    newUsernameBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.55,anchor=CENTER)
+    global newUsernameEntryBox
+    newUsernameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    newUsernameEntryBox.place(relx=0.5,rely=0.55,anchor=CENTER)
+    newUsernameEntryBoxLabel = Label(root, text='New Username',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.46,anchor=CENTER)
+
+    newUsernameCBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.77,anchor=CENTER)
+    global newUsernameConfirmEntryBox
+    newUsernameConfirmEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    newUsernameConfirmEntryBox.place(relx=0.5,rely=0.77,anchor=CENTER)
+    newUsernameConfirmEntryBoxLabel = Label(root, text='Confirm New Username',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.68,anchor=CENTER)
+
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.5, rely=0.93, anchor=CENTER)
+    hidePasswordChangePOG = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordEntryBox,0.14,0.33)).place(relx=0.14, rely=0.33, anchor=CENTER)
+
+    global changeUsernameCord
+    changeUsernameCord = {'password':{'x':0.5,'y':0.4075},'newUsername':{'x':0.5,'y':0.6275},'newUsernameConfirm':{'x':0.5,'y':0.8475}}
+
     root.mainloop()
+
+def changeUsername():
+    listOfPassword = ['password','newUsername','newUsernameConfirm']
+
+    passwordFromEntry = uInputDataObj(passwordEntryBox.get(),str)
+    newUsername = uInputDataObj(newUsernameEntryBox.get(),str)
+    newUsernameConfirm = uInputDataObj(newUsernameConfirmEntryBox.get(),str)
+
+    openDatabase()
+    passwordD = cursor.execute("SELECT password FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    password = passwordD.fetchall()[0][0]
+    closeDatabase()
+
+    global dictOfDataValdationResults
+    dictOfDataValdationResults = dict.fromkeys(listOfPassword)
+    if passwordFromEntry.data == password:
+        dictOfDataValdationResults['password'] = {'checkPassword':True}
+    else:
+        dictOfDataValdationResults['password'] = {'checkPassword':False}
+    dictOfDataValdationResults['newUsername'] = {'presenceCheck':presenceCheck(newUsername),'lengthCheck':rangeCheck(newUsername,3,None),'@check':pictureCheck(newUsername,'@',1,1),'noSpaces':pictureCheck(newUsername,'',0,0),'uniqueDataCheck':uniqueDataCheck(newUsername,'recovery_Email','accounts')}
+    dictOfDataValdationResults['newUsernameConfirm'] = {'presenceCheck':presenceCheck(newUsernameConfirm),'matchesNewPassword':matchesCheck(newUsernameConfirm,newUsername)}
+    coverUpChangeUsername()
+    
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,changeUsernameCord[entryboxData]['x'],changeUsernameCord[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+
+    countOfFailedTests = 0
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+    if countOfFailedTests == 0:
+        recovery_Email = scramble(newUsername.data)
+
+        openDatabase()
+        accocountUpdateCommand = ("UPDATE accounts SET recovery_Email = '" + str(recovery_Email) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) +"'")
+        cursor.execute(accocountUpdateCommand)
+        closeDatabase()
+
+        displayConfirmation('Settings')
+
+def coverUpChangeUsername():
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            coverUp = Label(root,bg=primary.data,width=100,font=(font.data,7),justify='center').place(relx=changeUsernameCord[entryboxData]['x'],rely=changeUsernameCord[entryboxData]['y'],anchor=CENTER)
 
 def hideEntryBox(globalEntryBox,xcord,ycord): #x and y cord of the hide/show button
     globalEntryBox.config(show='\u2022')
