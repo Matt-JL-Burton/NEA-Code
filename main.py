@@ -31,11 +31,10 @@ def initialise():
     if path_seperator != None: #basically if the device is running on an accepted OS
         os.chdir(pathlib.Path(__file__).parent.absolute())
         if fileCreation() == 'Correct Files Created':
-            redoConfigureAccountSettingsVariables()
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
-            #displayTCs()
-            deleteAccountPage()
+            displayTCs()
+            #taxPage()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -60,7 +59,7 @@ def definingDefaultVariables():
     global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts, operation_Type, recovery_Email, first_Name, last_Name, password, title
     global tax_Rate, other_Income_Estimate, national_Insurance_Due, style
     primary = uInputDataObj('#373f51',str)
-    secondry = uInputDataObj('white',str)
+    secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     listOfSecondryColourOptions = ['white','grey','black']
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#ffff00','activeTextColor':'dark grey'}
@@ -93,7 +92,7 @@ def definingDefaultVariables():
     bCapGainsTR =  uInputDataObj(18,float)
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
-    databaseCurrentAccount_ID = uInputDataObj('M1OPULQ207',str) #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
+    databaseCurrentAccount_ID = uInputDataObj('W2V2423OL5',str) #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
     listOfAcceptedFonts = ['Bahnschrift Semilight','Georgia','Courier New','Microsoft Sans Serif','Franklin Gothic Medium','Times New Roman','Calibri']
     for i in range(len(listOfAcceptedFonts)):
         listOfAcceptedFonts[i] = listOfAcceptedFonts[i].title()
@@ -208,6 +207,7 @@ def createTables():
         operation_Type varchar(1) NOT NULL,
         title varchar(4) NOT NULL,
         tax_Rate char(1) NOT NULL,
+        personal_Income_Allowence float(4) NOT NULL,
         other_Income_Estimate float(5) NOT NULL,
         basic_Income_Rate float(1) NOT NULL,
         high_Income_Rate float(1) NOT NULL,
@@ -449,13 +449,15 @@ def loginPage():
 def convertAssetColor(primaryHex,secondryHex):
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
         chdir(f'.{path_seperator}Assets')
+    print(os.getcwd())
     listOfAssets = os.listdir(os.getcwd())
     testAsset = listOfAssets[1]
     img = Image.open(testAsset)
-    newPrimary = list(ImageColor.getcolor(primaryHex.data, "RGBA"))
-    newSecondry = list(ImageColor.getcolor(secondryHex.data, "RGBA"))
+    newPrimary = list(ImageColor.getcolor(str(primaryHex.data), "RGBA"))
+    newSecondry = list(ImageColor.getcolor(str(secondryHex.data), "RGBA"))
     if testAsset == 'Long-Fat.PNG' and (newPrimary != list(img.getpixel((0,0))) or newSecondry != list(img.getpixel((9,112)))): #check to see if assets are already in the correct colours and so we shoudl not bother changing them
         for asset in listOfAssets:
+            print(asset)
             if (asset.split('.')[1]).lower() == 'png':
                 img = Image.open(asset)
                 x = 0
@@ -612,8 +614,8 @@ def createAccount():
     while uniqueDataCheck(account_ID,'account_ID','accounts') == False:
         account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
-    createAccountArray = [account_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(account_ID.data),other_Income_Estimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,national_Insurance_Due.data, primary.data, secondry.data, tertiary.data, font.data]
-    accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate', 'other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
+    createAccountArray = [account_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(account_ID.data),incPA.data,other_Income_Estimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,national_Insurance_Due.data, primary.data, secondry.data, tertiary.data, font.data]
+    accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate','personal_Income_Allowence','other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
         
 
     #running tests
@@ -652,8 +654,8 @@ def createAccount():
 
         openDatabase()
         global accountsInsertionCommand
-        accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, basic_Capital_Gains_Rate, basic_Capital_Gains_Allowence, high_Capital_Gains_Rate, additional_Capital_Gains_Rate, corporation_Capital_Gains_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
-        Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+        accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, personal_Income_Allowence, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, basic_Capital_Gains_Rate, basic_Capital_Gains_Allowence, high_Capital_Gains_Rate, additional_Capital_Gains_Rate, corporation_Capital_Gains_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
+        Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
         cursor.execute(accountsInsertionCommand,createAccountArray)
         closeDatabase()
 
@@ -1397,7 +1399,85 @@ def taxPage():
     global previousPage
     previousPage = 'Tax'
     displayMenuButton()
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+
+    primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.21,anchor=CENTER)
+    global primaryHexEntryBox
+    primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    primaryHexEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    primaryHexEntryBox.place(relx=0.175,rely=0.21,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Income perosnal allowance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.13,anchor=CENTER)
+
+    basicRateCapGainsAllowenceBackGround = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.21,anchor=CENTER)
+    global basicRateCapGainsAllowenceEntryBox
+    basicRateCapGainsAllowenceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT basic_Capital_Gains_Allowence FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")   
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    basicRateCapGainsAllowenceEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    basicRateCapGainsAllowenceEntryBox.place(relx=0.5,rely=0.21,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Basic rate capital gains allowance (£)',bg=primary.data, fg=secondry.data, width=30, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.13,anchor=CENTER)
+
+    # primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
+    # #global primaryHexEntryBox
+    # primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    # openDatabase()
+    # primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    # primaryColourD = deScramble(data_To_Descrmable).upper()
+    # primaryHexEntryBox.insert(END,primaryColourD)
+    # closeDatabase()
+    # primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
+    # primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
+
+    # primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
+    # global primaryHexEntryBox
+    # primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    # openDatabase()
+    # primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    # primaryColourD = deScramble(data_To_Descrmable).upper()
+    # primaryHexEntryBox.insert(END,primaryColourD)
+    # closeDatabase()
+    # primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
+    # primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
+
+    # primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
+    # global primaryHexEntryBox
+    # primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    # openDatabase()
+    # primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    # primaryColourD = deScramble(data_To_Descrmable).upper()
+    # primaryHexEntryBox.insert(END,primaryColourD)
+    # closeDatabase()
+    # primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
+    # primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
+
+    # primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
+    # global primaryHexEntryBox
+    # primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    # openDatabase()
+    # primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    # primaryColourD = deScramble(data_To_Descrmable).upper()
+    # primaryHexEntryBox.insert(END,primaryColourD)
+    # closeDatabase()
+    # primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
+    # primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
+
+
     root.mainloop()
+
+def submitTaxDetials():
+    pass
 
 def settingsPage():
     initialiseWindow()
@@ -1679,7 +1759,7 @@ def redoConfigureAccountSettingsVariables():
     openDatabase()
     allAcoountData = cursor.execute("SELECT * FROM accounts WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + "'")
     allAcoountData = allAcoountData.fetchall()[0]
-    accountArray = [databaseCurrentAccount_ID,password,recovery_Email,first_Name,last_Name, operation_Type, title, tax_Rate, other_Income_Estimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,national_Insurance_Due, primary, secondry, tertiary, font]
+    accountArray = [databaseCurrentAccount_ID,password,recovery_Email,first_Name,last_Name, operation_Type, title, tax_Rate, incPA,other_Income_Estimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,national_Insurance_Due, primary, secondry, tertiary, font]
     for i in range(len(accountArray)):
         accountArray[i] = accountArray[i].setData(allAcoountData[i]) 
     closeDatabase()
