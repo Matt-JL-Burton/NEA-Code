@@ -33,8 +33,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
-            displayTCs()
-            #taxPage()
+            #displayTCs()
+            taxPage()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -449,7 +449,6 @@ def loginPage():
 def convertAssetColor(primaryHex,secondryHex):
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
         chdir(f'.{path_seperator}Assets')
-    print(os.getcwd())
     listOfAssets = os.listdir(os.getcwd())
     testAsset = listOfAssets[1]
     img = Image.open(testAsset)
@@ -457,7 +456,6 @@ def convertAssetColor(primaryHex,secondryHex):
     newSecondry = list(ImageColor.getcolor(str(secondryHex.data), "RGBA"))
     if testAsset == 'Long-Fat.PNG' and (newPrimary != list(img.getpixel((0,0))) or newSecondry != list(img.getpixel((9,112)))): #check to see if assets are already in the correct colours and so we shoudl not bother changing them
         for asset in listOfAssets:
-            print(asset)
             if (asset.split('.')[1]).lower() == 'png':
                 img = Image.open(asset)
                 x = 0
@@ -1401,17 +1399,30 @@ def taxPage():
     displayMenuButton()
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
 
-    primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.21,anchor=CENTER)
-    global primaryHexEntryBox
-    primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.21,anchor=CENTER)
+    global personalIncomeEntryBox
+    personalIncomeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
-    primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    primaryColourD = cursor.execute("SELECT personal_Income_Allowence FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
     data_To_Descrmable = primaryColourD.fetchall()[0][0]
     primaryColourD = deScramble(data_To_Descrmable)
-    primaryHexEntryBox.insert(END,primaryColourD)
+    personalIncomeEntryBox.insert(END,primaryColourD)
     closeDatabase()
-    primaryHexEntryBox.place(relx=0.175,rely=0.21,anchor=CENTER)
+    personalIncomeEntryBox.place(relx=0.175,rely=0.21,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='Income perosnal allowance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.13,anchor=CENTER)
+
+    # basicIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.21,anchor=CENTER)
+    # global personalIncomeEntryBox
+    # personalIncomeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    # openDatabase()
+    # primaryColourD = cursor.execute("SELECT personal_Income_Allowence FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    # primaryColourD = deScramble(data_To_Descrmable)
+    # personalIncomeEntryBox.insert(END,primaryColourD)
+    # closeDatabase()
+    # personalIncomeEntryBox.place(relx=0.175,rely=0.21,anchor=CENTER)
+    # primaryHexEntryLabel = Label(root, text='Income perosnal allowance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.13,anchor=CENTER)
+
 
     basicRateCapGainsAllowenceBackGround = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.21,anchor=CENTER)
     global basicRateCapGainsAllowenceEntryBox
@@ -1425,54 +1436,17 @@ def taxPage():
     basicRateCapGainsAllowenceEntryBox.place(relx=0.5,rely=0.21,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='Basic rate capital gains allowance (£)',bg=primary.data, fg=secondry.data, width=30, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.13,anchor=CENTER)
 
-    # primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
-    # #global primaryHexEntryBox
-    # primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    # openDatabase()
-    # primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
-    # primaryColourD = deScramble(data_To_Descrmable).upper()
-    # primaryHexEntryBox.insert(END,primaryColourD)
-    # closeDatabase()
-    # primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
-    # primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
-
-    # primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
-    # global primaryHexEntryBox
-    # primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    # openDatabase()
-    # primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
-    # primaryColourD = deScramble(data_To_Descrmable).upper()
-    # primaryHexEntryBox.insert(END,primaryColourD)
-    # closeDatabase()
-    # primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
-    # primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
-
-    # primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
-    # global primaryHexEntryBox
-    # primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    # openDatabase()
-    # primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
-    # primaryColourD = deScramble(data_To_Descrmable).upper()
-    # primaryHexEntryBox.insert(END,primaryColourD)
-    # closeDatabase()
-    # primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
-    # primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
-
-    # primaryHexEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
-    # global primaryHexEntryBox
-    # primaryHexEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    # openDatabase()
-    # primaryColourD = cursor.execute("SELECT primary_Colour FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
-    # primaryColourD = deScramble(data_To_Descrmable).upper()
-    # primaryHexEntryBox.insert(END,primaryColourD)
-    # closeDatabase()
-    # primaryHexEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
-    # primaryHexEntryLabel = Label(root, text='Primary Colour Hex Code',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
-
+    corporationCapitalGainsBackGround = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.21,anchor=CENTER)
+    global corporationCapitalGainsEntryBox
+    corporationCapitalGainsEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT corporation_Capital_Gains_Rate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")   
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    corporationCapitalGainsEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    corporationCapitalGainsEntryBox.place(relx=0.825,rely=0.21,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Corporation capital gains tax rate (%)',bg=primary.data, fg=secondry.data, width=30, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.13,anchor=CENTER)
 
     root.mainloop()
 
