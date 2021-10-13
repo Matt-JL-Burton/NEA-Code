@@ -1392,14 +1392,14 @@ def newTenantPage():
 def taxPage():
     initialiseWindow()
     root.title('Property managment system - Tax Page')
-    topBorder = Label(root, text='Tax', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    topBorder = Label(root, text='Tax', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,y=-20)
     displayBackButton()
     global previousPage
     previousPage = 'Tax'
     displayMenuButton()
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
 
-    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.21,anchor=CENTER)
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.20,anchor=CENTER)
     global personalIncomeEntryBox
     personalIncomeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
@@ -1408,23 +1408,58 @@ def taxPage():
     primaryColourD = deScramble(data_To_Descrmable)
     personalIncomeEntryBox.insert(END,primaryColourD)
     closeDatabase()
-    personalIncomeEntryBox.place(relx=0.175,rely=0.21,anchor=CENTER)
-    primaryHexEntryLabel = Label(root, text='Income perosnal allowance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.13,anchor=CENTER)
+    personalIncomeEntryBox.place(relx=0.175,rely=0.20,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Income personal allowance (£)',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.12,anchor=CENTER)
 
-    # basicIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.21,anchor=CENTER)
-    # global personalIncomeEntryBox
-    # personalIncomeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    # openDatabase()
-    # primaryColourD = cursor.execute("SELECT personal_Income_Allowence FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
-    # data_To_Descrmable = primaryColourD.fetchall()[0][0]
-    # primaryColourD = deScramble(data_To_Descrmable)
-    # personalIncomeEntryBox.insert(END,primaryColourD)
-    # closeDatabase()
-    # personalIncomeEntryBox.place(relx=0.175,rely=0.21,anchor=CENTER)
-    # primaryHexEntryLabel = Label(root, text='Income perosnal allowance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.13,anchor=CENTER)
+    basicIncomeTaxRateBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.375,anchor=CENTER)
+    global basicIncomeTaxRateEntryBox
+    basicIncomeTaxRateEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT basic_Income_Rate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    basicIncomeTaxRateEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    basicIncomeTaxRateEntryBox.place(relx=0.175,rely=0.375,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Basic income tax rate (%)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.295,anchor=CENTER)
 
+    highIncomeTaxRateBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.55,anchor=CENTER)
+    global highIncomeTaxRateEntryBox
+    highIncomeTaxRateEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT high_Income_Rate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    highIncomeTaxRateEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    highIncomeTaxRateEntryBox.place(relx=0.175,rely=0.55,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='High income tax rate (%)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.47,anchor=CENTER)
 
-    basicRateCapGainsAllowenceBackGround = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.21,anchor=CENTER)
+    additionalIncomeTaxRateBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.725,anchor=CENTER)
+    global additionalIncomeTaxRateEntryBox
+    additionalIncomeTaxRateEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT additional_Income_Rate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    additionalIncomeTaxRateEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    additionalIncomeTaxRateEntryBox.place(relx=0.175,rely=0.725,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Additional income tax rate (%)',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.645,anchor=CENTER)
+
+    natInsuranceBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.9,anchor=CENTER)
+    global natInsuranceEntryBox
+    natInsuranceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT national_Insurance_Due FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    natInsuranceEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    natInsuranceEntryBox.place(relx=0.175,rely=0.9,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='National insurance due (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.82,anchor=CENTER)
+
+    basicRateCapGainsAllowenceBackGround = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.20,anchor=CENTER)
     global basicRateCapGainsAllowenceEntryBox
     basicRateCapGainsAllowenceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
@@ -1433,10 +1468,46 @@ def taxPage():
     primaryColourD = deScramble(data_To_Descrmable)
     basicRateCapGainsAllowenceEntryBox.insert(END,primaryColourD)
     closeDatabase()
-    basicRateCapGainsAllowenceEntryBox.place(relx=0.5,rely=0.21,anchor=CENTER)
-    primaryHexEntryLabel = Label(root, text='Basic rate capital gains allowance (£)',bg=primary.data, fg=secondry.data, width=30, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.13,anchor=CENTER)
+    basicRateCapGainsAllowenceEntryBox.place(relx=0.5,rely=0.20,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Basic rate capital gains allowance (£)',bg=primary.data, fg=secondry.data, width=30, font=(font.data,15), justify='center',relief='flat').place(relx=0.5,rely=0.12,anchor=CENTER)
 
-    corporationCapitalGainsBackGround = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.21,anchor=CENTER)
+    basicIncomeCutOffBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.375,anchor=CENTER)
+    global basicIncomeCutOffEntryBox
+    basicIncomeCutOffEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT basic_Income_Cut_Off FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    basicIncomeCutOffEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    basicIncomeCutOffEntryBox.place(relx=0.5,rely=0.375,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Basic income cut off (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.295,anchor=CENTER)
+
+    highIncomeCutOffBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.55,anchor=CENTER)
+    global highIncomeCutOffEntryBox
+    highIncomeCutOffEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT high_Income_Cut_Off FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    highIncomeCutOffEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    highIncomeCutOffEntryBox.place(relx=0.5,rely=0.55,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='High income cut off (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.47,anchor=CENTER)
+
+    corperationTaxRateBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.725,anchor=CENTER)
+    global corperationTaxRateEntryBox
+    corperationTaxRateEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT corporation_Rate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    corperationTaxRateEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    corperationTaxRateEntryBox.place(relx=0.5,rely=0.725,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Corporation tax rate (%)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.645,anchor=CENTER)
+
+    corporationCapitalGainsBackGround = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.20,anchor=CENTER)
     global corporationCapitalGainsEntryBox
     corporationCapitalGainsEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     openDatabase()
@@ -1445,10 +1516,63 @@ def taxPage():
     primaryColourD = deScramble(data_To_Descrmable)
     corporationCapitalGainsEntryBox.insert(END,primaryColourD)
     closeDatabase()
-    corporationCapitalGainsEntryBox.place(relx=0.825,rely=0.21,anchor=CENTER)
-    primaryHexEntryLabel = Label(root, text='Corporation capital gains tax rate (%)',bg=primary.data, fg=secondry.data, width=30, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.13,anchor=CENTER)
+    corporationCapitalGainsEntryBox.place(relx=0.825,rely=0.20,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Corporation capital gains tax rate (%)',bg=primary.data, fg=secondry.data, width=30, font=(font.data,15), justify='center',relief='flat').place(relx=0.825,rely=0.12,anchor=CENTER)
+
+    basicIncomeCapaitalTaxRateBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.375,anchor=CENTER)
+    global basicIncomeCapaitalTaxRateEntryBox
+    basicIncomeCapaitalTaxRateEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT basic_Capital_Gains_Rate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    basicIncomeCapaitalTaxRateEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    basicIncomeCapaitalTaxRateEntryBox.place(relx=0.825,rely=0.375,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Basic income capital gains rate (%)',bg=primary.data, fg=secondry.data, width=33, font=(font.data,15), justify='center',relief='flat').place(relx=0.825,rely=0.295,anchor=CENTER)
+
+    highIncomeCapaitalTaxRateBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.55,anchor=CENTER)
+    global highIncomeCapaitalTaxRateEntryBox
+    highIncomeCapaitalTaxRateEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT high_Capital_Gains_Rate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    highIncomeCapaitalTaxRateEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    highIncomeCapaitalTaxRateEntryBox.place(relx=0.825,rely=0.55,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='High income capital gains rate (%)',bg=primary.data, fg=secondry.data, width=33, font=(font.data,15), justify='center',relief='flat').place(relx=0.825,rely=0.47,anchor=CENTER)
+
+    additionalIncomeCapaitalTaxRateBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.725,anchor=CENTER)
+    global additionalIncomeCapaitalTaxRateEntryBix
+    additionalIncomeCapaitalTaxRateEntryBix = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT additional_Capital_Gains_Rate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    additionalIncomeCapaitalTaxRateEntryBix.insert(END,primaryColourD)
+    closeDatabase()
+    additionalIncomeCapaitalTaxRateEntryBix.place(relx=0.825,rely=0.725,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Additional income capital gains rate (%)',bg=primary.data, fg=secondry.data, width=33, font=(font.data,15), justify='center',relief='flat').place(relx=0.825,rely=0.645,anchor=CENTER)
+
+    otherIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.9,anchor=CENTER)
+    global otherIncomeEntryBox
+    otherIncomeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT other_Income_Estimate FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    data_To_Descrmable = primaryColourD.fetchall()[0][0]
+    primaryColourD = deScramble(data_To_Descrmable)
+    otherIncomeEntryBox.insert(END,primaryColourD)
+    closeDatabase()
+    otherIncomeEntryBox.place(relx=0.825,rely=0.9,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Other income estimate (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.82,anchor=CENTER)
+
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateTax).place(relx=0.5, rely=0.9, anchor=CENTER)
 
     root.mainloop()
+
+def updateTax():
+    pass
 
 def submitTaxDetials():
     pass
