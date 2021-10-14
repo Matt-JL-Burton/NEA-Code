@@ -1580,7 +1580,25 @@ def updateTax():
     redoConfigureAccountSettingsVariables()
 
     createAccountArray = [databaseCurrentAccount_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(databaseCurrentAccount_ID.data),personal_Income_Allowence.data,other_Income_Estimate.data,basic_Income_Rate.data, high_Income_Rate.data, additional_Income_Rate.data, basic_Income_Cut_Off.data, high_Income_Cut_Off.data, corporation_Rate.data, basic_Capital_Gains_Rate.data, basic_Capital_Gains_Allowence.data, high_Capital_Gains_Rate.data, additional_Capital_Gains_Rate.data, corporation_Capital_Gains_Rate.data,national_Insurance_Due.data, primary.data, secondry.data, tertiary.data, font.data]
-    accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate','personal_Income_Allowence','other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
+    accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate','personal_Income_Allowence','other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font'] 
+
+    global dictOfDataValdationResults
+    dictOfDataValdationResults = dict.fromkeys(accountFields)
+    dictOfDataValdationResults['personal_Income_Allowence'] = {'presenceCheck':presenceCheck(personal_Income_Allowence),'positiveCheck':rangeCheck(personal_Income_Allowence,0,None)}
+    dictOfDataValdationResults['basic_Income_Rate'] = {'presenceCheck':presenceCheck(basic_Income_Rate),'between0/100':rangeCheck(basic_Income_Rate,0,100)}
+    dictOfDataValdationResults['high_Income_Rate'] = {'presenceCheck':presenceCheck(high_Income_Rate),'between0/100':rangeCheck(high_Income_Rate,0,100)}
+    dictOfDataValdationResults['additional_Income_Rate'] = {'presenceCheck':presenceCheck(additional_Income_Rate),'between0/100':rangeCheck(additional_Income_Rate,0,100)}
+    dictOfDataValdationResults['national_Insurance_Due'] = {'presenceCheck':presenceCheck(national_Insurance_Due),'positiveCheck':rangeCheck(national_Insurance_Due,0,None)}
+    dictOfDataValdationResults['basic_Capital_Gains_Allowence'] = {'presenceCheck':presenceCheck(basic_Capital_Gains_Allowence),'positiveCheck':rangeCheck(basic_Capital_Gains_Allowence,0,None)}
+    dictOfDataValdationResults['basic_Income_Cut_Off'] = {'presenceCheck':presenceCheck(basic_Income_Cut_Off),'positiveCheck':rangeCheck(basic_Income_Cut_Off,0,None)}
+    dictOfDataValdationResults['high_Income_Cut_Off'] =  {'presenceCheck':presenceCheck(high_Income_Cut_Off),'positiveCheck':rangeCheck(high_Income_Cut_Off,0,None)}
+    dictOfDataValdationResults['corporation_Rate'] = {'presenceCheck':presenceCheck(corporation_Rate),'between0/100':rangeCheck(corporation_Rate,0,100)}
+    dictOfDataValdationResults['corporation_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(corporation_Capital_Gains_Rate),'between0/100':rangeCheck(corporation_Capital_Gains_Rate,0,100)}
+    dictOfDataValdationResults['basic_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(basic_Capital_Gains_Rate),'between0/100':rangeCheck(basic_Capital_Gains_Rate,0,100)}
+    dictOfDataValdationResults['high_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(high_Capital_Gains_Rate),'between0/100':rangeCheck(high_Capital_Gains_Rate,0,100)}
+    dictOfDataValdationResults['additional_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(additional_Capital_Gains_Rate),'between0/100':rangeCheck(additional_Capital_Gains_Rate,0,100)}
+    dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':rangeCheck(other_Income_Estimate,0,None)}
+    #createAccountCoverUpErrorMessage()
 
 def submitTaxDetials():
     pass
