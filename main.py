@@ -1561,7 +1561,7 @@ def taxPage():
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateTax).place(relx=0.5, rely=0.9, anchor=CENTER)
 
     global updateTaxCords
-    updateTaxCords = {'personal_Income_Allowence':{'x':0.175,'y':0.2675},'other_Income_Estimate':{'x':0.175,'y':0.4425}, 'basic_Income_Rate':{'x':0.175,'y':0.6175}, 'high_Income_Rate':{'x':0.175,'y':0.7925}, 'additional_Income_Rate':{'x':0.175,'y':0.9675}, 'basic_Income_Cut_Off':{'x':0.5,'y':0.2675}, 'high_Income_Cut_Off':{'x':0.5,'y':0.4425}, 'corporation_Rate':{'x':0.5,'y':0.6175}, 'basic_Capital_Gains_Rate':{'x':0.5,'y':0.7925}, 'basic_Capital_Gains_Allowence':{'x':0.825,'y':0.2675}, 'high_Capital_Gains_Rate':{'x':0.825,'y':0.4425}, 'additional_Capital_Gains_Rate':{'x':0.825,'y':0.6175}, 'corporation_Capital_Gains_Rate':{'x':0.825,'y':0.7925}, 'national_Insurance_Due':{'x':0.825,'y':0.9675}}
+    updateTaxCords = {'personal_Income_Allowence':{'x':0.175,'y':0.2675},'other_Income_Estimate':{'x':0.825,'y':0.9675}, 'basic_Income_Rate':{'x':0.175,'y':0.4425}, 'high_Income_Rate':{'x':0.175,'y':0.6175}, 'additional_Income_Rate':{'x':0.175,'y':0.7925}, 'basic_Income_Cut_Off':{'x':0.5,'y':0.2675}, 'high_Income_Cut_Off':{'x':0.5,'y':0.4425}, 'corporation_Rate':{'x':0.5,'y':0.6175}, 'basic_Capital_Gains_Rate':{'x':0.5,'y':0.7925}, 'basic_Capital_Gains_Allowence':{'x':0.825,'y':0.2675}, 'high_Capital_Gains_Rate':{'x':0.825,'y':0.4425}, 'additional_Capital_Gains_Rate':{'x':0.825,'y':0.6175}, 'corporation_Capital_Gains_Rate':{'x':0.825,'y':0.7925}, 'national_Insurance_Due':{'x':0.175,'y':0.9675}}
     root.mainloop()
 
 def updateTax():
@@ -1600,6 +1600,7 @@ def updateTax():
     dictOfDataValdationResults['high_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(high_Capital_Gains_Rate),'between0/100':rangeCheck(high_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['additional_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(additional_Capital_Gains_Rate),'between0/100':rangeCheck(additional_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':rangeCheck(other_Income_Estimate,0,None)} #FIXME: shows an data validatio error with valid data :()
+    print(dictOfDataValdationResults)
     taxPageCoverUpErrorMessage()
 
     for entryboxData in dictOfDataValdationResults.keys():
