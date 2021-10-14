@@ -992,6 +992,9 @@ def matchesCheck(x,y):
         return True
     else:
         return False
+
+def positiveCheck(other_Income_Estimate):
+    pass
 # end of data validation tests
 
 def disaplayEM(errorType,x,y):
@@ -1599,8 +1602,7 @@ def updateTax():
     dictOfDataValdationResults['basic_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(basic_Capital_Gains_Rate),'between0/100':rangeCheck(basic_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['high_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(high_Capital_Gains_Rate),'between0/100':rangeCheck(high_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['additional_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(additional_Capital_Gains_Rate),'between0/100':rangeCheck(additional_Capital_Gains_Rate,0,100)}
-    dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':rangeCheck(other_Income_Estimate,0,None)} #FIXME: shows an data validatio error with valid data :()
-    print(dictOfDataValdationResults)
+    dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':positiveCheck(other_Income_Estimate,0,None)}
     taxPageCoverUpErrorMessage()
 
     for entryboxData in dictOfDataValdationResults.keys():
