@@ -586,15 +586,6 @@ def forgottenPasswordPageOne():
     happyFace = Label(root, text=':)', font=(font.data,'40'),fg=secondry.data,bg=primary.data,justify='center').place(relx=0.5,rely=0.5,anchor=CENTER)
     root.mainloop()
 
-def hidePasswordLoginPage():
-    #TODO: hide the password 
-    #TODO: replace the hide button with a show button and then code show button
-    pass
-
-def showPasswordLoginPage():
-    #TODO: same as above function
-    pass
-
 def createAccount():
     recovery_Email = uInputDataObj(emailEntryBox.get(),str)
     first_Name = uInputDataObj(firstNameEntryBox.get(),str)
@@ -1586,7 +1577,10 @@ def updateTax():
     high_Capital_Gains_Rate = uInputDataObj(highIncomeCapaitalTaxRateEntryBox.get(),float)
     additional_Capital_Gains_Rate = uInputDataObj(additionalIncomeCapaitalTaxRateEntryBix.get(),float)
     other_Income_Estimate = uInputDataObj(otherIncomeEntryBox.get(),float)
-    
+    redoConfigureAccountSettingsVariables()
+
+    createAccountArray = [databaseCurrentAccount_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(databaseCurrentAccount_ID.data),personal_Income_Allowence.data,other_Income_Estimate.data,basic_Income_Rate.data, high_Income_Rate.data, additional_Income_Rate.data, basic_Income_Cut_Off.data, high_Income_Cut_Off.data, corporation_Rate.data, basic_Capital_Gains_Rate.data, basic_Capital_Gains_Allowence.data, high_Capital_Gains_Rate.data, additional_Capital_Gains_Rate.data, corporation_Capital_Gains_Rate.data,national_Insurance_Due.data, primary.data, secondry.data, tertiary.data, font.data]
+    accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate','personal_Income_Allowence','other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
 
 def submitTaxDetials():
     pass
