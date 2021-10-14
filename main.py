@@ -1599,14 +1599,42 @@ def updateTax():
     dictOfDataValdationResults['basic_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(basic_Capital_Gains_Rate),'between0/100':rangeCheck(basic_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['high_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(high_Capital_Gains_Rate),'between0/100':rangeCheck(high_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['additional_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(additional_Capital_Gains_Rate),'between0/100':rangeCheck(additional_Capital_Gains_Rate,0,100)}
-    dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':rangeCheck(other_Income_Estimate,0,None)}
+    dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':rangeCheck(other_Income_Estimate,0,None)} #FIXME: shows an data validatio error with valid data :()
     taxPageCoverUpErrorMessage()
+
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,updateTaxCords[entryboxData]['x'],updateTaxCords[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+
+    countOfFailedTests = 0
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+
+    if countOfFailedTests == 0:
+        for i in range(len(createAccountArray)):
+            createAccountArray[i] = scramble(createAccountArray[i])
+
+        openDatabase()
+        global accountsInsertionCommand
+        accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, personal_Income_Allowence, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, basic_Capital_Gains_Rate, basic_Capital_Gains_Allowence, high_Capital_Gains_Rate, additional_Capital_Gains_Rate, corporation_Capital_Gains_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
+        Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+        cursor.execute(accountsInsertionCommand,createAccountArray)
+        closeDatabase()
+
+        displayConfirmation('Tax')
 
 def taxPageCoverUpErrorMessage():
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=updateTaxCords[entryboxData]['x'],rely=updateTaxCords[entryboxData]['y'],anchor=CENTER)
-
 
 def submitTaxDetials():
     pass
