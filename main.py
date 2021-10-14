@@ -886,18 +886,22 @@ def pictureCheck(inputData,symbol,minimum, maximum):
         return False
 
 def rangeCheck(inputData,lowerBound,upperBound):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or inputData.data == '0':
+    print(str(inputData.data))
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
         if inputData.prefferredType == str:
             dataToTest = len(castingTypeCheckFunc(inputData.data,inputData.prefferredType))
         else:
             dataToTest = castingTypeCheckFunc(inputData.data,inputData.prefferredType)
+        print(dataToTest)
         #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
         if (type(lowerBound) == float or type(lowerBound) == int or lowerBound == None) and (type(upperBound) == float or type(upperBound) == int or upperBound == None):
             if lowerBound == None and upperBound != None:
-                if dataToTest <= upperBound:
+                if upperBound >= dataToTest:
                     return True
                 else:
                     return False
+            elif lowerBound == 0 and upperBound == None and (inputData.data == 0.0 or inputData.data == 0 or inputData.data == '0' or inputData.data == '0.0'):
+                return True
             elif upperBound == None and lowerBound != None:
                 if dataToTest >= lowerBound:
                     return True
@@ -907,13 +911,15 @@ def rangeCheck(inputData,lowerBound,upperBound):
                 raise TypeError('Both Bounds cannot be None')
             else:
 
-                if dataToTest >= lowerBound and dataToTest <= upperBound:
+                if dataToTest >= lowerBound and upperBound >= dataToTest:
                     return True
                 else:
                     return False
         else:
             raise TypeError('Bounds where the incorrect data type') 
     else:
+        if (str(inputData.data) == '0.0' or str(inputData.data) == '0') and lowerBound == 0:
+            return True
         return False
 
 def presenceCheck(inputData):
@@ -992,9 +998,6 @@ def matchesCheck(x,y):
         return True
     else:
         return False
-
-def positiveCheck(other_Income_Estimate):
-    pass
 # end of data validation tests
 
 def disaplayEM(errorType,x,y):
@@ -1573,6 +1576,7 @@ def updateTax():
     high_Income_Rate = uInputDataObj(highIncomeTaxRateEntryBox.get(),float)
     additional_Income_Rate = uInputDataObj(additionalIncomeTaxRateEntryBox.get(),float)
     national_Insurance_Due = uInputDataObj(natInsuranceEntryBox.get(),float)
+    print(national_Insurance_Due.data)
     basic_Capital_Gains_Allowence = uInputDataObj(basicRateCapGainsAllowenceEntryBox.get(),float)
     basic_Income_Cut_Off = uInputDataObj(basicIncomeCutOffEntryBox.get(),float)
     high_Income_Cut_Off = uInputDataObj(highIncomeCutOffEntryBox.get(),float)
@@ -1602,7 +1606,8 @@ def updateTax():
     dictOfDataValdationResults['basic_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(basic_Capital_Gains_Rate),'between0/100':rangeCheck(basic_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['high_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(high_Capital_Gains_Rate),'between0/100':rangeCheck(high_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['additional_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(additional_Capital_Gains_Rate),'between0/100':rangeCheck(additional_Capital_Gains_Rate,0,100)}
-    dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':positiveCheck(other_Income_Estimate,0,None)}
+    dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':rangeCheck(other_Income_Estimate,0,None)}
+    print(dictOfDataValdationResults)
     taxPageCoverUpErrorMessage()
 
     for entryboxData in dictOfDataValdationResults.keys():
@@ -1622,14 +1627,9 @@ def updateTax():
 
 
     if countOfFailedTests == 0:
-        for i in range(len(createAccountArray)):
-            createAccountArray[i] = scramble(createAccountArray[i])
-
         openDatabase()
-        global accountsInsertionCommand
-        accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, personal_Income_Allowence, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, basic_Capital_Gains_Rate, basic_Capital_Gains_Allowence, high_Capital_Gains_Rate, additional_Capital_Gains_Rate, corporation_Capital_Gains_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
-        Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
-        cursor.execute(accountsInsertionCommand,createAccountArray)
+        accocountUpdateCommand = ("UPDATE accounts SET personal_Income_Allowence = '" + str(scramble(personal_Income_Allowence.data)) + "', basic_Income_Rate = '" + str(scramble(basic_Income_Rate.data)) + "', high_Income_Rate = '" + str(scramble(high_Income_Rate.data)) + "', additional_Income_Rate = '" + str(scramble(additional_Income_Rate.data)) + "', national_Insurance_Due = '" + str(scramble(national_Insurance_Due.data)) + "', basic_Capital_Gains_Allowence = '" + str(scramble(basic_Capital_Gains_Allowence.data)) + "', basic_Income_Cut_Off = '" + str(scramble(basic_Income_Cut_Off.data)) + "', high_Income_Cut_Off = '" + str(scramble(high_Income_Cut_Off.data)) + "', corporation_Rate = '" + str(scramble(corporation_Rate.data)) + "', corporation_Capital_Gains_Rate = '" + str(scramble(corporation_Capital_Gains_Rate.data)) + "', basic_Capital_Gains_Rate = '" + str(scramble(basic_Capital_Gains_Rate.data)) + "', high_Capital_Gains_Rate = '" + str(scramble(high_Capital_Gains_Rate.data)) + "', additional_Capital_Gains_Rate = '" + str(scramble(additional_Capital_Gains_Rate.data)) + "', other_Income_Estimate = '" + str(scramble(other_Income_Estimate.data)) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) +"'")
+        cursor.execute(accocountUpdateCommand)
         closeDatabase()
 
         displayConfirmation('Tax')
@@ -1638,9 +1638,6 @@ def taxPageCoverUpErrorMessage():
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=updateTaxCords[entryboxData]['x'],rely=updateTaxCords[entryboxData]['y'],anchor=CENTER)
-
-def submitTaxDetials():
-    pass
 
 def settingsPage():
     initialiseWindow()
@@ -1809,11 +1806,9 @@ def updateSetings():
                     countOfFailedTests = countOfFailedTests +1
 
     if countOfFailedTests == 0:
-        for i in range(len(newListOfAccount)):
-            newListOfAccount[i] = scramble(newListOfAccount[i])
 
         openDatabase()
-        accocountUpdateCommand = ("UPDATE accounts SET primary_Colour = '" + str(primary_Colour.data) + "', secondry_Colour = '" + str(secondry_Colour.data) + "', tertiary_Colour = '" + str(tertiary_Colour.data) + "', font = '" + str(font.data) + "', operation_Type = '" + str(operation_Type.data) + "', title = '" + str(title.data) + "', first_Name = '" + str(first_Name.data) + "', last_Name = '" + str(last_Name.data) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) +"'")
+        accocountUpdateCommand = ("UPDATE accounts SET primary_Colour = '" + str(scramble(primary_Colour.data)) + "', secondry_Colour = '" + str(scramble(secondry_Colour.data)) + "', tertiary_Colour = '" + str(scramble(tertiary_Colour.data)) + "', font = '" + str(scramble(font.data)) + "', operation_Type = '" + str(scramble(operation_Type.data)) + "', title = '" + str(scramble(title.data)) + "', first_Name = '" + str(scramble(first_Name.data)) + "', last_Name = '" + str(scramble(last_Name.data)) + "' WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) +"'")
         cursor.execute(accocountUpdateCommand)
         closeDatabase()
 
