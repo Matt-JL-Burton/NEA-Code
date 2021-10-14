@@ -1572,7 +1572,21 @@ def taxPage():
     root.mainloop()
 
 def updateTax():
-    pass
+    personal_Income_Allowence = uInputDataObj(personalIncomeEntryBox.get(),float)
+    basic_Income_Rate = uInputDataObj(basicIncomeTaxRateEntryBox.get(),float)
+    high_Income_Rate = uInputDataObj(highIncomeTaxRateEntryBox.get(),float)
+    additional_Income_Rate = uInputDataObj(additionalIncomeTaxRateEntryBox.get(),float)
+    national_Insurance_Due = uInputDataObj(natInsuranceEntryBox.get(),float)
+    basic_Capital_Gains_Allowence = uInputDataObj(basicRateCapGainsAllowenceEntryBox.get(),float)
+    basic_Income_Cut_Off = uInputDataObj(basicIncomeCutOffEntryBox.get(),float)
+    high_Income_Cut_Off = uInputDataObj(highIncomeCutOffEntryBox.get(),float)
+    corporation_Rate = uInputDataObj(corperationTaxRateEntryBox.get(),float)
+    corporation_Capital_Gains_Rate = uInputDataObj(corporationCapitalGainsEntryBox.get(),float)
+    basic_Capital_Gains_Rate = uInputDataObj(basicIncomeCapaitalTaxRateEntryBox.get(),float)
+    high_Capital_Gains_Rate = uInputDataObj(highIncomeCapaitalTaxRateEntryBox.get(),float)
+    additional_Capital_Gains_Rate = uInputDataObj(additionalIncomeCapaitalTaxRateEntryBix.get(),float)
+    other_Income_Estimate = uInputDataObj(otherIncomeEntryBox.get(),float)
+    
 
 def submitTaxDetials():
     pass
