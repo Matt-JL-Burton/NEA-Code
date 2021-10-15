@@ -1282,6 +1282,7 @@ def tenantsPage():
     global previousPage
     previousPage = 'Tenants'
     displayMenuButton()
+    #TODO: add link to edit tenant page
     root.mainloop()
 
 def newTenantPage():
