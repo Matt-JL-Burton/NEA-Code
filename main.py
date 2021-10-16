@@ -15,7 +15,7 @@ import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, flag, get, pink, prism, show, text, title
+from matplotlib.pyplot import autoscale, flag, get, pink, prism, show, table, text, title
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
@@ -1283,6 +1283,8 @@ def tenantsPage():
     global previousPage
     previousPage = 'Tenants'
     displayMenuButton()
+    tableCanvas = Canvas(root, bg=secondry.data, height=500, width=800).place(relx=0.33,rely=0.18)
+    label = Label(tableCanvas,bg='pink',width=10,height=10).place(relx=0.5,rely=0.3)
     root.mainloop()
 
 def newTenantPage():
