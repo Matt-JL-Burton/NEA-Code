@@ -34,7 +34,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            taxPage()
+            tenantsPage()
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1282,7 +1282,7 @@ def tenantsPage():
     global previousPage
     previousPage = 'Tenants'
     displayMenuButton()
-    #TODO: add link to edit tenant page
+    addPageSeperator()
     root.mainloop()
 
 def newTenantPage():
@@ -2163,6 +2163,9 @@ def hideEntryBox(globalEntryBox,xcord,ycord): #x and y cord of the hide/show but
 def showEntryBox(globalEntryBox,xcord,ycord): #x and y cord of the hide/show button
     globalEntryBox.config(show='')
     hidePasswordB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: hideEntryBox(globalEntryBox,xcord,ycord)).place(relx=xcord, rely=ycord, anchor=CENTER)
+
+def addPageSeperator():
+    pass
 
 initialise()
 print('Program Finished')
