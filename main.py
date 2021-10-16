@@ -1277,12 +1277,12 @@ def tenantsPage():
     initialiseWindow()
     root.title('Property managment system - Tenants Page')
     root.configure(bg=secondry.data)
+    addPageSeperator()
     topBorder = Label(root, text='Tenants', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
     previousPage = 'Tenants'
     displayMenuButton()
-    addPageSeperator()
     root.mainloop()
 
 def newTenantPage():
@@ -2165,7 +2165,9 @@ def showEntryBox(globalEntryBox,xcord,ycord): #x and y cord of the hide/show but
     hidePasswordB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: hideEntryBox(globalEntryBox,xcord,ycord)).place(relx=xcord, rely=ycord, anchor=CENTER)
 
 def addPageSeperator():
-    pass
+    xCord = 0.3
+    frontOfThinLine = Label(root,bg=primary.data,width=1,height=100).place(relx=xCord,rely=0)
+    backgroundOfThinLine = Label(root,bg=secondry.data,width=1,height=100).place(relx=xCord+0.002,rely=0)
 
 initialise()
 print('Program Finished')
