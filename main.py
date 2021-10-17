@@ -1065,7 +1065,9 @@ def menuPage():
     addNewTenantButton = Button(root, text='Add New Tenant Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newTenantPage).place(relx=0.5, rely=0.55, anchor=CENTER)
     taxPageButton = Button(root, text='Tax Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=taxPage).place(relx=0.5, rely=0.625, anchor=CENTER)
     settingsPageButton = Button(root, text='Settings Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=settingsPage).place(relx=0.5, rely=0.7, anchor=CENTER)
-    contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=contactPage).place(relx=0.5, rely=0.775, anchor=CENTER)
+    contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=contactPage)
+    contactPageButton.place(relx=0.5, rely=0.775, anchor=CENTER)
+    contactPageButton["state"] = "disabled" #To disable contact button as Im no longer using this
     signOutButton = Button(root, text='Sign Out', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=loginPage).place(relx=0.5, rely=0.85, anchor=CENTER)
     root.mainloop()
 
@@ -1283,8 +1285,7 @@ def tenantsPage():
     global previousPage
     previousPage = 'Tenants'
     displayMenuButton()
-    tableCanvas = Canvas(root, bg=secondry.data, height=500, width=800).place(relx=0.33,rely=0.18)
-    label = Label(tableCanvas,bg='pink',width=10,height=10).place(relx=0.5,rely=0.3)
+    
     root.mainloop()
 
 def newTenantPage():
