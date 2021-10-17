@@ -15,7 +15,7 @@ import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, flag, get, pink, prism, show, table, text, title
+from matplotlib.pyplot import autoscale, fill, flag, get, pink, prism, show, table, text, title
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
@@ -886,13 +886,11 @@ def pictureCheck(inputData,symbol,minimum, maximum):
         return False
 
 def rangeCheck(inputData,lowerBound,upperBound):
-    print(str(inputData.data))
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
         if inputData.prefferredType == str:
             dataToTest = len(castingTypeCheckFunc(inputData.data,inputData.prefferredType))
         else:
             dataToTest = castingTypeCheckFunc(inputData.data,inputData.prefferredType)
-        print(dataToTest)
         #inclusive of bounds - this func can be used for length checking aswell by using the len method on data as an argument for the func
         if (type(lowerBound) == float or type(lowerBound) == int or lowerBound == None) and (type(upperBound) == float or type(upperBound) == int or upperBound == None):
             if lowerBound == None and upperBound != None:
@@ -1282,10 +1280,48 @@ def tenantsPage():
     addPageSeperator()
     topBorder = Label(root, text='Tenants', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
-    global previousPage
+    global previousPage 
     previousPage = 'Tenants'
     displayMenuButton()
+    frameForTable = Frame(root,width=840,height=500)
+    frameForTable.place(relx=0.315,rely=0.18)
+    frameForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    tenant_ID_ColumHeader = Label(frameForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=0)
+    score_ColumHeader = Label(frameForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=1)
+    email_ColumHeader = Label(frameForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=2)
+    late_Rent_ColumHeader = Label(frameForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=3)
+    unresolved_Complaints_ColumHeader = Label(frameForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=4)
     
+
+    #INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
+    #VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
+    openDatabase()
+    tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data) + str("'"))) 
+    tenantBriefInfo = tenantBriefInfoD.fetchall()
+    closeDatabase()
+    if len(tenantBriefInfo) != 0: #If there is a tenants in the database
+        for i in range(len(tenantBriefInfo)):
+            tenant_ID = deScramble(tenantBriefInfo[i][0])
+            score = deScramble(tenantBriefInfo[i][1])
+            tenant_Email = deScramble(tenantBriefInfo[i][2])
+            openDatabase()
+            complaintsIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" + str(scramble(tenant_ID))+ "'")
+            complaintsIDs = complaintsIDsD.fetchall()
+            if len(complaintsIDs) != 0:
+                nOfCompaints = 0
+                for i in range(len(complaintsIDs)):
+                    print("SELECT resoltion FROM complaints WHERE complaint_ID = '" + complaintsIDs[i][0] + "'")
+                    complaintResolution = cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" + str(complaintsIDs[i][0]) + "'").fetchall()
+                    #TODO: checks that complaint is not resolved
+            else:
+                nOfCompaints = 0
+            print(nOfCompaints)
+        tenant_ID_ColumHeader = Label(frameForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,6), justify='center',borderwidth=1,relief='solid').grid(row=1,column=0,sticky='we')
+        # score_ColumHeader = Label(frameForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=1)
+        # email_ColumHeader = Label(frameForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=2)
+        # late_Rent_ColumHeader = Label(frameForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=3)
+        # unresolved_Complaints_ColumHeader = Label(frameForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=4)
+        
     root.mainloop()
 
 def newTenantPage():
@@ -1580,7 +1616,6 @@ def updateTax():
     high_Income_Rate = uInputDataObj(highIncomeTaxRateEntryBox.get(),float)
     additional_Income_Rate = uInputDataObj(additionalIncomeTaxRateEntryBox.get(),float)
     national_Insurance_Due = uInputDataObj(natInsuranceEntryBox.get(),float)
-    print(national_Insurance_Due.data)
     basic_Capital_Gains_Allowence = uInputDataObj(basicRateCapGainsAllowenceEntryBox.get(),float)
     basic_Income_Cut_Off = uInputDataObj(basicIncomeCutOffEntryBox.get(),float)
     high_Income_Cut_Off = uInputDataObj(highIncomeCutOffEntryBox.get(),float)
@@ -1611,7 +1646,6 @@ def updateTax():
     dictOfDataValdationResults['high_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(high_Capital_Gains_Rate),'between0/100':rangeCheck(high_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['additional_Capital_Gains_Rate'] = {'presenceCheck':presenceCheck(additional_Capital_Gains_Rate),'between0/100':rangeCheck(additional_Capital_Gains_Rate,0,100)}
     dictOfDataValdationResults['other_Income_Estimate'] =  {'presenceCheck':presenceCheck(other_Income_Estimate),'positiveCheck':rangeCheck(other_Income_Estimate,0,None)}
-    print(dictOfDataValdationResults)
     taxPageCoverUpErrorMessage()
 
     for entryboxData in dictOfDataValdationResults.keys():
