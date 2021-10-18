@@ -1300,7 +1300,7 @@ def tenantsPage():
     tenantBriefInfo = tenantBriefInfoD.fetchall()
     closeDatabase()
     if len(tenantBriefInfo) != 0: #If there is a tenants in the database
-        for i in range(len(tenantBriefInfo)):
+        for i in range(len(tenantBriefInfo)): #getting number of unresolved complaints for a tenant
             tenant_ID = deScramble(tenantBriefInfo[i][0])
             score = deScramble(tenantBriefInfo[i][1])
             tenant_Email = deScramble(tenantBriefInfo[i][2])
@@ -1310,13 +1310,18 @@ def tenantsPage():
             if len(complaintsIDs) != 0:
                 nOfCompaints = 0
                 for i in range(len(complaintsIDs)):
-                    print("SELECT resoltion FROM complaints WHERE complaint_ID = '" + complaintsIDs[i][0] + "'")
-                    complaintResolution = cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" + str(complaintsIDs[i][0]) + "'").fetchall()
-                    #TODO: checks that complaint is not resolved
+                    complaintResolution = deScramble(cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" + str(complaintsIDs[i][0]) + "'").fetchall()[0][0])
+                    if complaintResolution == None:
+                        nOfCompaints = nOfCompaints + 1        
             else:
                 nOfCompaints = 0
             print(nOfCompaints)
-        tenant_ID_ColumHeader = Label(frameForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,6), justify='center',borderwidth=1,relief='solid').grid(row=1,column=0,sticky='we')
+        nlateRent = 0
+        lateRent = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + str(scramble(tenant_ID)) + "'").fetchall()
+        if len(lateRent) != 0:
+            pass
+            #for i in range
+        #tenant_ID_ColumHeader = Label(frameForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,6), justify='center',borderwidth=1,relief='solid').grid(row=1,column=0,sticky='we')
         # score_ColumHeader = Label(frameForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=1)
         # email_ColumHeader = Label(frameForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=2)
         # late_Rent_ColumHeader = Label(frameForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=3)
