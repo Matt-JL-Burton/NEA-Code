@@ -1283,15 +1283,16 @@ def tenantsPage():
     global previousPage 
     previousPage = 'Tenants'
     displayMenuButton()
-    frameForTable = Frame(root,width=840,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
-    frameForTable.place(relx=0.315,rely=0.18)
-    frameForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
-    tenant_ID_ColumHeader = Label(frameForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=0)
-    score_ColumHeader = Label(frameForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=1)
-    email_ColumHeader = Label(frameForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=2)
-    late_Rent_ColumHeader = Label(frameForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=3)
-    unresolved_Complaints_ColumHeader = Label(frameForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',borderwidth=1,relief='solid').grid(row=0,column=4)
-    
+    canvasForTable = Canvas(root,width=840,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
+    canvasForTable.place(relx=0.315,rely=0.18)
+    canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.01, rely=0.01)
+    score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center').place(relx = 0.18, rely=0.01)
+    email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14,'bold'), justify='center').place(relx = 0.36, rely=0.01)
+    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center').place(relx = 0.64, rely=0.01)
+    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center').place(relx = 0.82, rely=0.01)
+    canvasForTable.create_line(20,0,20,1000,fill=primary.data)
+
 
     #INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
     #VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
@@ -1324,18 +1325,17 @@ def tenantsPage():
                 for i in range(len(lateRent)):
                     if deScramble(lateRent[i][0]) == True:
                         nlateRent = nlateRent + 1
-            canvasForButton = Frame(frameForTable,width=12,height=3,bg=secondry.data,relief='solid')
-            canvasForButton.grid(row=i+1,column=0,sticky='we')
             # canvasForButton.grid_propagate(False)
-            Button(canvasForButton, text=tenant_ID, height=3,width=15,bg=secondry.data, fg = primary.data, font=(font.data,13), justify='center',borderwidth=1,relief='solid').pack()
-            Label(frameForTable, text=score, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=1,sticky='we')
-            Label(frameForTable, text=tenant_Email, height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=2,sticky='we')
-            Label(frameForTable, text=nlateRent, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=3,sticky='we')
-            Label(frameForTable, text=nOfCompaints, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=4,sticky='we')
+            #Button(canvasForButton, text=tenant_ID, height=3,width=15,bg=secondry.data, fg = primary.data, font=(font.data,13), justify='center',borderwidth=1,relief='solid').pack()
+            #Label(canvasForTable, text=score, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=1,sticky='we')
+            #Label(canvasForTable, text=tenant_Email, height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=2,sticky='we')
+            #Label(canvasForTable, text=nlateRent, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=3,sticky='we')
+            #Label(canvasForTable, text=nOfCompaints, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=4,sticky='we')
     else:
-        noTenantLabel = Label(frameForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
+        noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
 
     root.mainloop()
+
 
 def newTenantPage():
     initialiseWindow()
