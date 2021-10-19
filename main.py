@@ -1287,11 +1287,10 @@ def tenantsPage():
     canvasForTable.place(relx=0.315,rely=0.18)
     canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
     tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.01, rely=0.01)
-    score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center').place(relx = 0.18, rely=0.01)
-    email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14,'bold'), justify='center').place(relx = 0.36, rely=0.01)
-    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center').place(relx = 0.64, rely=0.01)
-    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center').place(relx = 0.82, rely=0.01)
-    canvasForTable.create_line(20,0,20,1000,fill=primary.data)
+    score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.18, rely=0.01)
+    email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.36, rely=0.01)
+    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.64, rely=0.01)
+    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.82, rely=0.01)
 
 
     #INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
