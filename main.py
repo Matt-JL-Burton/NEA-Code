@@ -1287,6 +1287,7 @@ def tenantsPage():
     frameToGiveOtheCanvasABorder.place(relx=0.315,rely=0.18)
     frameToGiveOtheCanvasABorder.grid_propagate(False) #Stops frame from changing size to fit the inside of it
     global canvasForTable
+    #TODO: Need to fix the border mis match 
     canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data, bd=0, relief='ridge')
     canvasForTable.pack()
     canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
