@@ -1,9 +1,9 @@
 #importing modules
 from email import message
 from http.client import GATEWAY_TIMEOUT
-from sqlite3.dbapi2 import Connection
-from tkinter import *
+from sqlite3.dbapi2 import Connection, Error
 from tkinter import ttk
+from tkinter import *
 import sqlite3
 import time
 import datetime
@@ -1283,15 +1283,20 @@ def tenantsPage():
     global previousPage 
     previousPage = 'Tenants'
     displayMenuButton()
-    canvasForTable = Canvas(root,width=840,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
-    canvasForTable.place(relx=0.315,rely=0.18)
+    frameToGiveOtheCanvasABorder = Frame(root,width=840,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
+    frameToGiveOtheCanvasABorder.place(relx=0.315,rely=0.18)
+    frameToGiveOtheCanvasABorder.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    global canvasForTable
+    canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data, bd=0, relief='ridge')
+    canvasForTable.pack()
     canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
-    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.01, rely=0.01)
-    score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.18, rely=0.01)
-    email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.36, rely=0.01)
-    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.64, rely=0.01)
-    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14,'bold'), justify='center',border=1,relief='solid').place(relx = 0.82, rely=0.01)
-
+    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.05, rely=0)
+    score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.23, rely=0)
+    email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.44, rely=0)
+    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.63, rely=0)
+    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.83, rely=0)
+    createTenantXaxisLines(0.002)
+    createTenantYaxisLine(0.002)
 
     #INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
     #VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
@@ -1303,7 +1308,6 @@ def tenantsPage():
         for i in range(len(tenantBriefInfo)): #getting number of unresolved complaints for a tenant
             if i == 1:
                 break
-            print(i)
             tenant_ID = deScramble(tenantBriefInfo[i][0])
             score = deScramble(tenantBriefInfo[i][1])
             tenant_Email = deScramble(tenantBriefInfo[i][2])
@@ -1335,6 +1339,24 @@ def tenantsPage():
 
     root.mainloop()
 
+def createLineInCanvas(x1,x2,y1,y2,thickness):
+    if x1 == x2:
+        frontOfThinLine = Label(canvasForTable,bg=primary.data,font=(font.data,14,'bold'),width=1,height=3).place(relx=x1,rely=y1)
+        backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,font=(font.data,14,'bold'),width=1,height=3).place(relx=x1+thickness,rely=y1)
+    elif y1 == y2:
+        frontOfThinLine = Label(canvasForTable,bg=primary.data,width=120,height=1).place(relx=x1,rely=y1)
+        backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,width=120,height=1).place(relx=x1,rely=y1+thickness)
+    else:
+        print('x1 = x2 or y1 must = y2')
+
+def createTenantXaxisLines(thickness):
+    createLineInCanvas(0.19,0.19,0.003,None,thickness)
+    createLineInCanvas(0.34,0.34,0.003,None,thickness)
+    createLineInCanvas(0.6,0.6,0.003,None,thickness)
+    createLineInCanvas(0.78,0.78,0.003,None,thickness)
+
+def createTenantYaxisLine(thickness):
+    createLineInCanvas(0.002,None,0.14,0.14,thickness)
 
 def newTenantPage():
     initialiseWindow()
