@@ -1339,7 +1339,7 @@ def tenantsPage():
 
     root.mainloop()
 
-def createLineInCanvas(x1,x2,y1,y2,thickness):
+def createLineInCanvas(x1,x2,y1,y2,thickness): #thickness refers to how thick the line to be added will be
     if x1 == x2:
         frontOfThinLine = Label(canvasForTable,bg=primary.data,font=(font.data,14,'bold'),width=1,height=3).place(relx=x1,rely=y1)
         backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,font=(font.data,14,'bold'),width=1,height=3).place(relx=x1+thickness,rely=y1)
