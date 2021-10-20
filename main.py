@@ -1287,17 +1287,16 @@ def tenantsPage():
     frameToGiveOtheCanvasABorder.place(relx=0.315,rely=0.18)
     frameToGiveOtheCanvasABorder.grid_propagate(False) #Stops frame from changing size to fit the inside of it
     global canvasForTable
-    #TODO: Need to fix the border mis match 
-    canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data, bd=0, relief='ridge')
+    canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data,highlightthickness=0)
     canvasForTable.pack()
     canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
-    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.05, rely=0)
+    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.04, rely=0)
     score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.23, rely=0)
     email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.44, rely=0)
     late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.63, rely=0)
     unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.83, rely=0)
-    createTenantXaxisLines(0.002)
-    createTenantYaxisLine(0.002)
+    createTenantXaxisLines(0.003,0)
+    createTenantYaxisLine(0.003,0.14)
 
     #INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
     #VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
@@ -1307,8 +1306,6 @@ def tenantsPage():
     closeDatabase()
     if len(tenantBriefInfo) != 0: #If there is a tenants in the database
         for i in range(len(tenantBriefInfo)): #getting number of unresolved complaints for a tenant
-            if i == 1:
-                break
             tenant_ID = deScramble(tenantBriefInfo[i][0])
             score = deScramble(tenantBriefInfo[i][1])
             tenant_Email = deScramble(tenantBriefInfo[i][2])
@@ -1317,8 +1314,8 @@ def tenantsPage():
             complaintsIDs = complaintsIDsD.fetchall()
             if len(complaintsIDs) != 0:
                 nOfCompaints = 0
-                for i in range(len(complaintsIDs)):
-                    complaintResolution = deScramble(cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" + str(complaintsIDs[i][0]) + "'").fetchall()[0][0])
+                for x in range(len(complaintsIDs)):
+                    complaintResolution = deScramble(cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" + str(complaintsIDs[x][0]) + "'").fetchall()[0][0])
                     if complaintResolution == None:
                         nOfCompaints = nOfCompaints + 1        
             else:
@@ -1329,12 +1326,8 @@ def tenantsPage():
                 for i in range(len(lateRent)):
                     if deScramble(lateRent[i][0]) == True:
                         nlateRent = nlateRent + 1
-            # canvasForButton.grid_propagate(False)
-            #Button(canvasForButton, text=tenant_ID, height=3,width=15,bg=secondry.data, fg = primary.data, font=(font.data,13), justify='center',borderwidth=1,relief='solid').pack()
-            #Label(canvasForTable, text=score, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=1,sticky='we')
-            #Label(canvasForTable, text=tenant_Email, height=3 ,bg=secondry.data, fg = primary.data, width=20, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=2,sticky='we')
-            #Label(canvasForTable, text=nlateRent, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=3,sticky='we')
-            #Label(canvasForTable, text=nOfCompaints, height=3 ,bg=secondry.data, fg = primary.data, width=12, font=(font.data,14), justify='center',borderwidth=1,relief='solid').grid(row=i+1,column=4,sticky='we')
+            addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i)
+                
     else:
         noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
 
@@ -1350,14 +1343,42 @@ def createLineInCanvas(x1,x2,y1,y2,thickness): #thickness refers to how thick th
     else:
         print('x1 = x2 or y1 must = y2')
 
-def createTenantXaxisLines(thickness):
-    createLineInCanvas(0.19,0.19,0.003,None,thickness)
-    createLineInCanvas(0.34,0.34,0.003,None,thickness)
-    createLineInCanvas(0.6,0.6,0.003,None,thickness)
-    createLineInCanvas(0.78,0.78,0.003,None,thickness)
+def createShortLineInCanvas(x1,x2,y1,y2,thickness):
+    if x1 == x2:
+        frontOfThinLine = Label(canvasForTable,bg=primary.data,font=(font.data,14,'bold'),width=1,height=1).place(relx=x1,rely=y1)
+        backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,font=(font.data,14,'bold'),width=1,height=1).place(relx=x1+thickness,rely=y1)
+    elif y1 == y2:
+        frontOfThinLine = Label(canvasForTable,bg=primary.data,width=10,height=1).place(relx=x1,rely=y1)
+        backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,width=10,height=1).place(relx=x1,rely=y1+thickness)
+    else:
+        print('x1 = x2 or y1 must = y2')
 
-def createTenantYaxisLine(thickness):
-    createLineInCanvas(0.002,None,0.14,0.14,thickness)
+
+def createTenantXaxisLines(thickness,y):
+    createLineInCanvas(0.19,0.19,y,None,thickness)
+    createLineInCanvas(0.34,0.34,y,None,thickness)
+    createLineInCanvas(0.6,0.6,y,None,thickness)
+    createLineInCanvas(0.78,0.78,y,None,thickness)
+
+def createTenantYaxisLine(thickness,y):
+    createLineInCanvas(0.0,None,y,y,thickness)
+
+def createTenatnYaxisLineCoverUp(thickness,y):
+    createShortLineInCanvas(0.191,0.191,y,None,thickness)
+    createShortLineInCanvas(0.341,0.341,y,None,thickness)
+    createShortLineInCanvas(0.61,0.61,y,None,thickness)
+    createShortLineInCanvas(0.781,0.781,y,None,thickness)
+    #TODO: need to change to be X lines not y
+
+def addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
+    createTenantXaxisLines(0.003,0.143+0.15*((i%5)))
+    # tenant_ID_ColumHeader = Label(canvasForTable, text=tenant_ID, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid'=).place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
+    # score_ColumHeader = Label(canvasForTable, text=score, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
+    # email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
+    # late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
+    # unresolved_Complaints_ColumHeader = Label(canvasForTable, text=nOfCompaints, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid').place(relx = 0.79, rely=0.23+0.15*((i)%5),anchor='w')
+    createTenantYaxisLine(0.003,0.30+0.15*((i%5)))
+    createTenatnYaxisLineCoverUp(0.003,0.3+0.15*((i%5)))
 
 def newTenantPage():
     initialiseWindow()
