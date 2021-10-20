@@ -1295,11 +1295,15 @@ def tenantsPage():
     email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.44, rely=0)
     late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.63, rely=0)
     unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.83, rely=0)
-    createTenantXaxisLines(0.003,0)
-    createTenantYaxisLine(0.003,0.14)
+    canvasForTable.create_line(160,0,160,76,fill=primary.data)
+    canvasForTable.create_line(285,0,285,76,fill=primary.data)
+    canvasForTable.create_line(505,0,505,76,fill=primary.data)  
+    canvasForTable.create_line(655,0,655,76,fill=primary.data)
+    canvasForTable.create_line(0,76,850,76,fill=primary.data)
 
     #INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
     #VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
+
     openDatabase()
     tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data) + str("'"))) 
     tenantBriefInfo = tenantBriefInfoD.fetchall()
@@ -1327,7 +1331,7 @@ def tenantsPage():
                     if deScramble(lateRent[i][0]) == True:
                         nlateRent = nlateRent + 1
             addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i)
-                
+            print(i)
     else:
         noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
 
@@ -1354,31 +1358,23 @@ def createShortLineInCanvas(x1,x2,y1,y2,thickness):
         print('x1 = x2 or y1 must = y2')
 
 
-def createTenantXaxisLines(thickness,y):
-    createLineInCanvas(0.19,0.19,y,None,thickness)
-    createLineInCanvas(0.34,0.34,y,None,thickness)
-    createLineInCanvas(0.6,0.6,y,None,thickness)
-    createLineInCanvas(0.78,0.78,y,None,thickness)
+def createTenantXaxisLines(y):
+    canvasForTable.create_line(160,y,160,y+76,fill=primary.data)
+    canvasForTable.create_line(285,y,285,y+76,fill=primary.data)
+    canvasForTable.create_line(505,y,505,y+76,fill=primary.data)  
+    canvasForTable.create_line(655,y,655,y+76,fill=primary.data)
 
-def createTenantYaxisLine(thickness,y):
-    createLineInCanvas(0.0,None,y,y,thickness)
-
-def createTenatnYaxisLineCoverUp(thickness,y):
-    createShortLineInCanvas(0.191,0.191,y,None,thickness)
-    createShortLineInCanvas(0.341,0.341,y,None,thickness)
-    createShortLineInCanvas(0.61,0.61,y,None,thickness)
-    createShortLineInCanvas(0.781,0.781,y,None,thickness)
-    #TODO: need to change to be X lines not y
+def createTenantYaxisLine(y):
+    canvasForTable.create_line(0,y,850,y,fill=primary.data)
 
 def addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
-    createTenantXaxisLines(0.003,0.143+0.15*((i%5)))
-    # tenant_ID_ColumHeader = Label(canvasForTable, text=tenant_ID, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid'=).place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
-    # score_ColumHeader = Label(canvasForTable, text=score, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
-    # email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
-    # late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
-    # unresolved_Complaints_ColumHeader = Label(canvasForTable, text=nOfCompaints, height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left',relief='solid').place(relx = 0.79, rely=0.23+0.15*((i)%5),anchor='w')
-    createTenantYaxisLine(0.003,0.30+0.15*((i%5)))
-    createTenatnYaxisLineCoverUp(0.003,0.3+0.15*((i%5)))
+    createTenantXaxisLines(76+76*((i%5)))
+    tenant_ID_ColumHeader = Label(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
+    score_ColumHeader = Label(canvasForTable, text=score, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
+    email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
+    late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
+    unresolved_Complaints_ColumHeader = Label(canvasForTable, text=nOfCompaints, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.79, rely=0.23+0.15*((i)%5),anchor='w')
+    createTenantYaxisLine(152+76*((i%5)))
 
 def newTenantPage():
     initialiseWindow()
