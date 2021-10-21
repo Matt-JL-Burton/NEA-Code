@@ -1331,7 +1331,6 @@ def tenantsPage():
                     if deScramble(lateRent[i][0]) == True:
                         nlateRent = nlateRent + 1
             addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i)
-            print(i)
     else:
         noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
 
@@ -1369,9 +1368,9 @@ def createTenantYaxisLine(y):
 
 def addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
     createTenantXaxisLines(76+76*((i%5)))
-    tenant_ID_ColumHeader = Label(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
+    tenant_ID_ColumHeader = Label(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'underline'), justify='left').place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w') #TODO: change this to be a button directing to teh right page
     score_ColumHeader = Label(canvasForTable, text=score, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
-    email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
+    email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,9), justify='left').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
     late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
     unresolved_Complaints_ColumHeader = Label(canvasForTable, text=nOfCompaints, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.79, rely=0.23+0.15*((i)%5),anchor='w')
     createTenantYaxisLine(152+76*((i%5)))
