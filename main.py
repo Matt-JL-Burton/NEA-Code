@@ -1282,32 +1282,13 @@ def tenantsPage():
     displayBackButton()
     global previousPage 
     previousPage = 'Tenants'
+    global currentTentantNumber
+    currentTentantNumber = 0
     global startValueForAccountListing
     startValueForAccountListing = createTableForTenant(0)
     displayMenuButton()
    
     root.mainloop()
-
-def createLineInCanvas(x1,x2,y1,y2,thickness): #thickness refers to how thick the line to be added will be
-    if x1 == x2:
-        frontOfThinLine = Label(canvasForTable,bg=primary.data,font=(font.data,14,'bold'),width=1,height=3).place(relx=x1,rely=y1)
-        backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,font=(font.data,14,'bold'),width=1,height=3).place(relx=x1+thickness,rely=y1)
-    elif y1 == y2:
-        frontOfThinLine = Label(canvasForTable,bg=primary.data,width=120,height=1).place(relx=x1,rely=y1)
-        backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,width=120,height=1).place(relx=x1,rely=y1+thickness)
-    else:
-        print('x1 = x2 or y1 must = y2')
-
-def createShortLineInCanvas(x1,x2,y1,y2,thickness):
-    if x1 == x2:
-        frontOfThinLine = Label(canvasForTable,bg=primary.data,font=(font.data,14,'bold'),width=1,height=1).place(relx=x1,rely=y1)
-        backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,font=(font.data,14,'bold'),width=1,height=1).place(relx=x1+thickness,rely=y1)
-    elif y1 == y2:
-        frontOfThinLine = Label(canvasForTable,bg=primary.data,width=10,height=1).place(relx=x1,rely=y1)
-        backgroundOfThinLine = Label(canvasForTable,bg=secondry.data,width=10,height=1).place(relx=x1,rely=y1+thickness)
-    else:
-        print('x1 = x2 or y1 must = y2')
-
 
 def createTenantXaxisLines(y):
     canvasForTable.create_line(160,y,160,y+76,fill=primary.data)
@@ -1320,7 +1301,7 @@ def createTenantYaxisLine(y):
 
 def addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
     createTenantXaxisLines(76+76*((i%5)))
-    tenant_ID_ColumHeader = Button(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'underline'), justify='left',activebackground=secondry.data,border=0,activeforeground=bannedColours['activeTextColor'],command=lambda: tenantPage(tenant_ID)).place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w') #TODO: change this to be a button directing to teh right page
+    tenant_ID_ColumHeader = Button(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'underline'), justify='left',activebackground=secondry.data,border=0,activeforeground=bannedColours['activeTextColor'],command=lambda: tenantPage(tenant_ID)).place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
     score_ColumHeader = Label(canvasForTable, text=score, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
     email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,9), justify='left').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
     late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
@@ -1350,13 +1331,14 @@ def createTableForTenant(startValueForAccountListing):
     # VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
 
     openDatabase()
-    tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'") + "ORDER BY tenant_ID" ) 
+    tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'")) 
     tenantBriefInfo = tenantBriefInfoD.fetchall()
     closeDatabase()
     if len(tenantBriefInfo) != 0: #If there is a tenants in the database
-        endValueForAccountListing = startValueForAccountListing + 5
+        #TODO: need to order tenant's by descrambled tenant_ID
         i = startValueForAccountListing
-        while i < endValueForAccountListing: #getting number of unresolved complaints for a tenant
+        count = 0
+        while i < len(tenantBriefInfo) and count < 5:
             tenant_ID = deScramble(tenantBriefInfo[i][0])
             score = deScramble(tenantBriefInfo[i][1])
             tenant_Email = deScramble(tenantBriefInfo[i][2])
@@ -1379,9 +1361,25 @@ def createTableForTenant(startValueForAccountListing):
                         nlateRent = nlateRent + 1
             addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i)
             i = i + 1
+            count = count + 1
+            global currentTentantNumber
+            currentTentantNumber = currentTentantNumber + 1
+        if currentTentantNumber != len(tenantBriefInfo):
+            downButton = Button(canvasForTable, text='Down',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonCommand(currentTentantNumber)).place(relx=0.4,rely=0.96,anchor='center')
+        else:
+            downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.4,rely=0.96,anchor='center')
+        if currentTentantNumber > 5:
+            upButton = Button(canvasForTable, text='Up',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonCommand(currentTentantNumber-count-5)).place(relx=0.6,rely=0.96,anchor='center')
+        else:
+            downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.6,rely=0.96,anchor='center')
     else:
         noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
     return startValueForAccountListing
+
+def changeTableHieghtButtonCommand(inputNumber):
+    global currentTentantNumber
+    currentTentantNumber = inputNumber
+    createTableForTenant(inputNumber)
 
 def newTenantPage():
     initialiseWindow()
