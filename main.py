@@ -1282,58 +1282,10 @@ def tenantsPage():
     displayBackButton()
     global previousPage 
     previousPage = 'Tenants'
+    global startValueForAccountListing
+    startValueForAccountListing = createTableForTenant(0)
     displayMenuButton()
-    frameToGiveOtheCanvasABorder = Frame(root,width=840,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
-    frameToGiveOtheCanvasABorder.place(relx=0.315,rely=0.18)
-    frameToGiveOtheCanvasABorder.grid_propagate(False) #Stops frame from changing size to fit the inside of it
-    global canvasForTable
-    canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data,highlightthickness=0)
-    canvasForTable.pack()
-    canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
-    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.04, rely=0)
-    score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.23, rely=0)
-    email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.44, rely=0)
-    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.63, rely=0)
-    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.83, rely=0)
-    canvasForTable.create_line(160,0,160,76,fill=primary.data)
-    canvasForTable.create_line(285,0,285,76,fill=primary.data)
-    canvasForTable.create_line(505,0,505,76,fill=primary.data)  
-    canvasForTable.create_line(655,0,655,76,fill=primary.data)
-    canvasForTable.create_line(0,76,850,76,fill=primary.data)
-
-    #INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
-    #VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
-
-    openDatabase()
-    tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data) + str("'"))) 
-    tenantBriefInfo = tenantBriefInfoD.fetchall()
-    closeDatabase()
-    if len(tenantBriefInfo) != 0: #If there is a tenants in the database
-        for i in range(len(tenantBriefInfo)): #getting number of unresolved complaints for a tenant
-            tenant_ID = deScramble(tenantBriefInfo[i][0])
-            score = deScramble(tenantBriefInfo[i][1])
-            tenant_Email = deScramble(tenantBriefInfo[i][2])
-            openDatabase()
-            complaintsIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" + str(scramble(tenant_ID))+ "'")
-            complaintsIDs = complaintsIDsD.fetchall()
-            if len(complaintsIDs) != 0:
-                nOfCompaints = 0
-                for x in range(len(complaintsIDs)):
-                    complaintResolution = deScramble(cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" + str(complaintsIDs[x][0]) + "'").fetchall()[0][0])
-                    if complaintResolution == None:
-                        nOfCompaints = nOfCompaints + 1        
-            else:
-                nOfCompaints = 0
-            nlateRent = 0
-            lateRent = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + str(scramble(tenant_ID)) + "'").fetchall()
-            if len(lateRent) != 0:
-                for i in range(len(lateRent)):
-                    if deScramble(lateRent[i][0]) == True:
-                        nlateRent = nlateRent + 1
-            addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i)
-    else:
-        noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
-
+   
     root.mainloop()
 
 def createLineInCanvas(x1,x2,y1,y2,thickness): #thickness refers to how thick the line to be added will be
@@ -1368,12 +1320,68 @@ def createTenantYaxisLine(y):
 
 def addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
     createTenantXaxisLines(76+76*((i%5)))
-    tenant_ID_ColumHeader = Label(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'underline'), justify='left').place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w') #TODO: change this to be a button directing to teh right page
+    tenant_ID_ColumHeader = Button(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'underline'), justify='left',activebackground=secondry.data,border=0,activeforeground=bannedColours['activeTextColor'],command=lambda: tenantPage(tenant_ID)).place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w') #TODO: change this to be a button directing to teh right page
     score_ColumHeader = Label(canvasForTable, text=score, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
     email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,9), justify='left').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
     late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
     unresolved_Complaints_ColumHeader = Label(canvasForTable, text=nOfCompaints, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.79, rely=0.23+0.15*((i)%5),anchor='w')
     createTenantYaxisLine(152+76*((i%5)))
+
+def createTableForTenant(startValueForAccountListing):
+    frameToGiveOtheCanvasABorder = Frame(root,width=840,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
+    frameToGiveOtheCanvasABorder.place(relx=0.315,rely=0.18)
+    frameToGiveOtheCanvasABorder.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    global canvasForTable
+    canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data,highlightthickness=0)
+    canvasForTable.pack()
+    canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.04, rely=0)
+    score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.23, rely=0)
+    email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.44, rely=0)
+    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.63, rely=0)
+    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.83, rely=0)
+    canvasForTable.create_line(160,0,160,76,fill=primary.data)
+    canvasForTable.create_line(285,0,285,76,fill=primary.data)
+    canvasForTable.create_line(505,0,505,76,fill=primary.data)  
+    canvasForTable.create_line(655,0,655,76,fill=primary.data)
+    canvasForTable.create_line(0,76,850,76,fill=primary.data)
+
+    # INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
+    # VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
+
+    openDatabase()
+    tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'") + "ORDER BY tenant_ID" ) 
+    tenantBriefInfo = tenantBriefInfoD.fetchall()
+    closeDatabase()
+    if len(tenantBriefInfo) != 0: #If there is a tenants in the database
+        endValueForAccountListing = startValueForAccountListing + 5
+        i = startValueForAccountListing
+        while i < endValueForAccountListing: #getting number of unresolved complaints for a tenant
+            tenant_ID = deScramble(tenantBriefInfo[i][0])
+            score = deScramble(tenantBriefInfo[i][1])
+            tenant_Email = deScramble(tenantBriefInfo[i][2])
+            openDatabase()
+            complaintsIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" + str(scramble(tenant_ID))+ "'")
+            complaintsIDs = complaintsIDsD.fetchall()
+            if len(complaintsIDs) != 0:
+                nOfCompaints = 0
+                for x in range(len(complaintsIDs)):
+                    complaintResolution = deScramble(cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" + str(complaintsIDs[x][0]) + "'").fetchall()[0][0])
+                    if complaintResolution == None:
+                        nOfCompaints = nOfCompaints + 1        
+            else:
+                nOfCompaints = 0
+            nlateRent = 0
+            lateRent = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + str(scramble(tenant_ID)) + "'").fetchall()
+            if len(lateRent) != 0:
+                for i in range(len(lateRent)):
+                    if deScramble(lateRent[i][0]) == True:
+                        nlateRent = nlateRent + 1
+            addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i)
+            i = i + 1
+    else:
+        noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
+    return startValueForAccountListing
 
 def newTenantPage():
     initialiseWindow()
@@ -2256,6 +2264,9 @@ def addPageSeperator():
     xCord = 0.3
     frontOfThinLine = Label(root,bg=primary.data,width=1,height=100).place(relx=xCord,rely=0)
     backgroundOfThinLine = Label(root,bg=secondry.data,width=1,height=100).place(relx=xCord+0.002,rely=0)
+
+def tenantPage(tenant_ID):
+    print(tenant_ID)
 
 initialise()
 print('Program Finished')
