@@ -700,6 +700,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteAccountPage).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Change Username':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'individualTenantPage':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: tenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -736,6 +738,8 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteAccountPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Change Username':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'individualTenantPage':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: tenantPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -1301,7 +1305,8 @@ def createTenantYaxisLine(y):
 
 def addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
     createTenantXaxisLines(76+76*((i%5)))
-    tenant_ID_ColumHeader = Button(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'underline'), justify='left',activebackground=secondry.data,border=0,activeforeground=bannedColours['activeTextColor'],command=lambda: tenantPage(tenant_ID)).place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
+    tenant_ID_ColumHeader = Button(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'underline'), justify='left',activebackground=secondry.data,border=0,activeforeground=bannedColours['activeTextColor'],command=lambda: tenantPage(tenant_ID))
+    tenant_ID_ColumHeader.place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
     score_ColumHeader = Label(canvasForTable, text=score, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
     email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,9), justify='left').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
     late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
@@ -1316,11 +1321,11 @@ def createTableForTenant(startValueForAccountListing):
     canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data,highlightthickness=0)
     canvasForTable.pack()
     canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
-    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.04, rely=0)
-    score_ColumHeader = Label(canvasForTable, text='Score', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.23, rely=0)
-    email_ColumHeader = Label(canvasForTable, text='Email', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.44, rely=0)
-    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.63, rely=0)
-    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.83, rely=0)
+    tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.04, rely=0.05)
+    score_ColumHeader = Label(canvasForTable, text='Score', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.23, rely=0.05)
+    email_ColumHeader = Label(canvasForTable, text='Email', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.43, rely=0.05)
+    late_Rent_ColumHeader = Label(canvasForTable, text='Late Rents', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.63, rely=0.05)
+    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Unresolved\nComplaints', height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.82, rely=0.028,)
     canvasForTable.create_line(160,0,160,76,fill=primary.data)
     canvasForTable.create_line(285,0,285,76,fill=primary.data)
     canvasForTable.create_line(505,0,505,76,fill=primary.data)  
@@ -2264,7 +2269,18 @@ def addPageSeperator():
     backgroundOfThinLine = Label(root,bg=secondry.data,width=1,height=100).place(relx=xCord+0.002,rely=0)
 
 def tenantPage(tenant_ID):
-    print(tenant_ID)
+    global current_tenant_ID
+    current_tenant_ID = tenant_ID
+    initialiseWindow()
+    root.title('Property managment system - Tenant Page ' + str(tenant_ID))
+    root.configure(bg=secondry.data)
+    topBorder = Label(root, text='Tenant ' + str(tenant_ID), height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayMenuButton()
+    displayBackButton()
+    global previousPage
+    previousPage = 'individualTenantPage'
+    happyFace = Label(root, text=':)', font=(font.data,'40'),fg=primary.data,bg=secondry.data,justify='center').place(relx=0.5,rely=0.5,anchor=CENTER)
+    root.mainloop()
 
 initialise()
 print('Program Finished')
