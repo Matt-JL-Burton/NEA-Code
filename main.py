@@ -2299,6 +2299,7 @@ def createTableForIndividualTenant(startValueForAccountListing):
     email_ColumHeader = Label(canvasForTable, text='Complaints', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.73, rely=0.05)
     canvasForTable.create_line(110,0,110,76,fill=primary.data)
     canvasForTable.create_line(285,0,285,76,fill=primary.data)
+    canvasForTable.create_line(0,76,850,76,fill=primary.data)
 
     # INSERT INTO units_Montlhy (year, month, unit_ID, tenant_ID, rent_Paid, rent_Late, income, non_Taxable_Expenses, taxable_Expenses, suspected_Property_Value, equity_In_Property,money_Taken_From_Deposit)
     # VALUES ('2020','12','','2019','testing','This is solved') #SQL to add a new monthly
