@@ -2302,7 +2302,7 @@ def createTableForIndividualTenant(startValueForAccountListing):
     canvasForTable.create_line(0,76,850,76,fill=primary.data)
 
     # INSERT INTO units_Monthly (year, month, unit_ID, tenant_ID, rent_Paid, rent_Late, income, non_Taxable_Expenses, taxable_Expenses, suspected_Property_Value, equity_In_Property,money_Taken_From_Deposit)
-    # VALUES ('2020','12','LT1','2019','testing','This is solved') #SQL to add a new monthly
+    # VALUES ('2020','12','LT2','MC9',True,True,3500,3000,0,135000,35000,0) #SQL to add a new monthly
 
     # openDatabase()
     # tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'")) 
