@@ -2300,15 +2300,14 @@ def createTableForIndividualTenant(startValueForAccountListing):
     canvasForTable.create_line(110,0,110,76,fill=primary.data)
     canvasForTable.create_line(285,0,285,76,fill=primary.data)
 
-    # INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
-    # VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
+    # INSERT INTO units_Montlhy (year, month, unit_ID, tenant_ID, rent_Paid, rent_Late, income, non_Taxable_Expenses, taxable_Expenses, suspected_Property_Value, equity_In_Property,money_Taken_From_Deposit)
+    # VALUES ('2020','12','','2019','testing','This is solved') #SQL to add a new monthly
 
     # openDatabase()
     # tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'")) 
     # tenantBriefInfo = tenantBriefInfoD.fetchall()
     # closeDatabase()
     # if len(tenantBriefInfo) != 0: #If there is a tenants in the database
-    #     #TODO: need to order tenant's by descrambled tenant_ID
     #     i = startValueForAccountListing
     #     count = 0
     #     while i < len(tenantBriefInfo) and count < 5:
