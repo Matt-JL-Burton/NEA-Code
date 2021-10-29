@@ -1214,6 +1214,7 @@ def addUnit():
     general_Notes = uInputDataObj(generalNotesEntryBox.get('1.0','end-1c'),str)
     rent = uInputDataObj(rentEntryBox2.get(),str)
 
+    #'test'
     newUnitArray = [unit_ID.data,databaseCurrentAccount_ID.data,tenant_ID.data,castingTypeCheckFunc(property_Equity.data,property_Equity.prefferredType)+castingTypeCheckFunc(capital_Owed.data,capital_Owed.prefferredType),castingTypeCheckFunc(property_Equity.data,property_Equity.prefferredType)+castingTypeCheckFunc(capital_Owed.data,capital_Owed.prefferredType),address.data,postcode.data,buy_Month.data,buy_Year.data,property_Equity.data,rent.data,general_Notes.data]
     newLoanArary = [loan_ID.data,unit_ID.data,intrest_Rate.data,instalments.data,capital_Owed.data]
     unitFields = ['unit_ID','account_ID','tenant_ID','property_Equity','most_Recent_Valuation','buy_Price','address','postcode','buy_Month','buy_Year','property_Equity','rent','general_Notes']
