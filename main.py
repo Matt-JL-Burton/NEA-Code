@@ -62,7 +62,7 @@ def definingDefaultVariables():
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     listOfSecondryColourOptions = ['white','grey','black']
-    bannedColours = {'errorRed':'#FF0000','warningYellow':'#ffff00','activeTextColor':'dark grey'}
+    bannedColours = {'errorRed':'#FF0000','warningYellow':'#FDDA0D','activeTextColor':'dark grey','emaraldGreen':'#50C878'}
     errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password','matchesNewPassword':'Your new passwords are not matching, please enter matching passwords'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     operation_Type = uInputDataObj(None,str)
@@ -1341,6 +1341,7 @@ def createTableForTenant(startValueForAccountListing):
     openDatabase()
     tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'")) 
     tenantBriefInfo = tenantBriefInfoD.fetchall()
+    print(tenantBriefInfo)
     closeDatabase()
     if len(tenantBriefInfo) != 0: #If there is a tenants in the database
         #TODO: need to order tenant's by descrambled tenant_ID
@@ -1364,8 +1365,8 @@ def createTableForTenant(startValueForAccountListing):
             nlateRent = 0
             lateRent = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + str(scramble(tenant_ID)) + "'").fetchall()
             if len(lateRent) != 0:
-                for i in range(len(lateRent)):
-                    if deScramble(lateRent[i][0]) == True:
+                for x in range(len(lateRent)):
+                    if deScramble(lateRent[x][0]) == True:
                         nlateRent = nlateRent + 1
             addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i)
             i = i + 1
@@ -2299,7 +2300,7 @@ def createTableForIndividualTenant(startValueForAccountListing):
     canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
     tenant_ID_ColumHeader = Label(canvasForTable, text='Date', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.04, rely=0.05)
     score_ColumHeader = Label(canvasForTable, text='Rent Paid', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.33, rely=0.05)
-    email_ColumHeader = Label(canvasForTable, text='Complaints', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.73, rely=0.05)
+    email_ColumHeader = Label(canvasForTable, text='Complaints', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.69, rely=0.05)
     canvasForTable.create_line(110,0,110,76,fill=primary.data)
     canvasForTable.create_line(285,0,285,76,fill=primary.data)
     canvasForTable.create_line(0,76,850,76,fill=primary.data)
@@ -2307,50 +2308,69 @@ def createTableForIndividualTenant(startValueForAccountListing):
     # INSERT INTO units_Monthly (year, month, unit_ID, tenant_ID, rent_Paid, rent_Late, income, non_Taxable_Expenses, taxable_Expenses, suspected_Property_Value, equity_In_Property,money_Taken_From_Deposit)
     # VALUES ('2020','12','LT2','MC9',True,True,3500,3000,0,135000,35000,0) #SQL to add a new monthly
 
-    # openDatabase()
-    # tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'")) 
-    # tenantBriefInfo = tenantBriefInfoD.fetchall()
-    # closeDatabase()
-    # if len(tenantBriefInfo) != 0: #If there is a tenants in the database
-    #     i = startValueForAccountListing
-    #     count = 0
-    #     while i < len(tenantBriefInfo) and count < 5:
-    #         tenant_ID = deScramble(tenantBriefInfo[i][0])
-    #         score = deScramble(tenantBriefInfo[i][1])
-    #         tenant_Email = deScramble(tenantBriefInfo[i][2])
-    #         openDatabase()
-    #         complaintsIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" + str(scramble(tenant_ID))+ "'")
-    #         complaintsIDs = complaintsIDsD.fetchall()
-    #         if len(complaintsIDs) != 0:
-    #             nOfCompaints = 0
-    #             for x in range(len(complaintsIDs)):
-    #                 complaintResolution = deScramble(cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" + str(complaintsIDs[x][0]) + "'").fetchall()[0][0])
-    #                 if complaintResolution == None:
-    #                     nOfCompaints = nOfCompaints + 1        
-    #         else:
-    #             nOfCompaints = 0
-    #         nlateRent = 0
-    #         lateRent = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + str(scramble(tenant_ID)) + "'").fetchall()
-    #         if len(lateRent) != 0:
-    #             for i in range(len(lateRent)):
-    #                 if deScramble(lateRent[i][0]) == True:
-    #                     nlateRent = nlateRent + 1
-    #         addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i)
-    #         i = i + 1
-    #         count = count + 1
-    #         global currentTentantNumber
-    #         currentTentantNumber = currentTentantNumber + 1
-    #     if currentTentantNumber != len(tenantBriefInfo):
-    #         downButton = Button(canvasForTable, text='Down',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonCommand(currentTentantNumber)).place(relx=0.4,rely=0.96,anchor='center')
-    #     else:
-    #         downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.4,rely=0.96,anchor='center')
-    #     if currentTentantNumber > 5:
-    #         upButton = Button(canvasForTable, text='Up',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonCommand(currentTentantNumber-count-5)).place(relx=0.6,rely=0.96,anchor='center')
-    #     else:
-    #         downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.6,rely=0.96,anchor='center')
-    # else:
-    #     noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
-    # return startValueForAccountListing
+    openDatabase()
+    tenantBriefInfoD = cursor.execute("SELECT year, month, rent_Paid, rent_Late FROM units_Monthly WHERE tenant_ID = '" + str(scramble(current_tenant_ID)) + str("'")) 
+    tenantBriefInfo = tenantBriefInfoD.fetchall()
+    closeDatabase()
+    if len(tenantBriefInfo) != 0: #If there is a tenant's month in the database
+        i = startValueForAccountListing
+        count = 0
+        while i < len(tenantBriefInfo) and count < 5:
+            year = deScramble(tenantBriefInfo[i][0])
+            month = deScramble(tenantBriefInfo[i][1])
+            rentPaid = deScramble(tenantBriefInfo[i][2])
+            rentLate = deScramble(tenantBriefInfo[i][3])
+            date = str(month) + '/' + str(year)
+            openDatabase()
+            complaintsIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE year = '" + str(scramble(year)) + "' AND month = '" + str(scramble(month)) + "'")
+            complaintsIDs = complaintsIDsD.fetchall()
+            nOfCompaints = 0
+            if len(complaintsIDs) != 0:
+                for x in range(len(complaintsIDs)):
+                    nOfCompaints = nOfCompaints + 1    
+            if rentPaid == True:
+                if rentLate == True:
+                    rentPaidAnswer = 'Paid Late'
+                else:
+                    rentPaidAnswer = 'Paid on time'
+            else:
+                rentPaidAnswer = 'Not Paid'
+            addTenantMonthlyLineOfData(date,rentPaidAnswer,nOfCompaints,i)
+            i = i + 1
+            count = count + 1
+            global currentTentantNumber
+            currentTentantNumber = currentTentantNumber + 1
+        if currentTentantNumber != len(tenantBriefInfo):
+            downButton = Button(canvasForTable, text='Down',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonCommand(currentTentantNumber)).place(relx=0.4,rely=0.96,anchor='center')
+        else:
+            downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.4,rely=0.96,anchor='center')
+        if currentTentantNumber > 5:
+            upButton = Button(canvasForTable, text='Up',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonCommand(currentTentantNumber-count-5)).place(relx=0.6,rely=0.96,anchor='center')
+        else:
+            downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.6,rely=0.96,anchor='center')
+    else:
+        noTenantLabel = Label(canvasForTable, text='This tenant has no recorded monthly entrees', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
+    return startValueForAccountListing
+
+def addTenantMonthlyLineOfData(Date,RentPaid,nOfCompaints,i):
+    rentPaidColourDict = {'Paid Late':bannedColours['warningYellow'],'Paid on time':bannedColours['emaraldGreen'],'Not Paid':bannedColours['errorRed']}
+    createTenantMonthlyXaxisLines(76+76*((i%5)))
+    score_ColumHeader = Label(canvasForTable, text=Date, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
+    email_ColumHeader = Label(canvasForTable, text=RentPaid, height=2 ,bg=secondry.data, fg = rentPaidColourDict[RentPaid], font=(font.data,14), justify='left').place(relx = 0.27, rely=0.23+0.15*((i)%5),anchor='w')
+    late_Rent_ColumHeader = Label(canvasForTable, text=nOfCompaints, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.66, rely=0.23+0.15*((i)%5),anchor='w')
+    createTenantMonthlyYaxisLines(152+76*((i%5)))
+
+def createTenantMonthlyXaxisLines(y):
+    canvasForTable.create_line(110,y,110,y+76,fill=primary.data)
+    canvasForTable.create_line(285,y,285,y+76,fill=primary.data)
+
+def createTenantMonthlyYaxisLines(y):
+    canvasForTable.create_line(0,y,850,y,fill=primary.data)
+
+def changeTenantMonthlyTableHeight(inputNumber):
+    global currentTentantNumber
+    currentTentantNumber = inputNumber
+    createTableForIndividualTenant(inputNumber)
 
 initialise()
 print('Program Finished') #
