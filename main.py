@@ -2377,6 +2377,8 @@ def changeTenantMonthlyTableHeight(inputNumber):
     createTableForIndividualTenant(inputNumber)
 
 def complaintsManagmentPage(tenantID):
+    global current_tenant_ID
+    current_tenant_ID = tenantID
     initialiseWindow()
     root.title('Property managment system - Complaints Management')
     topBorder = Label(root, text='Complaints Management', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
@@ -2479,14 +2481,73 @@ def complaintsManagmentPage(tenantID):
     deleteComplaintButton = Button(root, text='Delete Complaint', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteComplaint).place(relx=0.185, rely=0.9, anchor=CENTER)
     addComplaintButton = Button(root, text='Add New Complaint', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteComplaint).place(relx=1-0.185, rely=0.9, anchor=CENTER)
 
+    global complaintsCords
+    complaintsCords = {'complaint_ID':{'x':0.35,'y':0.32},'tenant_ID':{'x':0.82,'y':0.32},'month':{'x':0.185,'y':0.52},'year':{'x':0.185,'y':0.52},'complaint_Nature':{'x':0.65,'y':0.52},'resoltion':{'x':0.65,'y':0.72}}
 
     root.mainloop()
 
 def updateComplaints():
-    pass
+    tenant_ID = tenantIDMenu.get()
+    complaint_ID = complaintIDMenu.get()
+    openDatabase()
+    listOfPossibleComplaintIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" +scramble(tenant_ID)+"'")
+    listOfPossibleComplaintIDsD = listOfPossibleComplaintIDsD.fetchall()
+    complaintIDValid = False
+    for i in range(len(listOfPossibleComplaintIDsD)):
+        if listOfPossibleComplaintIDsD[i][0] == complaint_ID:
+            complaintIDValid = True
+    if complaintIDValid == False:
+        warningTwo = Label(root,bg=primary.data,fg=bannedColours['errorRed'],text='This complaint doesnt belong to the tenant',font=(font.data,10),justify='center').place(relx=0.35,rely=0.32,anchor=CENTER)
+    else:
+        coverup = Label(root,bg=primary.data,width=75,font=(font.data,10),justify='center').place(relx=0.35,rely=0.32,anchor=CENTER)
+        complaint_ID = uInputDataObj(complaintIDMenu.get(),str)
+        tenant_ID = uInputDataObj(complaintIDMenu.get(),str)
+        month = uInputDataObj(monthEntryBox.get(),int)
+        year = uInputDataObj(yearEntryBox.get(),int)
+        complaint_Nature = uInputDataObj(complaintMessageEntryBox.get('1.0','end-1c'),str)
+        resoltion = uInputDataObj(resolutionEntryBox.get('1.0','end-1c'),str)
+        compaintsFields = ['complaint_ID','tenant_ID','month','year','complaint_Nature','resoltion']
+        newComplaintsField = [complaint_ID,tenant_ID,month,year,complaint_Nature,resoltion]
+        global dictOfDataValdationResults
+        dictOfDataValdationResults = dict.fromkeys(compaintsFields)
+        #dictOfDataValdationResults['complaint_ID'] = {'presenceCheck':presenceCheck(complaint_ID)}
+        #dictOfDataValdationResults['tenant_ID'] = {'presenceCheck':presenceCheck(tenant_ID)}
+        dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
+        dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+        dictOfDataValdationResults['complaint_Nature'] = {'presenceCheck':presenceCheck(complaint_Nature),'mustContainsLetters':containsLetters(complaint_Nature)}
+
+        for entryboxData in dictOfDataValdationResults.keys():
+            if dictOfDataValdationResults[entryboxData] != None:
+                coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=complaintsCords[entryboxData]['x'],rely=complaintsCords[entryboxData]['y'],anchor=CENTER)
+
+        for entryboxData in dictOfDataValdationResults.keys():
+            countOfFailedTests = 0
+            if dictOfDataValdationResults[entryboxData] != None:
+                for test in dictOfDataValdationResults[entryboxData].keys():
+                    while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                        disaplayEM(test,complaintsCords[entryboxData]['x'],complaintsCords[entryboxData]['y'])
+                        countOfFailedTests = countOfFailedTests + 1
+
+        countOfFailedTests = 0
+        for entryboxData in dictOfDataValdationResults.keys():
+            if dictOfDataValdationResults[entryboxData] != None:
+                for test in dictOfDataValdationResults[entryboxData].values():
+                    if test == False:
+                        countOfFailedTests = countOfFailedTests +1
+
+        if countOfFailedTests == 0:
+            for i in range(len(newComplaintsField)):
+                newComplaintsField[i] = scramble(newComplaintsField[i].data)
+            print("UPDATE complaints SET month = '" + newComplaintsField[2] + "', year = '" + newComplaintsField[3] + "', complaint_Nature = '" + newComplaintsField[4] + "', resoltion = '" + newComplaintsField[5] + "' WHERE complaint_ID = '" + scramble(complaint_ID.data) + "'")
+            openDatabase()
+            cursor.execute("UPDATE complaints SET month = '" + newComplaintsField[2] + "', year = '" + newComplaintsField[3] + "', complaint_Nature = '" + newComplaintsField[4] + "', resoltion = '" + newComplaintsField[5] + "' WHERE complaint_ID = '" + scramble(complaint_ID.data) + "'")
+            closeDatabase()
+            
+            displayConfirmation('ComplaintsMangment')
+    closeDatabase()
 
 def refreshValues():
-    #get all importnat data from screen first
+    global current_tenant_ID
     tenant_ID = tenantIDMenu.get()
     complaint_ID = complaintIDMenu.get()
     openDatabase()
@@ -2519,12 +2580,11 @@ def refreshValues():
     else:
         warning = Label(root,bg=primary.data,fg=bannedColours['warningYellow'],text='This tenant has no complaints',font=(font.data,10),justify='center').place(relx=0.82,rely=0.32,anchor=CENTER)
 
-
-
-
-
 def deleteComplaint():
-    pass
+    compalaint_ID = complaintIDMenu.get()
+    openDatabase()
+    cursor.execute("DELETE FROM complaints WHERE complaint_ID = '" + scramble(compalaint_ID) + "'")
+    closeDatabase()
 
 def addComplaintPage():
     pass
