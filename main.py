@@ -1341,7 +1341,6 @@ def createTableForTenant(startValueForAccountListing):
     openDatabase()
     tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'")) 
     tenantBriefInfo = tenantBriefInfoD.fetchall()
-    print(tenantBriefInfo)
     closeDatabase()
     if len(tenantBriefInfo) != 0: #If there is a tenants in the database
         #TODO: need to order tenant's by descrambled tenant_ID
@@ -2284,8 +2283,8 @@ def tenantPage(tenant_ID):
     displayBackButton()
     global previousPage
     previousPage = 'individualTenantPage'
-    global currentMonthNumber
-    currentMonthNumber = 0
+    global currentTentantMonthlyNumber
+    currentTentantMonthlyNumber = 0
     global startValueForMonth
     startValueForMonth = createTableForIndividualTenant(0)
     root.mainloop()
@@ -2310,16 +2309,16 @@ def createTableForIndividualTenant(startValueForAccountListing):
 
     openDatabase()
     tenantBriefInfoD = cursor.execute("SELECT year, month, rent_Paid, rent_Late FROM units_Monthly WHERE tenant_ID = '" + str(scramble(current_tenant_ID)) + str("'")) 
-    tenantBriefInfo = tenantBriefInfoD.fetchall()
+    tenantBriefInfoMonthly = tenantBriefInfoD.fetchall()
     closeDatabase()
-    if len(tenantBriefInfo) != 0: #If there is a tenant's month in the database
+    if len(tenantBriefInfoMonthly) != 0: #If there is a tenant's month in the database
         i = startValueForAccountListing
         count = 0
-        while i < len(tenantBriefInfo) and count < 5:
-            year = deScramble(tenantBriefInfo[i][0])
-            month = deScramble(tenantBriefInfo[i][1])
-            rentPaid = deScramble(tenantBriefInfo[i][2])
-            rentLate = deScramble(tenantBriefInfo[i][3])
+        while i < len(tenantBriefInfoMonthly) and count < 5:
+            year = deScramble(tenantBriefInfoMonthly[i][0])
+            month = deScramble(tenantBriefInfoMonthly[i][1])
+            rentPaid = deScramble(tenantBriefInfoMonthly[i][2])
+            rentLate = deScramble(tenantBriefInfoMonthly[i][3])
             date = str(month) + '/' + str(year)
             openDatabase()
             complaintsIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE year = '" + str(scramble(year)) + "' AND month = '" + str(scramble(month)) + "'")
@@ -2338,14 +2337,14 @@ def createTableForIndividualTenant(startValueForAccountListing):
             addTenantMonthlyLineOfData(date,rentPaidAnswer,nOfCompaints,i)
             i = i + 1
             count = count + 1
-            global currentTentantNumber
-            currentTentantNumber = currentTentantNumber + 1
-        if currentTentantNumber != len(tenantBriefInfo):
-            downButton = Button(canvasForTable, text='Down',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonCommand(currentTentantNumber)).place(relx=0.4,rely=0.96,anchor='center')
+            global currentTentantMonthlyNumber
+            currentTentantMonthlyNumber = currentTentantMonthlyNumber + 1
+        if currentTentantMonthlyNumber != len(tenantBriefInfoMonthly):
+            downButton = Button(canvasForTable, text='Down',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTenantMonthlyTableHeight(currentTentantMonthlyNumber)).place(relx=0.4,rely=0.96,anchor='center')
         else:
             downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.4,rely=0.96,anchor='center')
-        if currentTentantNumber > 5:
-            upButton = Button(canvasForTable, text='Up',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonCommand(currentTentantNumber-count-5)).place(relx=0.6,rely=0.96,anchor='center')
+        if currentTentantMonthlyNumber > 5:
+            upButton = Button(canvasForTable, text='Up',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTenantMonthlyTableHeight(currentTentantMonthlyNumber-count-5)).place(relx=0.6,rely=0.96,anchor='center')
         else:
             downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.6,rely=0.96,anchor='center')
     else:
