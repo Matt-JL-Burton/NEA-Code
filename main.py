@@ -34,7 +34,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            tenantsPage()
+            complaintsManagmentPage('TA1')
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -702,6 +702,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'individualTenantPage':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: tenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'ComplaintsMangment':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -740,6 +742,8 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=changeUsername).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'individualTenantPage':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: tenantPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'ComplaintsMangment':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -2287,6 +2291,7 @@ def tenantPage(tenant_ID):
     currentTentantMonthlyNumber = 0
     global startValueForMonth
     startValueForMonth = createTableForIndividualTenant(0)
+    complaintsManagmentButton = Button(root, text='Complaints Managment', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.4, rely=0.85, anchor=CENTER)
     root.mainloop()
 
 def createTableForIndividualTenant(startValueForAccountListing):
@@ -2370,6 +2375,137 @@ def changeTenantMonthlyTableHeight(inputNumber):
     global currentTentantNumber
     currentTentantNumber = inputNumber
     createTableForIndividualTenant(inputNumber)
+
+def complaintsManagmentPage(tenantID):
+    initialiseWindow()
+    root.title('Property managment system - Complaints Management')
+    topBorder = Label(root, text='Complaints Management', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'ComplaintsMangment'
+    displayMenuButton()
+    longNormal = PhotoImage(file = "Long-Normal.PNG")
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+
+    personalIncomeBoxbackground = Label(image = longNormal, border = 0).place(relx=0.35,rely=0.25,anchor=CENTER)
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" +scramble(tenantID)+"'")
+    data_To_Descrmable = primaryColourD.fetchall()
+    global compaintsIDMenuOptions
+    compaintsIDMenuOptions = []
+    for i in range(len(data_To_Descrmable)):
+        compaintsIDMenuOptions.append(data_To_Descrmable[i][0])
+    compaintsIDMenuOptions.append('None')
+    print
+    closeDatabase()
+    global complaintIDMenu
+    complaintIDMenu = ttk.Combobox(root, value=compaintsIDMenuOptions, justify=tkinter.CENTER, width = 50,font=(font.data,18))
+    complaintIDMenu.place(relx=0.35,rely=0.25,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Complaint ID',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.35,rely=0.17,anchor=CENTER)
+    complaintIDMenu.current(compaintsIDMenuOptions.index('None'))
+    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
+
+    tenantIDBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.82,rely=0.25,anchor=CENTER)
+    openDatabase()
+    primaryColourD = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
+    data_To_Descrmable = deScramble(primaryColourD.fetchall())
+    global listOfTenantIDs
+    listOfTenantIDs = []
+    for i in range(len(data_To_Descrmable)):
+        listOfTenantIDs.append(data_To_Descrmable[i][0])
+    closeDatabase()
+    global tenantIDMenu
+    tenantIDMenu = ttk.Combobox(root, value=listOfTenantIDs, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+    tenantIDMenu.place(relx=0.82,rely=0.25,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Complaint ID',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.82,rely=0.17,anchor=CENTER)
+    tenantIDMenu.current(listOfTenantIDs.index(tenantID))
+
+    DateBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.185,rely=0.45,anchor=CENTER)
+    activeComplaintID = complaintIDMenu.get()
+    if activeComplaintID == 'None':
+        month = 'Na'
+        year = 'Na'
+    else:
+        openDatabase()
+        primaryColourD = cursor.execute("SELECT month, year FROM complaints WHERE complaint_ID = '" +scramble(activeComplaintID)+"'")
+        data_To_Descrmable = primaryColourD.fetchall()
+        month = deScramble(data_To_Descrmable[0][0])
+        year =  deScramble(data_To_Descrmable[0][1])
+    primaryHexEntryLabel = Label(root, text='Date Complaint Made',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.185,rely=0.37,anchor=CENTER)
+    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.18,rely=0.405)
+    monthEntryBox = Entry(root, bg= primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
+    monthEntryBox.insert(END,month)
+    monthEntryBox.place(relx=0.12,rely=0.45,anchor=CENTER)
+    yearEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
+    yearEntryBox.insert(END,year)
+    yearEntryBox.place(relx=0.255,rely=0.45,anchor=CENTER)
+    dateSubMessage = Label(root, text='In the form MM/YYYY',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.185,rely=0.52,anchor=CENTER)
+
+
+    DateBoxBackground = Label(image = longNormal, border = 0).place(relx=0.65,rely=0.45,anchor=CENTER)
+    activeComplaintID = complaintIDMenu.get()
+    if activeComplaintID == 'None':
+        complaintMessage = 'Not Applicable'
+    else:
+        openDatabase()
+        primaryColourD = cursor.execute("SELECT complaint_Nature FROM complaints WHERE complaint_ID = '" +scramble(activeComplaintID)+"'")
+        data_To_Descrmable = primaryColourD.fetchall()
+        complaintMessage = deScramble(data_To_Descrmable[0][0])
+    primaryHexEntryLabel = Label(root, text='Complaint Nature',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.65,rely=0.37,anchor=CENTER)
+    complaintMessageEntryBox = Text(root, bg= primary.data,fg=secondry.data,height=3, width=90, font=(font.data,10),relief='flat')
+    complaintMessageEntryBox.insert(END,complaintMessage)
+    complaintMessageEntryBox.place(relx=0.65,rely=0.45,anchor=CENTER)
+
+    resolutionBoxBackground = Label(image = longNormal, border = 0).place(relx=0.65,rely=0.65,anchor=CENTER)
+    activeComplaintID = complaintIDMenu.get()
+    if activeComplaintID == 'None':
+        resolutionMessage = 'Not Applicable'
+    else:
+        openDatabase()
+        primaryColourD = cursor.execute("SELECT resoltion FROM complaints WHERE complaint_ID = '" +scramble(activeComplaintID)+"'")
+        data_To_Descrmable = primaryColourD.fetchall()
+        resolutionMessage = deScramble(data_To_Descrmable[0][0])
+    primaryHexEntryLabel = Label(root, text='Resolution',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.65,rely=0.57,anchor=CENTER)
+    resolutionEntryBox = Text(root, bg= primary.data,fg=secondry.data,height=3, width=90, font=(font.data,10),relief='flat')
+    resolutionEntryBox.insert(END,resolutionMessage)
+    resolutionEntryBox.place(relx=0.65,rely=0.65,anchor=CENTER)
+    resoluionSubMessage = Label(root, text='This box being empty implies that the complaint has not been resolved',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.65,rely=0.72,anchor=CENTER)
+
+    submitButton = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateComplaints).place(relx=0.5, rely=0.90, anchor=CENTER)
+    refreshButton = Button(root, text='Refresh Values', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=refreshValues).place(relx=0.185, rely=0.65, anchor=CENTER)
+    deleteComplaintButton = Button(root, text='Delete Complaint', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteComplaint).place(relx=0.185, rely=0.9, anchor=CENTER)
+    addComplaintButton = Button(root, text='Add New Complaint', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteComplaint).place(relx=1-0.185, rely=0.9, anchor=CENTER)
+
+
+    root.mainloop()
+
+def updateComplaints():
+    pass
+
+def refreshValues():
+    #get all importnat data from screen first
+    tenant_ID = tenantIDMenu.get() 
+    openDatabase()
+    listOfPossibleComplaintIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" +scramble(tenant_ID)+"'")
+    listOfPossibleComplaintIDsD = listOfPossibleComplaintIDsD.fetchall()
+    closeDatabase()
+    if len(listOfPossibleComplaintIDsD) != 0:
+        coverup = Label(root,bg=primary.data,width=75,font=(font.data,10),justify='center').place(relx=0.35,rely=0.32,anchor=CENTER)
+        #TODO: continue from here
+
+    else:
+        warning = Label(root,bg=primary.data,fg=bannedColours['warningYellow'],text='This tenant has no complaints',font=(font.data,10),justify='center').place(relx=0.82,rely=0.32,anchor=CENTER)
+
+
+
+
+
+def deleteComplaint():
+    pass
+
+def addComplaintPage():
+    pass
+
 
 initialise()
 print('Program Finished')
