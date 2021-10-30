@@ -2372,4 +2372,4 @@ def changeTenantMonthlyTableHeight(inputNumber):
     createTableForIndividualTenant(inputNumber)
 
 initialise()
-print('Program Finished') #
+print('Program Finished')
