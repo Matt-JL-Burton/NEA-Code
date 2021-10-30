@@ -2396,7 +2396,6 @@ def complaintsManagmentPage(tenantID):
     for i in range(len(data_To_Descrmable)):
         compaintsIDMenuOptions.append(data_To_Descrmable[i][0])
     compaintsIDMenuOptions.append('None')
-    print
     closeDatabase()
     global complaintIDMenu
     complaintIDMenu = ttk.Combobox(root, value=compaintsIDMenuOptions, justify=tkinter.CENTER, width = 50,font=(font.data,18))
@@ -2433,9 +2432,11 @@ def complaintsManagmentPage(tenantID):
         year =  deScramble(data_To_Descrmable[0][1])
     primaryHexEntryLabel = Label(root, text='Date Complaint Made',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.185,rely=0.37,anchor=CENTER)
     slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.18,rely=0.405)
+    global monthEntryBox
     monthEntryBox = Entry(root, bg= primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
     monthEntryBox.insert(END,month)
     monthEntryBox.place(relx=0.12,rely=0.45,anchor=CENTER)
+    global yearEntryBox
     yearEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
     yearEntryBox.insert(END,year)
     yearEntryBox.place(relx=0.255,rely=0.45,anchor=CENTER)
@@ -2452,6 +2453,7 @@ def complaintsManagmentPage(tenantID):
         data_To_Descrmable = primaryColourD.fetchall()
         complaintMessage = deScramble(data_To_Descrmable[0][0])
     primaryHexEntryLabel = Label(root, text='Complaint Nature',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.65,rely=0.37,anchor=CENTER)
+    global complaintMessageEntryBox
     complaintMessageEntryBox = Text(root, bg= primary.data,fg=secondry.data,height=3, width=90, font=(font.data,10),relief='flat')
     complaintMessageEntryBox.insert(END,complaintMessage)
     complaintMessageEntryBox.place(relx=0.65,rely=0.45,anchor=CENTER)
@@ -2466,6 +2468,7 @@ def complaintsManagmentPage(tenantID):
         data_To_Descrmable = primaryColourD.fetchall()
         resolutionMessage = deScramble(data_To_Descrmable[0][0])
     primaryHexEntryLabel = Label(root, text='Resolution',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.65,rely=0.57,anchor=CENTER)
+    global resolutionEntryBox
     resolutionEntryBox = Text(root, bg= primary.data,fg=secondry.data,height=3, width=90, font=(font.data,10),relief='flat')
     resolutionEntryBox.insert(END,resolutionMessage)
     resolutionEntryBox.place(relx=0.65,rely=0.65,anchor=CENTER)
@@ -2484,15 +2487,35 @@ def updateComplaints():
 
 def refreshValues():
     #get all importnat data from screen first
-    tenant_ID = tenantIDMenu.get() 
+    tenant_ID = tenantIDMenu.get()
+    complaint_ID = complaintIDMenu.get()
     openDatabase()
     listOfPossibleComplaintIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" +scramble(tenant_ID)+"'")
     listOfPossibleComplaintIDsD = listOfPossibleComplaintIDsD.fetchall()
     closeDatabase()
     if len(listOfPossibleComplaintIDsD) != 0:
         coverup = Label(root,bg=primary.data,width=75,font=(font.data,10),justify='center').place(relx=0.35,rely=0.32,anchor=CENTER)
-        #TODO: continue from here
-
+        complaintIDValid = False
+        for i in range(len(listOfPossibleComplaintIDsD)):
+            if listOfPossibleComplaintIDsD[i][0] == complaint_ID:
+                complaintIDValid = True
+        if complaintIDValid == True:
+            coverupTwo = Label(root,bg=primary.data,fg=bannedColours['warningYellow'],width=100,font=(font.data,10),justify='center').place(relx=0.35,rely=0.32,anchor=CENTER)
+            openDatabase()
+            complaintInfo = cursor.execute("SELECT month, year, complaint_Nature, resoltion FROM complaints WHERE complaint_ID = '" + scramble(complaint_ID) + "'")
+            complaintInfo = complaintInfo.fetchall()
+            print(complaintInfo)
+            closeDatabase()
+            monthEntryBox.delete(0,'end') #entry boxes use (0,'end') as the arguemnt to clear themselves
+            monthEntryBox.insert(END, deScramble(complaintInfo[0][0]))
+            yearEntryBox.delete(0,'end')
+            yearEntryBox.insert(END, deScramble(complaintInfo[0][1]))
+            complaintMessageEntryBox.delete(1.0,'end') #text boxes use (1.0,'end') as the arguemnt to clear themselves
+            complaintMessageEntryBox.insert(END, deScramble(complaintInfo[0][2]))
+            resolutionEntryBox.delete(1.0,'end')
+            resolutionEntryBox.insert(END, deScramble(complaintInfo[0][3]))
+        else:
+            warningTwo = Label(root,bg=primary.data,fg=bannedColours['warningYellow'],text='This complaint doesnt belong to the tenant',font=(font.data,10),justify='center').place(relx=0.35,rely=0.32,anchor=CENTER)
     else:
         warning = Label(root,bg=primary.data,fg=bannedColours['warningYellow'],text='This tenant has no complaints',font=(font.data,10),justify='center').place(relx=0.82,rely=0.32,anchor=CENTER)
 
