@@ -8,6 +8,7 @@ import sqlite3
 import time
 import datetime
 import tkinter
+from tkinter.tix import Tree
 import matplotlib
 import os
 from os import chdir, close, error, getcwd, name, system, terminal_size
@@ -20,7 +21,10 @@ import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
 import string
+
+from numpy.distutils.command.install import install
 from dataObjectClass import uInputDataObj
+from datetime import datetime
 
 print('program started')
 
@@ -33,9 +37,9 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
-            displayTCs()
-            #complaintsManagmentPage('TA1')
-
+            #displayTCs()
+            monthlyAdditionsPage('LT2')
+            
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
     root.destroy()
@@ -63,7 +67,7 @@ def definingDefaultVariables():
     tertiary = uInputDataObj('#a9a9a9',str)
     listOfSecondryColourOptions = ['white','grey','black']
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#FDDA0D','activeTextColor':'dark grey','emaraldGreen':'#50C878'}
-    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password','matchesNewPassword':'Your new passwords are not matching, please enter matching passwords'}
+    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password','matchesNewPassword':'Your new passwords are not matching, please enter matching passwords','lessThanDeposit':'The deposit spent is more than the tenant has in their deposit','dateForUnitUsed':'Sorry a monthly entry for this month in this unit already exsists'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     operation_Type = uInputDataObj(None,str)
     recovery_Email = uInputDataObj(None,str)
@@ -706,6 +710,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'AddComplaint':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: addComplaintPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'monthlyAdditons':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -748,6 +754,8 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'AddComplaint':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: addComplaintPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'monthlyAdditons':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -852,7 +860,7 @@ def castingTypeCheckFunc(dataInput,preferredType):
         return False
 
 def uniqueDataCheck(inputData,fieldName,table):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
         returnedValue = []
         openDatabase()
         for line in cursor.execute('SELECT '+str(fieldName) + ' FROM ' + str(table) + ' WHERE ' + str(fieldName) + " = '" +str(scramble(castingTypeCheckFunc(inputData.data,inputData.prefferredType)))+str("'")):
@@ -876,7 +884,7 @@ def howManySymbolsInStr(inputData, symbolLookingFor):
         raise TypeError('All data inputted must be a string')
 
 def pictureCheck(inputData,symbol,minimum, maximum):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
         if type(inputData.data) == str and type(symbol) == str:
             if type(minimum) == int or minimum == None and type(maximum) == int or maximum == None:
                 numberOfSymbols = howManySymbolsInStr(inputData.data, symbol)
@@ -898,7 +906,7 @@ def pictureCheck(inputData,symbol,minimum, maximum):
         return False
 
 def rangeCheck(inputData,lowerBound,upperBound):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
         if inputData.prefferredType == str:
             dataToTest = len(castingTypeCheckFunc(inputData.data,inputData.prefferredType))
         else:
@@ -935,7 +943,8 @@ def rangeCheck(inputData,lowerBound,upperBound):
 def presenceCheck(inputData):
     if inputData.data == '0' or inputData.data == '0.0':
         return True
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool: 
+        
         if inputData.data != None and inputData.data != '':
 
             return True
@@ -945,7 +954,7 @@ def presenceCheck(inputData):
         return False
 
 def containsOnlyLetters(inputData):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
         if type(inputData.data) == str:
             if inputData.data.isalpha():
                 return True
@@ -957,7 +966,7 @@ def containsOnlyLetters(inputData):
         return False
 
 def containsLetters(inputData):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
         if type(inputData.data) == str:
             for i in range(len(inputData.data)):
                 if inputData.data[i].isalpha() == True:
@@ -969,7 +978,7 @@ def containsLetters(inputData):
         return False
 
 def containsNumbers(inputData):
-    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False:
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
         if type(inputData.data) == str:
             for i in range(len(inputData.data)):
                 if inputData.data[i].isnumeric() == True:
@@ -1008,6 +1017,23 @@ def matchesCheck(x,y):
         return True
     else:
         return False
+
+def lessThanDeposit(unit_ID,inputData):
+    if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
+        openDatabase()
+        tenantID_D = cursor.execute("SELECT tenant_ID FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()
+        if tenantID_D != []:
+            tenantID = tenantID_D[0][0]
+            deposit = cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID ='" + tenantID + "'").fetchall()[0][0] # dont need to scramble as the data has just be retriived adn not be unscrambled
+            if castingTypeCheckFunc(inputData.data,inputData.prefferredType) <= deScramble(deposit):
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+
 # end of data validation tests
 
 def disaplayEM(errorType,x,y):
@@ -2568,7 +2594,6 @@ def refreshValues():
             openDatabase()
             complaintInfo = cursor.execute("SELECT month, year, complaint_Nature, resoltion FROM complaints WHERE complaint_ID = '" + scramble(complaint_ID) + "'")
             complaintInfo = complaintInfo.fetchall()
-            print(complaintInfo)
             closeDatabase()
             monthEntryBox.delete(0,'end') #entry boxes use (0,'end') as the arguemnt to clear themselves
             monthEntryBox.insert(END, deScramble(complaintInfo[0][0]))
@@ -2714,5 +2739,220 @@ def addNewComplaint():
         cursor.execute(addComplaintCommand,newComplaintsField)
         closeDatabase()
         displayConfirmation('ComplaintsMangment')
+
+def monthlyAdditionsPage(unitID):
+    global current_unit_ID
+    current_unit_ID = unitID 
+    initialiseWindow()
+    root.title('Property managment system - Monthly Additions')
+    topBorder = Label(root, text='Monthly Additions for unit ' + unitID , height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'monthlyAdditons'
+    displayMenuButton()
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.185,rely=0.25,anchor=CENTER)
+    global listOfRentPaidOptions
+    listOfRentPaidOptions = ['Paid','Not Paid']
+    global rentPaidMenuBox
+    rentPaidMenuBox = ttk.Combobox(root, value=listOfRentPaidOptions, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+    rentPaidMenuBox.place(relx=0.185,rely=0.25,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Rent Paid',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.185,rely=0.17,anchor=CENTER)
+    rentPaidMenuBox.current(listOfRentPaidOptions.index('Paid'))
+    root.option_add('*TCombobox*Listbox.font', (font.data,14))
+
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.25,anchor=CENTER)
+    global listOfRentTimeOptions
+    listOfRentTimeOptions = ['On Time','Late','N/A - If rent not paid']
+    global rentTimeMenuBox
+    rentTimeMenuBox = ttk.Combobox(root, value=listOfRentTimeOptions, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+    rentTimeMenuBox.place(relx=0.5,rely=0.25,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Rent Time',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
+    rentTimeMenuBox.current(listOfRentTimeOptions.index('On Time'))
+
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.815,rely=0.25,anchor=CENTER)
+    global monthlyIncomeEntryBox
+    monthlyIncomeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    rentD = cursor.execute("SELECT rent FROM units WHERE unit_ID = '" + scramble(unitID) + "'")
+    rent = rentD.fetchall()[0][0]
+    closeDatabase()
+    monthlyIncomeEntryBox.insert(END,deScramble(rent))
+    monthlyIncomeEntryBox.place(relx=0.815,rely=0.25,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Income',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.815,rely=0.17,anchor=CENTER)
+
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.185,rely=0.45,anchor=CENTER)
+    global noneWritableExpenses
+    noneWritableExpenses = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    noneWritableExpenses.insert(END,0)
+    noneWritableExpenses.place(relx=0.185,rely=0.45,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='None Writable Expense',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.185,rely=0.37,anchor=CENTER)
+
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.45,anchor=CENTER)
+    global writableExpenses
+    writableExpenses = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    writableExpenses.insert(END,0)
+    writableExpenses.place(relx=0.5,rely=0.45,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Writable Expense',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.37,anchor=CENTER)
+
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.815,rely=0.45,anchor=CENTER)
+    global susPropertValueEntryBOx
+    susPropertValueEntryBOx = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    unitInfoDataD = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
+    unitInfoData = unitInfoDataD.fetchall()
+    month, year = returnMostRecentMonth(unitInfoData)
+    month, year = str(month), str(year)    
+    unitInfoDataD = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'")
+    originalSusPropertValue = deScramble(unitInfoDataD.fetchall()[0][0])
+    closeDatabase()
+    susPropertValueEntryBOx.insert(END,originalSusPropertValue*1.004)
+    susPropertValueEntryBOx.place(relx=0.815,rely=0.45,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Suspected Property Value',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.815,rely=0.37,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='The preloaded text is our estimate',bg=primary.data, fg=secondry.data, width=33, font=(font.data,12), justify='center',relief='flat').place(relx=0.815,rely=0.52,anchor=CENTER)
+
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.185,rely=0.65,anchor=CENTER)
+    global depositSpentEntry
+    depositSpentEntry = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    depositSpentEntry.insert(END,0)
+    depositSpentEntry.place(relx=0.185,rely=0.65,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Deposit Spent',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.185,rely=0.57,anchor=CENTER)
+
+    personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.65,anchor=CENTER)
+    global loanInstallmentsOptions
+    loanInstallmentsOptions = ['All fully paid','Not fully paid']
+    global loanInstallmensMenuBox
+    loanInstallmensMenuBox = ttk.Combobox(root, value=loanInstallmentsOptions, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+    loanInstallmensMenuBox.place(relx=0.5,rely=0.65,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Loan installments',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.57,anchor=CENTER)
+    loanInstallmensMenuBox.current(loanInstallmentsOptions.index('All fully paid'))
+    primaryHexEntryLabel = Label(root, text='If partially paid go to the loan managment page\nto clear up how much has been paid',bg=primary.data, fg=secondry.data, width=40, font=(font.data,8), justify='center',relief='flat').place(relx=0.5,rely=0.725,anchor=CENTER)
+
+    DateBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.815,rely=0.65,anchor=CENTER)
+    year = datetime.now().year
+    month = datetime.now().month
+    primaryHexEntryLabel = Label(root, text='Date',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.815,rely=0.57,anchor=CENTER)
+    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.805,rely=0.6075)
+    global monthEntryBox
+    monthEntryBox = Entry(root, bg= primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
+    monthEntryBox.insert(END,month)
+    monthEntryBox.place(relx=0.75,rely=0.65,anchor=CENTER)
+    global yearEntryBox
+    yearEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
+    yearEntryBox.insert(END,year)
+    yearEntryBox.place(relx=0.88,rely=0.65,anchor=CENTER)
+    dateSubMessage = Label(root, text='In the form MM/YYYY',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.815,rely=0.72,anchor=CENTER)
+
+    global monthlyAdditionsCords
+    monthlyAdditionsCords = {'rent_Paid':{'x':0.185,'y':0.32},'rent_Late':{'x':0.5,'y':0.32},'income':{'x':0.815,'y':0.32},'non_Taxable_Expenses':{'x':0.185,'y':0.52},'taxable_Expenses':{'x':0.5,'y':0.52},'suspected_Property_Value':{'x':0.815,'y':0.52},'equity_In_Property':{'x':0.5,'y':0.72},'money_Taken_From_Deposit':{'x':0.185,'y':0.72},'year':{'x':0.815,'y':0.72},'month':{'x':0.815,'y':0.72}}
+
+    addMonthDataButton = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda:addNewMonthlyUnitData(current_unit_ID)).place(relx=0.5, rely=0.90, anchor=CENTER)
+
+    root.mainloop()
+
+def returnMostRecentMonth(monthYearlistOfTuples): #Only works for AD years but who is gonna use BC?
+    currentMostRecentYear = 0
+    currentMostRecentMonth = 0
+    for i in range(len(monthYearlistOfTuples)):
+        month = monthYearlistOfTuples[i][0]
+        year = monthYearlistOfTuples[i][1]
+        if year >= currentMostRecentYear and month > currentMostRecentMonth:
+            currentMostRecentYear = year
+            currentMostRecentMonth = month
+    return([month,year])
+
+def addNewMonthlyUnitData(unitID):
+    global current_tenant_ID
+    current_tenant_ID = unitID
+    rent_Paid = uInputDataObj(rentPaidMenuBox.get(),str)
+    rent_Late = uInputDataObj(rentTimeMenuBox.get(),str)
+    income = uInputDataObj(monthlyIncomeEntryBox.get(),float)
+    non_Taxable_Expenses = uInputDataObj(noneWritableExpenses.get(),float)
+    suspected_Property_Value = uInputDataObj(susPropertValueEntryBOx.get(),float)
+    taxable_Expenses = uInputDataObj(writableExpenses.get(),float)
+    money_Taken_From_Deposit = uInputDataObj(depositSpentEntry.get(),float)
+    equity_In_Property = uInputDataObj(loanInstallmensMenuBox.get(),str)
+    year = uInputDataObj(yearEntryBox.get(),int)
+    month = uInputDataObj(monthEntryBox.get(),int)
+    units_Monthly_Fields = ['year','month','unit_ID','tenant_ID','rent_Paid','rent_Late','income','non_Taxable_Expenses','taxable_Expenses','suspected_Property_Value','equity_In_Property','money_Taken_From_Deposit']
+
+    global dictOfDataValdationResults
+    dictOfDataValdationResults = dict.fromkeys(units_Monthly_Fields)
+    dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
+    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+    dictOfDataValdationResults['rent_Paid'] = {'menuOptionCheck':menuOptionCheck(rent_Paid,listOfRentPaidOptions)}
+    dictOfDataValdationResults['rent_Late'] = {'menuOptionCheck':menuOptionCheck(rent_Late,listOfRentTimeOptions)}
+    dictOfDataValdationResults['income'] = {'presenceCheck':presenceCheck(income),'positiveCheck':rangeCheck(income,0,None)}
+    dictOfDataValdationResults['non_Taxable_Expenses'] = {'presenceCheck':presenceCheck(non_Taxable_Expenses),'positiveCheck':rangeCheck(non_Taxable_Expenses,0,None)}
+    dictOfDataValdationResults['taxable_Expenses'] = {'presenceCheck':presenceCheck(taxable_Expenses),'positiveCheck':rangeCheck(taxable_Expenses,0,None)}
+    dictOfDataValdationResults['suspected_Property_Value'] = {'presenceCheck':presenceCheck(suspected_Property_Value),'positiveCheck':rangeCheck(suspected_Property_Value,0,None)}
+    dictOfDataValdationResults['money_Taken_From_Deposit'] = {'presenceCheck':presenceCheck(money_Taken_From_Deposit),'positiveCheck':rangeCheck(money_Taken_From_Deposit,0,None),'lessThanDeposit':lessThanDeposit(current_unit_ID,money_Taken_From_Deposit)}
+    dictOfDataValdationResults['equity_In_Property'] = {'menuOptionCheck':menuOptionCheck(equity_In_Property,loanInstallmentsOptions)}
+
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=monthlyAdditionsCords[entryboxData]['x'],rely=monthlyAdditionsCords[entryboxData]['y'],anchor=CENTER)
+
+    #extra cover up becasue there is some special sub text on this page
+    coverUp = Label(root, height=2,bg=primary.data, fg=secondry.data, width=40, font=(font.data,8), justify='center',relief='flat').place(relx=0.5,rely=0.725,anchor=CENTER)
+    coverUp = Label(root, height=2,bg=primary.data, fg=secondry.data, width=40, font=(font.data,8), justify='center',relief='flat').place(relx=0.815,rely=0.525,anchor=CENTER)
+
+
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,monthlyAdditionsCords[entryboxData]['x'],monthlyAdditionsCords[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+
+    countOfFailedTests = 0
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+    openDatabase()
+    monthYearData = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID)  +"'").fetchall()
+    closeDatabase()
+    for i in range(len(monthYearData)):
+        stored_Month = deScramble(monthYearData[i][0])
+        stored_Year = deScramble(monthYearData[i][1])
+        if str(year.data) == str(stored_Year) and str(month.data) == str(stored_Month):
+            disaplayEM('dateForUnitUsed',monthlyAdditionsCords['month']['x'],monthlyAdditionsCords['month']['y'])
+            countOfFailedTests = countOfFailedTests + 1
+        
+
+    if countOfFailedTests == 0:
+        openDatabase()
+        original_property_Equity = deScramble(cursor.execute("SELECT property_Equity FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
+        installments = deScramble(cursor.execute("SELECT instalments FROM loan WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
+        tenant_ID = deScramble(cursor.execute("SELECT tenant_ID FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
+        closeDatabase()
+        if loanInstallmensMenuBox.get() == 'All fully paid':
+            equity_In_Property.data = original_property_Equity + installments
+        else:
+            equity_In_Property.data = original_property_Equity
+        if rent_Paid.data == 'Paid':
+            rent_Paid.data = 1
+        else: 
+            rent_Paid = 0
+        if rent_Late.data == 'On Time':
+            rent_Late.data = False
+        else:
+            rent_Late.data = True
+        new_Units_Monthly_Data = [year,month,uInputDataObj(current_unit_ID,str),uInputDataObj(tenant_ID,str),rent_Paid,rent_Late,income,non_Taxable_Expenses,taxable_Expenses,suspected_Property_Value,equity_In_Property,money_Taken_From_Deposit]
+        for i in range(len(new_Units_Monthly_Data)):
+            new_Units_Monthly_Data[i] = scramble(new_Units_Monthly_Data[i].data)
+        addMonthlyCommand = """INSERT INTO units_Monthly (year,month,unit_ID,tenant_ID,rent_Paid,rent_Late,income,non_Taxable_Expenses,taxable_Expenses,suspected_Property_Value,equity_In_Property,money_Taken_From_Deposit)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?) """
+        openDatabase()
+        cursor.execute(addMonthlyCommand,new_Units_Monthly_Data)
+        closeDatabase()
+        displayConfirmation('ComplaintsMangment')
+
+
 initialise()
 print('Program Finished')
