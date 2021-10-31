@@ -9,6 +9,7 @@ import time
 import datetime
 import tkinter
 from tkinter.tix import Tree
+from IPython.utils import data
 import matplotlib
 import os
 from os import chdir, close, error, getcwd, name, system, terminal_size
@@ -789,7 +790,7 @@ def scramble(data):
     #     data[i] = chr(ascii_Code) #uses a variable cipher to make it more complex
     # cipherText = listToString(data[::-1])
     #return cipherText
-    return data
+    return str(data)
 
 #used to decrypt the data from the db
 def deScramble(cipherText):
@@ -803,7 +804,7 @@ def deScramble(cipherText):
     #     cipherText[i] = chr(ascii_Code - len(cipherText))
     # data = listToString(cipherText)
     # return data
-    return cipherText
+    return str(cipherText)
 
 def listToString(list):
     word = ''
@@ -1025,7 +1026,7 @@ def lessThanDeposit(unit_ID,inputData):
         if tenantID_D != []:
             tenantID = tenantID_D[0][0]
             deposit = cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID ='" + tenantID + "'").fetchall()[0][0] # dont need to scramble as the data has just be retriived adn not be unscrambled
-            if castingTypeCheckFunc(inputData.data,inputData.prefferredType) <= deScramble(deposit):
+            if castingTypeCheckFunc(inputData.data,inputData.prefferredType) <= float(deScramble(deposit)):
                 return True
             else:
                 return False
@@ -2805,7 +2806,7 @@ def monthlyAdditionsPage(unitID):
     month, year = returnMostRecentMonth(unitInfoData)
     month, year = str(month), str(year)    
     unitInfoDataD = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'")
-    originalSusPropertValue = deScramble(unitInfoDataD.fetchall()[0][0])
+    originalSusPropertValue = float(deScramble(unitInfoDataD.fetchall()[0][0]))
     closeDatabase()
     susPropertValueEntryBOx.insert(END,originalSusPropertValue*1.004)
     susPropertValueEntryBOx.place(relx=0.815,rely=0.45,anchor=CENTER)
@@ -2863,8 +2864,8 @@ def returnMostRecentMonth(monthYearlistOfTuples): #Only works for AD years but w
     return([month,year])
 
 def addNewMonthlyUnitData(unitID):
-    global current_tenant_ID
-    current_tenant_ID = unitID
+    global current_unit_ID
+    current_unit_ID = unitID
     rent_Paid = uInputDataObj(rentPaidMenuBox.get(),str)
     rent_Late = uInputDataObj(rentTimeMenuBox.get(),str)
     income = uInputDataObj(monthlyIncomeEntryBox.get(),float)
@@ -2930,9 +2931,23 @@ def addNewMonthlyUnitData(unitID):
         original_property_Equity = deScramble(cursor.execute("SELECT property_Equity FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
         installments = deScramble(cursor.execute("SELECT instalments FROM loan WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
         tenant_ID = deScramble(cursor.execute("SELECT tenant_ID FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
+        global current_tenant_ID
+        current_tenant_ID = tenant_ID
         closeDatabase()
         if loanInstallmensMenuBox.get() == 'All fully paid':
             equity_In_Property.data = original_property_Equity + installments
+            openDatabase()
+            unitInfoDataD = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
+            unitInfoData = unitInfoDataD.fetchall()
+            closeDatabase()
+            currentMostRecentMonth, currentMostRecentYear = returnMostRecentMonth(unitInfoData)
+            listOFDatesToTest = [[int(month.data),int(year.data)],[currentMostRecentMonth,currentMostRecentYear]]
+            if returnMostRecentMonth(listOFDatesToTest)[0] == month.data and returnMostRecentMonth(listOFDatesToTest)[1] == year.data:
+                openDatabase()
+                capital_Owed = deScramble(cursor.execute("SELECT capital_Owed FROM loan WHERE unit_ID = '" + scramble(current_unit_ID)  +"'").fetchall()[0][0])
+                cursor.execute("UPDATE loan SET capital_Owed = '" + scramble(float(capital_Owed) - float(installments)) + "' WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
+                cursor.execute("UPDATE units SET property_Equity = '" + scramble(equity_In_Property.data) + "' WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
+                closeDatabase()
         else:
             equity_In_Property.data = original_property_Equity
         if rent_Paid.data == 'Paid':
@@ -2950,8 +2965,11 @@ def addNewMonthlyUnitData(unitID):
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?) """
         openDatabase()
         cursor.execute(addMonthlyCommand,new_Units_Monthly_Data)
+        deposit = deScramble(cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+        cursor.execute("UPDATE tenants SET deposit = '" + scramble(float(deposit) - float(money_Taken_From_Deposit.data)) + "' WHERE tenant_ID = '" + scramble(tenant_ID) + "'")
         closeDatabase()
-        displayConfirmation('ComplaintsMangment')
+        
+        displayConfirmation('Properties')
 
 
 initialise()
