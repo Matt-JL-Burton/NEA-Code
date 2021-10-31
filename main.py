@@ -33,8 +33,8 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
-            #displayTCs()
-            complaintsManagmentPage('TA1')
+            displayTCs()
+            #complaintsManagmentPage('TA1')
 
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
