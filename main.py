@@ -704,6 +704,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: tenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'ComplaintsMangment':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'AddComplaint':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: addComplaintPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -744,6 +746,8 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: tenantPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'ComplaintsMangment':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'AddComplaint':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: addComplaintPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -2479,7 +2483,7 @@ def complaintsManagmentPage(tenantID):
     submitButton = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=updateComplaints).place(relx=0.5, rely=0.90, anchor=CENTER)
     refreshButton = Button(root, text='Refresh Values', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=refreshValues).place(relx=0.185, rely=0.65, anchor=CENTER)
     deleteComplaintButton = Button(root, text='Delete Complaint', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteComplaint).place(relx=0.185, rely=0.9, anchor=CENTER)
-    addComplaintButton = Button(root, text='Add New Complaint', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=deleteComplaint).place(relx=1-0.185, rely=0.9, anchor=CENTER)
+    addComplaintButton = Button(root, text='Add New Complaint', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteComplaint(current_tenant_ID)).place(relx=1-0.185, rely=0.9, anchor=CENTER)
 
     global complaintsCords
     complaintsCords = {'complaint_ID':{'x':0.35,'y':0.32},'tenant_ID':{'x':0.82,'y':0.32},'month':{'x':0.185,'y':0.52},'year':{'x':0.185,'y':0.52},'complaint_Nature':{'x':0.65,'y':0.52},'resoltion':{'x':0.65,'y':0.72}}
@@ -2586,9 +2590,19 @@ def deleteComplaint():
     cursor.execute("DELETE FROM complaints WHERE complaint_ID = '" + scramble(compalaint_ID) + "'")
     closeDatabase()
 
-def addComplaintPage():
-    pass
-
+def addComplaintPage(tenant_ID):
+    global current_tenant_ID
+    current_tenant_ID = tenant_ID 
+    initialiseWindow()
+    root.title('Property managment system - Add Complaint')
+    topBorder = Label(root, text='Complaints Management', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'AddComplaint'
+    displayMenuButton()
+    longNormal = PhotoImage(file = "Long-Normal.PNG")
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    root.mainloop()
 
 initialise()
 print('Program Finished')
