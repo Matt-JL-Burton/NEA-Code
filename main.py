@@ -2808,7 +2808,7 @@ def monthlyAdditionsPage(unitID):
     unitInfoDataD = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'")
     originalSusPropertValue = float(deScramble(unitInfoDataD.fetchall()[0][0]))
     closeDatabase()
-    susPropertValueEntryBOx.insert(END,originalSusPropertValue*1.004)
+    susPropertValueEntryBOx.insert(END,round(originalSusPropertValue*1.004,2))
     susPropertValueEntryBOx.place(relx=0.815,rely=0.45,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='Suspected Property Value',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.815,rely=0.37,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='The preloaded text is our estimate',bg=primary.data, fg=secondry.data, width=33, font=(font.data,12), justify='center',relief='flat').place(relx=0.815,rely=0.52,anchor=CENTER)
