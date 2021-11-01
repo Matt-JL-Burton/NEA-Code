@@ -2971,6 +2971,5 @@ def addNewMonthlyUnitData(unitID):
         
         displayConfirmation('Properties')
 
-
 initialise()
 print('Program Finished')
