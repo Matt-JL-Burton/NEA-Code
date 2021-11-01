@@ -1271,16 +1271,26 @@ def newUnitPage():
     occpyingTenantsOptionsScrambled = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '"+scramble(databaseCurrentAccount_ID.data)+"'")
     occpyingTenantsOptionsScrambled = occpyingTenantsOptionsScrambled.fetchall()
     closeDatabase()
-    #TODO: need to only show tenants not already located
     global occupyingTenantOptions
     occupyingTenantOptions = []
     for i in range(len(occpyingTenantsOptionsScrambled)):
         occupyingTenant = deScramble(occpyingTenantsOptionsScrambled[i][0])
         occupyingTenantOptions.append(occupyingTenant)
+    #occupyingTenantOptions is all tenants
+    openDatabase()
+    occupyingTenantsD = cursor.execute("SELECT tenant_ID FROM units WHERE account_ID = '"+scramble(databaseCurrentAccount_ID.data)+"'").fetchall()
+    closeDatabase()
+    occupyingTenants = []
+    #occupyingTenants is the tenants already in a unit
+    for i in range(len(occupyingTenantsD)):
+        occupyingTenants.append(deScramble(occupyingTenantsD[i][0]))
+    for i in range(len(occupyingTenantOptions)-1):
+        if occupyingTenantOptions[i] in occupyingTenants:
+            occupyingTenantOptions.remove(occupyingTenantOptions[i])
     occupyingTenantOptions.append('None')
     global occupyingTenantMenu
     occupyingTenantMenu = ttk.Combobox(root, value=occupyingTenantOptions, justify=tkinter.CENTER, font=(font.data,18))
-    occupyingTenantMenu.current(0)
+    occupyingTenantMenu.current(occupyingTenantOptions.index('None'))
     occupyingTenantMenu.place(relx=0.5,rely=0.25,anchor=CENTER)
     root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
     occupingTenantEntryLabel = Label(root, text='Occupying Tenant',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
