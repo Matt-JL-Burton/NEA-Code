@@ -3191,7 +3191,6 @@ def changeUnitMonthlyTableHeight(inputNumber):
     createTableForIndividualUnit(inputNumber)
 
 def addUnitMonthlyLineOfData(date,tenant_ID,Income,Total_Expesnes, rent_Paid, equity_In_Property,i):
-    print(date,tenant_ID,Income,Total_Expesnes, rent_Paid, equity_In_Property)
     createUnitMonthlyXaxisLines(76+76*((i%5)))
     score_ColumHeader = Label(canvasForTable, text=date, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
     score_ColumHeader = Label(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.15, rely=0.23+0.15*((i)%5),anchor='w')
