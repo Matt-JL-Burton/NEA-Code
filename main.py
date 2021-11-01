@@ -713,6 +713,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: addComplaintPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'monthlyAdditons':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'individualunit':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: unitPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -757,6 +759,9 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: addComplaintPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'monthlyAdditons':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'individualunit':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: unitPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -3093,8 +3098,17 @@ def addNewMonthlyUnitData(unitID):
         
         displayConfirmation('Properties')
 
-def unitPage(unit_ID):
-    print(unit_ID)
+def unitPage(unitID):
+    global current_unit_ID
+    current_unit_ID = unitID 
+    initialiseWindow()
+    root.title('Property managment system - unit' + unitID)
+    topBorder = Label(root, text='Unit ' + unitID , height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'individualunit'
+    displayMenuButton()
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
 
 initialise()
 print('Program Finished')
