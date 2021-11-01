@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            unitPage('LT2')
+            monthlyAdditionsPage('LT2')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1446,7 +1446,7 @@ def tenantsPage():
     global startValueForAccountListing
     startValueForAccountListing = createTableForTenant(0)
     displayMenuButton()
-   
+    addNewTenantButton = Button(root, text='Want to add a new tenant?', font=(font.data,'16','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newTenantPage).place(relx=0.65, rely=0.9, anchor=CENTER)
     root.mainloop()
 
 def createTenantXaxisLines(y):
@@ -2923,6 +2923,7 @@ def monthlyAdditionsPage(unitID):
     writableExpenses.insert(END,0)
     writableExpenses.place(relx=0.5,rely=0.45,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='Writable Expense',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.37,anchor=CENTER)
+    primaryHexEntryLabel = Label(root, text='Mortgage installments are automatically\nadded to this (when appropriate)',bg=primary.data, fg=secondry.data, width=33, font=(font.data,8), justify='center',relief='flat').place(relx=0.5,rely=0.525,anchor=CENTER)
 
     personalIncomeBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.815,rely=0.45,anchor=CENTER)
     global susPropertValueEntryBOx
@@ -2971,6 +2972,8 @@ def monthlyAdditionsPage(unitID):
     yearEntryBox.insert(END,year)
     yearEntryBox.place(relx=0.88,rely=0.65,anchor=CENTER)
     dateSubMessage = Label(root, text='In the form MM/YYYY',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.815,rely=0.72,anchor=CENTER)
+
+    writableNoneWritbaleLabelExplaied = Label(root, text='A writable expense is an expense that can be classified\n as a tax write off.To put agaisnt your income\n and therefore pay less tax\n\nMortgage payments : none writable\nMortgage intrest payments : writable \nLarge imporvments : none writable\nGeneral Repairs : writable\nInsurance : writable\nManagment Fees : writable\nUtilities & services : writable',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.185,rely=0.86,anchor=CENTER)
 
     global monthlyAdditionsCords
     monthlyAdditionsCords = {'rent_Paid':{'x':0.185,'y':0.32},'rent_Late':{'x':0.5,'y':0.32},'income':{'x':0.815,'y':0.32},'non_Taxable_Expenses':{'x':0.185,'y':0.52},'taxable_Expenses':{'x':0.5,'y':0.52},'suspected_Property_Value':{'x':0.815,'y':0.52},'equity_In_Property':{'x':0.5,'y':0.72},'money_Taken_From_Deposit':{'x':0.185,'y':0.72},'year':{'x':0.815,'y':0.72},'month':{'x':0.815,'y':0.72}}
@@ -3025,6 +3028,7 @@ def addNewMonthlyUnitData(unitID):
     #extra cover up becasue there is some special sub text on this page
     coverUp = Label(root, height=2,bg=primary.data, fg=secondry.data, width=40, font=(font.data,8), justify='center',relief='flat').place(relx=0.5,rely=0.725,anchor=CENTER)
     coverUp = Label(root, height=2,bg=primary.data, fg=secondry.data, width=40, font=(font.data,8), justify='center',relief='flat').place(relx=0.815,rely=0.525,anchor=CENTER)
+    coverUp = Label(root, height=2,bg=primary.data, fg=secondry.data, width=40, font=(font.data,8), justify='center',relief='flat').place(relx=0.5,rely=0.525,anchor=CENTER)
 
 
     for entryboxData in dictOfDataValdationResults.keys():
