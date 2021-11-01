@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            propertiesPage()
+            unitPage('LT2')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -3062,6 +3062,7 @@ def addNewMonthlyUnitData(unitID):
         current_tenant_ID = tenant_ID
         closeDatabase()
         if loanInstallmensMenuBox.get() == 'All fully paid':
+            taxable_Expenses.data = taxable_Expenses.data + installments #Added after first made
             equity_In_Property.data = original_property_Equity + installments
             openDatabase()
             unitInfoDataD = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
@@ -3103,12 +3104,112 @@ def unitPage(unitID):
     current_unit_ID = unitID 
     initialiseWindow()
     root.title('Property managment system - unit' + unitID)
+    root.configure(bg=secondry.data)
+    addPageSeperator()
     topBorder = Label(root, text='Unit ' + unitID , height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
     previousPage = 'individualunit'
+    global currentUnitMonthlyNumber
+    currentUnitMonthlyNumber = 0
+    global startValueForMonth
+    startValueForMonth = createTableForIndividualUnit(0)
     displayMenuButton()
-    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    root.mainloop()
+
+def createTableForIndividualUnit(startValueForUnitListing):
+    frameToGiveOtheCanvasABorder = Frame(root,width=760,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
+    frameToGiveOtheCanvasABorder.place(relx=0.65,rely=0.5,anchor='center')
+    frameToGiveOtheCanvasABorder.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    global canvasForTable
+    canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=760,height=500,bg=secondry.data,highlightthickness=0)
+    canvasForTable.pack()
+    canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    tenant_ID_ColumHeader = Label(canvasForTable, text='Date', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.07, rely=0.075,anchor='center')
+    score_ColumHeader = Label(canvasForTable, text='Tenant ID', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.23, rely=0.075,anchor='center')
+    email_ColumHeader = Label(canvasForTable, text='Income', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.39, rely=0.075,anchor='center')
+    tenant_ID_ColumHeader = Label(canvasForTable, text='Total\nExpenses', height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.55, rely=0.075,anchor='center')
+    score_ColumHeader = Label(canvasForTable, text='Rent Paid', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.72, rely=0.075,anchor='center')
+    email_ColumHeader = Label(canvasForTable, text='Equity In\nProperty', height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.89, rely=0.075,anchor='center')
+    
+    canvasForTable.create_line(105,0,105,76,fill=primary.data)
+    canvasForTable.create_line(245,0,245,76,fill=primary.data)
+    canvasForTable.create_line(350,0,350,76,fill=primary.data)
+    canvasForTable.create_line(480,0,480,76,fill=primary.data)
+    canvasForTable.create_line(610,0,610,76,fill=primary.data)
+    canvasForTable.create_line(0,76,850,76,fill=primary.data)
+
+
+    #Date, tenant_ID, Income, Total_Expenses, Rent Paid, Equity in property
+
+    openDatabase() 
+    unitBriefInfo = cursor.execute("SELECT month, year , tenant_ID, non_Taxable_Expenses, taxable_Expenses, rent_Paid, rent_Late, equity_In_Property, income FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()
+    closeDatabase()
+    if len(unitBriefInfo) != 0: #If there is a tenant's month in the database
+        #TODO: need to order by date
+        i = startValueForUnitListing
+        count = 0
+        while i < len(unitBriefInfo) and count < 5:
+            month = deScramble(unitBriefInfo[i][0])
+            year = deScramble(unitBriefInfo[i][1])
+            tenant_ID = deScramble(unitBriefInfo[i][2])
+            non_Taxable_Expenses = deScramble(unitBriefInfo[i][3])
+            taxable_Expenses = deScramble(unitBriefInfo[i][4])
+            rent_Paid = deScramble(unitBriefInfo[i][5])
+            rent_Late = deScramble(unitBriefInfo[i][6])
+            equity_In_Property = deScramble(unitBriefInfo[i][7])
+            income = deScramble(unitBriefInfo[i][8])
+            date = str(month) + '/' + str(year)
+            total_Expenses = float(taxable_Expenses) + float(non_Taxable_Expenses)
+            if rent_Paid == True:
+                if rent_Late == True:
+                    rentPaidAnswer = 'Paid Late'
+                else:
+                    rentPaidAnswer = 'Paid on time'
+            else:
+                rentPaidAnswer = 'Not Paid'
+            addUnitMonthlyLineOfData(date,tenant_ID,income,total_Expenses,rentPaidAnswer,equity_In_Property,i)
+            i = i + 1
+            count = count + 1
+            global currentUnitMonthlyNumber
+            currentUnitMonthlyNumber = currentUnitMonthlyNumber + 1
+        if currentUnitMonthlyNumber != len(unitBriefInfo):
+            downButton = Button(canvasForTable, text='Down',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeUnitMonthlyTableHeight(currentUnitMonthlyNumber)).place(relx=0.4,rely=0.96,anchor='center')
+        else:
+            downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.4,rely=0.96,anchor='center')
+        if currentUnitMonthlyNumber > 5:
+            upButton = Button(canvasForTable, text='Up',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeUnitMonthlyTableHeight(currentUnitMonthlyNumber-count-5)).place(relx=0.6,rely=0.96,anchor='center')
+        else:
+            downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.6,rely=0.96,anchor='center')
+    else:
+        noTenantLabel = Label(canvasForTable, text='This unit has no recorded monthly entrees', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
+    return startValueForUnitListing
+
+def changeUnitMonthlyTableHeight(inputNumber):
+    global currentUnitMonthlyNumber
+    currentUnitMonthlyNumber = inputNumber
+    createTableForIndividualUnit(inputNumber)
+
+def addUnitMonthlyLineOfData(date,tenant_ID,Income,Total_Expesnes, rent_Paid, equity_In_Property,i):
+    print(date,tenant_ID,Income,Total_Expesnes, rent_Paid, equity_In_Property)
+    createUnitMonthlyXaxisLines(76+76*((i%5)))
+    score_ColumHeader = Label(canvasForTable, text=date, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
+    score_ColumHeader = Label(canvasForTable, text=tenant_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.15, rely=0.23+0.15*((i)%5),anchor='w')
+    score_ColumHeader = Label(canvasForTable, text=Income, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.33, rely=0.23+0.15*((i)%5),anchor='w')
+    score_ColumHeader = Label(canvasForTable, text=Total_Expesnes, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.48, rely=0.23+0.15*((i)%5),anchor='w')
+    score_ColumHeader = Label(canvasForTable, text=rent_Paid, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.64, rely=0.23+0.15*((i)%5),anchor='w')
+    score_ColumHeader = Label(canvasForTable, text=equity_In_Property, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.83, rely=0.23+0.15*((i)%5),anchor='w')
+    createUnitMonthlyYaxisLines(152+76*((i%5)))
+
+def createUnitMonthlyXaxisLines(y):
+    canvasForTable.create_line(105,y,105,y+76,fill=primary.data)
+    canvasForTable.create_line(245,y,245,y+76,fill=primary.data)
+    canvasForTable.create_line(350,y,350,y+76,fill=primary.data)
+    canvasForTable.create_line(480,y,480,y+76,fill=primary.data)
+    canvasForTable.create_line(610,y,610,y+76,fill=primary.data)
+
+def createUnitMonthlyYaxisLines(y):
+    canvasForTable.create_line(0,y,850,y,fill=primary.data)
 
 initialise()
 print('Program Finished')
