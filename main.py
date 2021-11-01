@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            monthlyAdditionsPage('LT2')
+            propertiesPage()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1113,12 +1113,114 @@ def propertiesPage():
     initialiseWindow()
     root.title('Property managment system - Properties Page')
     root.configure(bg=secondry.data)
+    addPageSeperator()
     topBorder = Label(root, text='Properties', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
     previousPage = 'Properties'
+    global currentUnitNumber
+    currentUnitNumber = 0
+    global startValueForUnitListing 
+    startValueForUnitListing = createTableForUnit(0)
     displayMenuButton()
     root.mainloop()
+
+def createTableForUnit(startValueForUnitListing):
+    frameToGiveOtheCanvasABorder = Frame(root,width=840,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
+    frameToGiveOtheCanvasABorder.place(relx=0.315,rely=0.18)
+    frameToGiveOtheCanvasABorder.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    global canvasForTable
+    canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data,highlightthickness=0)
+    canvasForTable.pack()
+    canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    tenant_ID_ColumHeader = Label(canvasForTable, text='Unit ID', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.095, rely=0.075,anchor='center')
+    email_ColumHeader = Label(canvasForTable, text='Rent', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.263, rely=0.075,anchor='center')
+    late_Rent_ColumHeader = Label(canvasForTable, text='Suspected Value', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.47, rely=0.075,anchor='center')
+    score_ColumHeader = Label(canvasForTable, text='Tenant ID', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.69, rely=0.075,anchor='center')
+    unresolved_Complaints_ColumHeader = Label(canvasForTable, text='Average Montlhy\nprofit margin(%)', height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.89, rely=0.075,anchor='center')
+    canvasForTable.create_line(160,0,160,76,fill=primary.data)
+    canvasForTable.create_line(285,0,285,76,fill=primary.data)
+    canvasForTable.create_line(505,0,505,76,fill=primary.data)  
+    canvasForTable.create_line(655,0,655,76,fill=primary.data)
+    canvasForTable.create_line(0,76,850,76,fill=primary.data)
+
+    # INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
+    # VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
+
+    openDatabase()
+    unitBriefInfo = cursor.execute("SELECT unit_ID, tenant_ID, rent, buy_Price FROM units WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'")) 
+    unitBriefInfo = unitBriefInfo.fetchall()
+    closeDatabase()
+    if len(unitBriefInfo) != 0: #If there is a tenants in the database
+        #TODO: need to order unit's by descrambled unit_ID
+        i = startValueForUnitListing
+        count = 0
+        while i < len(unitBriefInfo) and count < 5:
+            unit_ID = deScramble(unitBriefInfo[i][0])
+            tenant_ID = deScramble(unitBriefInfo[i][1])
+            rent = deScramble(unitBriefInfo[i][2])
+            susValue = 0
+            averageMonthlyProfitValue = 0
+            mrMonth, mrYear = getMostRecentMonthYear(unit_ID)
+            if mrMonth == None:
+                susValue = deScramble(unitBriefInfo[i][3])
+                averageProfitMarginPercentage = 'N/A'
+            else:
+                openDatabase()
+                susValue = deScramble(cursor.execute("SELECT suspected_Property_Value FROM  units_Monthly WHERE unit_ID = '" + scramble(unit_ID) + "' AND month = '" + scramble(mrMonth) + "' AND year = '" + scramble(mrYear) +"'").fetchall()[0][0])
+                profitMarginInfo = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scramble(unit_ID + "'")).fetchall()
+                closeDatabase()
+                listOfMonthlyProfitMargins = []
+                for monthNumber in range(len(profitMarginInfo)):
+                    income = float(deScramble(profitMarginInfo[monthNumber][0]))
+                    non_Taxable_Expenses = float(deScramble(profitMarginInfo[monthNumber][1]))
+                    taxable_Expenses = float(deScramble(profitMarginInfo[monthNumber][2]))
+                    profit = (income - non_Taxable_Expenses) - taxable_Expenses
+                    if income != 0:
+                        profitMargin = (profit / income)
+                    else:
+                        profitMargin = 0
+                    listOfMonthlyProfitMargins.append(profitMargin)
+                totalProfitMargin = 0
+                for x in range(len(listOfMonthlyProfitMargins)):
+                    totalProfitMargin = totalProfitMargin + listOfMonthlyProfitMargins[x]
+                averageProfitMargin = totalProfitMargin/len(listOfMonthlyProfitMargins)
+                averageProfitMarginPercentage = str(round(averageProfitMargin*100,2))+"%"
+
+            
+            addUnitLineOfData(unit_ID,rent,susValue,tenant_ID,averageProfitMarginPercentage,i)
+            i = i + 1
+            count = count + 1
+            global currentUnitNumber
+            currentUnitNumber = currentUnitNumber + 1
+        if currentUnitNumber != len(unitBriefInfo):
+            downButton = Button(canvasForTable, text='Down',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonUnitCommand(currentUnitNumber)).place(relx=0.4,rely=0.96,anchor='center')
+        else:
+            downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.4,rely=0.96,anchor='center')
+        if currentUnitNumber > 5:
+            upButton = Button(canvasForTable, text='Up',height=1,bg=secondry.data, fg = primary.data, font=(font.data,16), justify='center',border=0,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,command= lambda:changeTableHieghtButtonUnitCommand(currentUnitNumber-count-5)).place(relx=0.6,rely=0.96,anchor='center')
+        else:
+            downButtonCover = Label(canvasForTable,height=1,bg=secondry.data,font=(font.data,16), justify='center',border=0).place(relx=0.6,rely=0.96,anchor='center')
+    else:
+        noTenantLabel = Label(canvasForTable, text='You have no exsisting tenants', height=3 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='center').place(relx=0.5,rely=0.5,anchor='center')
+    return startValueForUnitListing
+
+def getMostRecentMonthYear(unscrambled_unit_ID):
+    openDatabase()
+    unitInfoDataD = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + (unscrambled_unit_ID) + "'")
+    unitInfoData = unitInfoDataD.fetchall()
+    if len(unitInfoData) != 0:
+        month, year = returnMostRecentMonth(unitInfoData)
+        month, year = str(month), str(year)    
+    else:
+        month = None
+        year = None
+    return[month,year]
+
+def changeTableHieghtButtonUnitCommand(inputNumber):
+    global currentUnitNumber
+    currentUnitNumber = inputNumber
+    createTableForUnit(inputNumber)
 
 #This page is for adding a new units to a user's portfolio. It is very similar in desing and functionalty to the create account page and add new tenant page
 def newUnitPage():
@@ -1347,6 +1449,16 @@ def addTenantLineOfData(tenant_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
     tenant_ID_ColumHeader.place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
     score_ColumHeader = Label(canvasForTable, text=score, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
     email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,9), justify='left').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
+    late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
+    unresolved_Complaints_ColumHeader = Label(canvasForTable, text=nOfCompaints, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.79, rely=0.23+0.15*((i)%5),anchor='w')
+    createTenantYaxisLine(152+76*((i%5)))
+
+def addUnitLineOfData(unit_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
+    createTenantXaxisLines(76+76*((i%5)))
+    tenant_ID_ColumHeader = Button(canvasForTable, text=unit_ID, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'underline'), justify='left',activebackground=secondry.data,border=0,activeforeground=bannedColours['activeTextColor'],command=lambda: unitPage(unit_ID))
+    tenant_ID_ColumHeader.place(relx = 0.01, rely=0.23+0.15*((i)%5),anchor='w')
+    score_ColumHeader = Label(canvasForTable, text=score, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.20, rely=0.23+0.15*((i)%5),anchor='w')
+    email_ColumHeader = Label(canvasForTable, text=tenant_Email, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.35, rely=0.23+0.15*((i)%5),anchor='w')
     late_Rent_ColumHeader = Label(canvasForTable, text=nlateRent, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.61, rely=0.23+0.15*((i)%5),anchor='w')
     unresolved_Complaints_ColumHeader = Label(canvasForTable, text=nOfCompaints, height=2 ,bg=secondry.data, fg = primary.data, font=(font.data,14), justify='left').place(relx = 0.79, rely=0.23+0.15*((i)%5),anchor='w')
     createTenantYaxisLine(152+76*((i%5)))
@@ -2856,8 +2968,8 @@ def returnMostRecentMonth(monthYearlistOfTuples): #Only works for AD years but w
     currentMostRecentYear = 0
     currentMostRecentMonth = 0
     for i in range(len(monthYearlistOfTuples)):
-        month = monthYearlistOfTuples[i][0]
-        year = monthYearlistOfTuples[i][1]
+        month = int(deScramble(monthYearlistOfTuples[i][0]))
+        year = int(deScramble(monthYearlistOfTuples[i][1]))
         if year >= currentMostRecentYear and month > currentMostRecentMonth:
             currentMostRecentYear = year
             currentMostRecentMonth = month
@@ -2970,6 +3082,9 @@ def addNewMonthlyUnitData(unitID):
         closeDatabase()
         
         displayConfirmation('Properties')
+
+def unitPage(unit_ID):
+    print(unit_ID)
 
 initialise()
 print('Program Finished')
