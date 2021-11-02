@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            monthlyAdditionsPage('LT2')
+            tenantsPage()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -809,7 +809,11 @@ def deScramble(cipherText):
     #     cipherText[i] = chr(ascii_Code - len(cipherText))
     # data = listToString(cipherText)
     # return data
-    return str(cipherText)
+    try:
+        cipherText = float(cipherText)
+    except:
+        cipherText = str(cipherText)
+    return (cipherText)
 
 def listToString(list):
     word = ''
@@ -1449,6 +1453,29 @@ def tenantsPage():
     addNewTenantButton = Button(root, text='Want to add a new tenant?', font=(font.data,'16','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newTenantPage).place(relx=0.65, rely=0.9, anchor=CENTER)
     
     #get all side data
+    openDatabase()
+    tenant_InfoD = cursor.execute("SELECT tenant_ID, total_Residents,score FROM tenants WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'")
+    tenant_Info = tenant_InfoD.fetchall()
+    closeDatabase()
+
+    #defining default data values if there are no tenants in the system
+    primarytenantCount = 0
+    totalTenantCount = 0
+    totalScore = 0
+    averageScore = 'N/A'
+    totalRent = 0
+
+    if len(tenant_Info) != 0:
+        for i in range(len(tenant_Info)):
+            primarytenantCount = primarytenantCount + 1
+            totalTenantCount = totalTenantCount + float(deScramble(tenant_Info[i][1]))
+            totalScore = totalScore + float(deScramble(tenant_Info[i][2]))
+        averageScore = totalScore/primarytenantCount
+        unitInfoD = cursor.execute("SELECT tenant_ID, rent FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'")
+        unitInfo = unitInfoD.fetchall()
+        for i in range(len(unitInfo)):
+            totalRent = totalRent + float(deScramble())
+    print(primarytenantCount,totalTenantCount,averageScore)
 
     #place all side data     
     
@@ -3221,3 +3248,6 @@ def createUnitMonthlyYaxisLines(y):
 
 initialise()
 print('Program Finished')
+
+#TODO: list
+#ReAdjustScore after late or missed rents
