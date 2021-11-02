@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            tenantsPage()
+            tenantPage('TA1')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1291,11 +1291,14 @@ def newUnitPage():
     closeDatabase()
     occupyingTenants = []
     #occupyingTenants is the tenants already in a unit
-    for i in range(len(occupyingTenantsD)):
-        occupyingTenants.append(deScramble(occupyingTenantsD[i][0]))
-    for i in range(len(occupyingTenantOptions)-1):
-        if occupyingTenantOptions[i] in occupyingTenants:
-            occupyingTenantOptions.remove(occupyingTenantOptions[i])
+    for z in range(len(occupyingTenantsD)):
+        occupyingTenants.append(deScramble(occupyingTenantsD[z][0]))
+    listOfIDsToRemove = []
+    for x in range(len(occupyingTenantOptions)):
+        if occupyingTenantOptions[x] in occupyingTenants:
+            listOfIDsToRemove.append(occupyingTenantOptions[x])
+    for identifer in range(len(listOfIDsToRemove)):
+        occupyingTenantOptions.remove(listOfIDsToRemove[identifer])
     occupyingTenantOptions.append('None')
     global occupyingTenantMenu
     occupyingTenantMenu = ttk.Combobox(root, value=occupyingTenantOptions, justify=tkinter.CENTER, font=(font.data,18))
@@ -1494,8 +1497,8 @@ def tenantsPage():
             closeDatabase()
             for i in range(len(unitsMonthlyInfo)):
                 totalRentsPaid = totalRentsPaid + 1
-                rentLent = deScramble(unitsMonthlyInfo[i][0])
-                if rentLent == True and rentLent != 'False':
+                rentLent = int(deScramble(unitsMonthlyInfo[i][0]))
+                if rentLent == True:
                     totalLateRent = totalLateRent + 1
         if totalRentsPaid != 0:
             lateRentChance = str((totalLateRent/totalRentsPaid) * 100) + "%"
@@ -1511,11 +1514,6 @@ def tenantsPage():
     generalLabel = Label(root, font=(font.data,'14',), text='Mean tenant score : '+str(round(averageScore,2)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.62, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'14',), text='Chance of late rent : '+str(lateRentChance), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.65, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'14',), text='Total expected rent: '+str(totalRent), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.68, anchor=CENTER)
-    # generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
-    # generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
-    # generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
-    # generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
-
     root.mainloop()
 
 def createTenantXaxisLines(y):
@@ -2519,6 +2517,70 @@ def tenantPage(tenant_ID):
     global startValueForMonth
     startValueForMonth = createTableForIndividualTenant(0)
     complaintsManagmentButton = Button(root, text='Complaints Managment', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.4, rely=0.85, anchor=CENTER)
+    
+    #define default variables in case a tenant has never actaully lived in a unit
+    current_Unit = 'None'
+    n_Of_Late_Rents = 0
+    n_Of_Complaints = 0
+    n_Of_Unresolved_Complaints = 0
+    total_Income = 0
+
+    #get all side data
+    openDatabase()
+    tenantInfo = cursor.execute("SELECT title, first_Name, last_Name, date_Of_Birth, tenant_Email, score, total_Residents, start_Date, deposit, gerneral_Notes FROM tenants WHERE tenant_ID = '" + scramble(current_tenant_ID) + "'").fetchall()
+    closeDatabase()
+    title = deScramble(tenantInfo[0][0])
+    first_Name = deScramble(tenantInfo[0][1])
+    last_Name = deScramble(tenantInfo[0][2])
+    name = title + " " + first_Name + " " + last_Name
+    date_Of_Birth = deScramble(tenantInfo[0][3])
+    email = deScramble(tenantInfo[0][4])
+    score = deScramble(tenantInfo[0][5])
+    total_Residents = int(deScramble(tenantInfo[0][6]))
+    start_Date = deScramble(tenantInfo[0][7])
+    deposit = deScramble(tenantInfo[0][8])
+    gerneral_Notes = deScramble(tenantInfo[0][9])
+
+    openDatabase()
+    unitInfoD = cursor.execute("SELECT unit_ID FROM units WHERE tenant_ID = '" + scramble(current_tenant_ID) + "'").fetchall()
+    closeDatabase()
+    if (len(unitInfoD)) != 0:
+        current_Unit = deScramble(unitInfoD[0][0])
+
+    openDatabase()
+    unitsMonthlyInfo = cursor.execute("SELECT rent_Late, income FROM units_Monthly WHERE tenant_ID = '" + scramble(current_tenant_ID) + "'").fetchall()
+    closeDatabase()
+    for i in range(len(unitsMonthlyInfo)):
+        total_Income = total_Income + float(deScramble(unitsMonthlyInfo[i][1]))
+        rent_Late_Possible = int(deScramble(unitsMonthlyInfo[i][0]))
+        if rent_Late_Possible == True:
+            n_Of_Late_Rents = n_Of_Late_Rents + 1
+    total_Income = round(total_Income,2)
+
+    openDatabase()
+    complaintsInfo = cursor.execute("SELECT resoltion FROM complaints WHERE tenant_ID = '" + scramble(current_tenant_ID) + "'").fetchall()
+    closeDatabase()
+    for i in range(len(complaintsInfo)):
+        n_Of_Complaints = n_Of_Complaints + 1
+        resolution = deScramble(complaintsInfo[i][0])
+        if resolution == None:
+            n_Of_Unresolved_Complaints = n_Of_Unresolved_Complaints + 1
+    
+    #place all side data     
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.3, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Name : '+str(name), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.35, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Current Unit : '+str(current_Unit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.38, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Email : '+str(email), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.41, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Date of Birth : '+str(date_Of_Birth), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.44, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Score : '+str(score), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.47, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total Residents : '+str(total_Residents), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Start of Lease date : '+str(start_Date), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.53, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Remaining Deposit : '+str(deposit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.56, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Late rents : '+str(n_Of_Late_Rents), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.59, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total complaints : '+str(n_Of_Complaints), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.62, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Unresolved complants : '+str(n_Of_Unresolved_Complaints), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.65, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total Income : '+str(total_Income), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.68, anchor=CENTER)
+
     root.mainloop()
 
 def createTableForIndividualTenant(startValueForAccountListing):
@@ -2551,7 +2613,7 @@ def createTableForIndividualTenant(startValueForAccountListing):
             month = deScramble(tenantBriefInfoMonthly[i][1])
             rentPaid = deScramble(tenantBriefInfoMonthly[i][2])
             rentLate = deScramble(tenantBriefInfoMonthly[i][3])
-            date = str(month) + '/' + str(year)
+            date = str(int(month)) + '/' + str(int(year))
             openDatabase()
             complaintsIDsD = cursor.execute("SELECT complaint_ID FROM complaints WHERE year = '" + str(scramble(year)) + "' AND month = '" + str(scramble(month)) + "'")
             complaintsIDs = complaintsIDsD.fetchall()
@@ -3156,9 +3218,9 @@ def addNewMonthlyUnitData(unitID):
         else: 
             rent_Paid = 0
         if rent_Late.data == 'On Time':
-            rent_Late.data = False
+            rent_Late.data = 0
         else:
-            rent_Late.data = True
+            rent_Late.data = 1
         new_Units_Monthly_Data = [year,month,uInputDataObj(current_unit_ID,str),uInputDataObj(tenant_ID,str),rent_Paid,rent_Late,income,non_Taxable_Expenses,taxable_Expenses,suspected_Property_Value,equity_In_Property,money_Taken_From_Deposit]
         for i in range(len(new_Units_Monthly_Data)):
             new_Units_Monthly_Data[i] = scramble(new_Units_Monthly_Data[i].data)
