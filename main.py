@@ -1464,6 +1464,11 @@ def tenantsPage():
     totalScore = 0
     averageScore = 'N/A'
     totalRent = 0
+    occupyingPrimaryTenants = 0
+    occupyingTotalTenants = 0
+    lateRentChance = 0
+    totalLateRent = 0
+    totalRentsPaid = 0
 
     if len(tenant_Info) != 0:
         for i in range(len(tenant_Info)):
@@ -1471,14 +1476,46 @@ def tenantsPage():
             totalTenantCount = totalTenantCount + float(deScramble(tenant_Info[i][1]))
             totalScore = totalScore + float(deScramble(tenant_Info[i][2]))
         averageScore = totalScore/primarytenantCount
+        openDatabase()
         unitInfoD = cursor.execute("SELECT tenant_ID, rent FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'")
         unitInfo = unitInfoD.fetchall()
+        closeDatabase()
         for i in range(len(unitInfo)):
-            totalRent = totalRent + float(deScramble())
-    print(primarytenantCount,totalTenantCount,averageScore)
+            scrambledTenant_ID = str(unitInfo[i][0])
+            occupyingPrimaryTenants = occupyingPrimaryTenants + 1
+            totalRent = totalRent + float(deScramble(unitInfo[i][1]))
+            openDatabase()
+            tenantsLivingInUnit = float(deScramble(cursor.execute("SELECT total_Residents FROM tenants WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()[0][0]))
+            closeDatabase()
+            occupyingTotalTenants = occupyingTotalTenants + tenantsLivingInUnit
+            openDatabase()
+            unitsMonthlyInfo = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()
+            print('fetched data',unitsMonthlyInfo)
+            closeDatabase()
+            for i in range(len(unitsMonthlyInfo)):
+                totalRentsPaid = totalRentsPaid + 1
+                rentLent = deScramble(unitsMonthlyInfo[i][0])
+                if rentLent == True and rentLent != 'False':
+                    totalLateRent = totalLateRent + 1
+        if totalRentsPaid != 0:
+            lateRentChance = str((totalLateRent/totalRentsPaid) * 100) + "%"
+        else:
+            lateRentChance = '0' + "%"
 
     #place all side data     
-    
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.45, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Number of total tenants : '+str(int(totalTenantCount)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.53, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Number of occupying primary tenants : '+str(occupyingPrimaryTenants), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.56, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Number of occupying tenants : '+str(int(occupyingTotalTenants)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.59, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Mean tenant score : '+str(round(averageScore,2)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.62, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Chance of late rent : '+str(lateRentChance), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.65, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total expected rent: '+str(totalRent), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.68, anchor=CENTER)
+    # generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
+    # generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
+    # generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
+    # generalLabel = Label(root, font=(font.data,'14',), text='Number of primary tenants : '+str(primarytenantCount), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
+
     root.mainloop()
 
 def createTenantXaxisLines(y):
@@ -3091,14 +3128,14 @@ def addNewMonthlyUnitData(unitID):
 
     if countOfFailedTests == 0:
         openDatabase()
-        original_property_Equity = deScramble(cursor.execute("SELECT property_Equity FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
-        installments = deScramble(cursor.execute("SELECT instalments FROM loan WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
+        original_property_Equity = float(deScramble(cursor.execute("SELECT property_Equity FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0]))
+        installments = float(deScramble(cursor.execute("SELECT instalments FROM loan WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0]))
         tenant_ID = deScramble(cursor.execute("SELECT tenant_ID FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
         global current_tenant_ID
         current_tenant_ID = tenant_ID
         closeDatabase()
         if loanInstallmensMenuBox.get() == 'All fully paid':
-            taxable_Expenses.data = taxable_Expenses.data + installments #Added after first made
+            taxable_Expenses.data = float(taxable_Expenses.data) + installments #Added after first made
             equity_In_Property.data = original_property_Equity + installments
             openDatabase()
             unitInfoDataD = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
@@ -3151,6 +3188,7 @@ def unitPage(unitID):
     global startValueForMonth
     startValueForMonth = createTableForIndividualUnit(0)
     displayMenuButton()
+    complaintsManagmentButton = Button(root, text='Add monthly data', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.4, rely=0.85, anchor=CENTER)
     root.mainloop()
 
 def createTableForIndividualUnit(startValueForUnitListing):
@@ -3192,7 +3230,7 @@ def createTableForIndividualUnit(startValueForUnitListing):
             non_Taxable_Expenses = deScramble(unitBriefInfo[i][3])
             taxable_Expenses = deScramble(unitBriefInfo[i][4])
             rent_Paid = int(deScramble(unitBriefInfo[i][5]))
-            rent_Late = int(deScramble(unitBriefInfo[i][6]))
+            rent_Late = bool(deScramble(unitBriefInfo[i][6]))
             equity_In_Property = deScramble(unitBriefInfo[i][7])
             income = deScramble(unitBriefInfo[i][8])
             date = str(month) + '/' + str(year)
