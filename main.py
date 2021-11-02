@@ -1447,6 +1447,11 @@ def tenantsPage():
     startValueForAccountListing = createTableForTenant(0)
     displayMenuButton()
     addNewTenantButton = Button(root, text='Want to add a new tenant?', font=(font.data,'16','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newTenantPage).place(relx=0.65, rely=0.9, anchor=CENTER)
+    
+    #get all side data
+
+    #place all side data     
+    
     root.mainloop()
 
 def createTenantXaxisLines(y):
