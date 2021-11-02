@@ -1493,7 +1493,6 @@ def tenantsPage():
             occupyingTotalTenants = occupyingTotalTenants + tenantsLivingInUnit
             openDatabase()
             unitsMonthlyInfo = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()
-            print('fetched data',unitsMonthlyInfo)
             closeDatabase()
             for i in range(len(unitsMonthlyInfo)):
                 totalRentsPaid = totalRentsPaid + 1
@@ -2516,8 +2515,10 @@ def tenantPage(tenant_ID):
     currentTentantMonthlyNumber = 0
     global startValueForMonth
     startValueForMonth = createTableForIndividualTenant(0)
-    complaintsManagmentButton = Button(root, text='Complaints Managment', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.4, rely=0.85, anchor=CENTER)
-    
+    complaintsManagmentButton = Button(root, text='Views Complaints Managment Page', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: complaintsManagmentPage(current_tenant_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Delete Tenant Page', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: deleteTenantPage(current_tenant_ID)).place(relx=0.8, rely=0.85, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Edit Tenant Page', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: editTenantPage(current_tenant_ID)).place(relx=0.65, rely=0.95, anchor=CENTER)
+
     #define default variables in case a tenant has never actaully lived in a unit
     current_Unit = 'None'
     n_Of_Late_Rents = 0
@@ -2567,20 +2568,23 @@ def tenantPage(tenant_ID):
             n_Of_Unresolved_Complaints = n_Of_Unresolved_Complaints + 1
     
     #place all side data     
-    generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.3, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Name : '+str(name), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.35, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Current Unit : '+str(current_Unit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.38, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Email : '+str(email), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.41, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Date of Birth : '+str(date_Of_Birth), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.44, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Score : '+str(score), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.47, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Total Residents : '+str(total_Residents), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.5, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Start of Lease date : '+str(start_Date), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.53, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Remaining Deposit : '+str(deposit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.56, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Late rents : '+str(n_Of_Late_Rents), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.59, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Total complaints : '+str(n_Of_Complaints), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.62, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Unresolved complants : '+str(n_Of_Unresolved_Complaints), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.65, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Total Income : '+str(total_Income), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.68, anchor=CENTER)
-
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.25, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Name : '+str(name), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.3, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Current Unit : '+str(current_Unit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.33, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Email : '+str(email), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.36, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Date of Birth : '+str(date_Of_Birth), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.39, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Score : '+str(score), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.42, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total Residents : '+str(total_Residents), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.45, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Start of Lease date : '+str(start_Date), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.48, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Remaining Deposit : '+str(deposit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.51, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Late rents : '+str(n_Of_Late_Rents), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.54, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total complaints : '+str(n_Of_Complaints), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.57, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Unresolved complants : '+str(n_Of_Unresolved_Complaints), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.6, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total Income : '+str(total_Income), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.63, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'16','bold'), text='General Notes', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.72, anchor=CENTER)
+    generalLabel = Text(root, font=(font.data,'14',), bg=secondry.data,fg=primary.data,height=8,width=35,border=0)
+    generalLabel.place(relx=0.15, rely=0.85, anchor=CENTER)
+    generalLabel.insert('1.0', gerneral_Notes)
     root.mainloop()
 
 def createTableForIndividualTenant(startValueForAccountListing):
@@ -3345,6 +3349,12 @@ def createUnitMonthlyXaxisLines(y):
 
 def createUnitMonthlyYaxisLines(y):
     canvasForTable.create_line(0,y,850,y,fill=primary.data)
+
+def deleteTenantPage(tenant_ID):
+    pass
+
+def editTenantPage(tenant_ID):
+    pass
 
 initialise()
 print('Program Finished')
