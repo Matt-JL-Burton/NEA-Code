@@ -3446,3 +3446,4 @@ print('Program Finished')
 
 #TODO: list
 #ReAdjustScore after late or missed rents
+#individual properties page
