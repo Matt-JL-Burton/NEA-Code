@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            propertiesPage()
+            unitPage('LT2')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1111,10 +1111,10 @@ def menuPage():
     addNewTenantButton = Button(root, text='Add New Tenant Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newTenantPage).place(relx=0.5, rely=0.55, anchor=CENTER)
     taxPageButton = Button(root, text='Tax Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=taxPage).place(relx=0.5, rely=0.625, anchor=CENTER)
     settingsPageButton = Button(root, text='Settings Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=settingsPage).place(relx=0.5, rely=0.7, anchor=CENTER)
-    contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=contactPage)
-    contactPageButton.place(relx=0.5, rely=0.775, anchor=CENTER)
-    contactPageButton["state"] = "disabled" #To disable contact button as Im no longer using this
-    signOutButton = Button(root, text='Sign Out', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=loginPage).place(relx=0.5, rely=0.85, anchor=CENTER)
+    #contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=contactPage)
+    #contactPageButton.place(relx=0.5, rely=0.775, anchor=CENTER)
+    #contactPageButton["state"] = "disabled" #To disable contact button as Im no longer using this
+    signOutButton = Button(root, text='Sign Out', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=loginPage).place(relx=0.5, rely=0.775, anchor=CENTER)
     root.mainloop()
 
 #This page is for presenting data about the overall state of my end users portfolio aswell as a way to access data for each individual unit
@@ -3327,7 +3327,7 @@ def unitPage(unitID):
     global current_unit_ID
     current_unit_ID = unitID 
     initialiseWindow()
-    root.title('Property managment system - unit' + unitID)
+    root.title('Property managment system - Unit ' + unitID)
     root.configure(bg=secondry.data)
     addPageSeperator()
     topBorder = Label(root, text='Unit ' + unitID , height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
@@ -3339,8 +3339,133 @@ def unitPage(unitID):
     global startValueForMonth
     startValueForMonth = createTableForIndividualUnit(0)
     displayMenuButton()
-    complaintsManagmentButton = Button(root, text='Add monthly data', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.4, rely=0.85, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Add monthly data', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Loan managment', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: loanManagment(current_unit_ID)).place(relx=0.8, rely=0.85, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Edit unit data', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: editUnitPage(current_unit_ID)).place(relx=0.5, rely=0.95, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Want to sell/delete this unit?', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: editsellPage(current_unit_ID)).place(relx=0.8, rely=0.95, anchor=CENTER)
+    
+    #get all data
+    #define Defualt data
+    intrestRateList = []
+    intrestRate = 0
+    totalCapitalOwed = 0
+    totalInstalments = 0
+    listOfRemainingMonthsMortgages = []
+    reminaingMonths = 0
+    currentLongestMonthLength = 0
+    
+    openDatabase()
+    loanInfo = cursor.execute("SELECT loan_ID, capital_Owed, instalments, interest_Rate FROM loan WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()
+    closeDatabase()
+    for i in range (len(loanInfo)):
+        loan_ID = (loanInfo[i][0])
+        totalCapitalOwed = totalCapitalOwed + float(deScramble(loanInfo[i][1]))
+        totalInstalments = totalInstalments + float(deScramble(loanInfo[i][2]))
+        intrestRateList.append(float(deScramble(loanInfo[i][3])))
+        listOfRemainingMonthsMortgages.append(mortgageLengthCalculator(loan_ID))
+
+    if len(intrestRateList) > 1:
+        intrestRate = 'N/A (multiple loans)'
+    else:
+        intrestRate = intrestRateList[0]
+
+    for monthsRemaining in listOfRemainingMonthsMortgages:
+        if monthsRemaining == 'Infinite':
+            reminaingMonths = 'Infinite'
+    if reminaingMonths != 'Infinite':
+        for newMonthsRemaining in listOfRemainingMonthsMortgages:
+            if newMonthsRemaining > currentLongestMonthLength:
+                currentLongestMonthLength = newMonthsRemaining
+        reminaingMonths = currentLongestMonthLength
+
+    openDatabase()
+    unitInfo = cursor.execute("SELECT address, most_Recent_Valuation, buy_Price, postcode, buy_Month, buy_Year, property_Equity, rent, general_Notes, tenant_ID FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()
+    closeDatabase()
+    address = deScramble(unitInfo[0][0])
+    most_Recent_Valuation = float(deScramble(unitInfo[0][1]))
+    buy_Price = float(deScramble(unitInfo[0][2]))
+    postcode = deScramble(unitInfo[0][3])
+    buy_Month = deScramble(unitInfo[0][4])
+    buy_Year = deScramble(unitInfo[0][5])
+    date = str(int(buy_Month)) + "/" + str(int(buy_Year))
+    property_Equity = float(deScramble(unitInfo[0][6]))
+    rent = float(deScramble(unitInfo[0][7]))
+    general_Notes = deScramble(unitInfo[0][8])
+    tenant_ID = deScramble(unitInfo[0][9])
+    openDatabase()
+    unitMonthlyInfo = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" +scramble(current_unit_ID) + "'").fetchall()
+    closeDatabase()
+    totalIncome = 0
+    total_Expenses = 0
+    months = 0
+    for j in range(len(unitMonthlyInfo)):
+        months = months + 1
+        totalIncome = totalIncome + float(deScramble(unitMonthlyInfo[j][0]))
+        total_Expenses = total_Expenses + float(deScramble(unitMonthlyInfo[j][1])) + float(deScramble(unitMonthlyInfo[j][2]))
+    if months == 0:
+        averageIncome = 0
+        averageExpenses = 0
+        averageProfit = 0
+    else:
+        averageIncome = totalIncome/months
+        averageExpenses = total_Expenses/months
+        averageProfit = averageIncome - averageExpenses
+
+    openDatabase()
+    susValueDateInfo = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()
+    closeDatabase()
+    if len(susValueDateInfo) != 0:
+        month, year = returnMostRecentMonth(susValueDateInfo)
+        openDatabase()
+        mostRecentSusValue = deScramble(cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'").fetchall()[0][0])
+        closeDatabase()
+    else:
+        mostRecentSusValue = 0
+
+    #display all data
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.2, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Remaining Mortgage Mortgage : '+str(reminaingMonths), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.25, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total Capital Owed : '+str(totalCapitalOwed), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.28, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Mortgage Intrest Rate : '+str(intrestRate), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.31, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total installments : '+str(totalInstalments), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.34, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Date Bought : '+str(date), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.37, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Buy Price : '+str(buy_Price), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.4, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Suspected Value : '+str(mostRecentSusValue), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.43, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Property Equity : '+str(property_Equity), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.46, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Most Recent Valuation : '+str(most_Recent_Valuation), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.49, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Current Tenant : '+str(tenant_ID), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.55, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Current Rent : '+str(rent), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.58, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Average Profit : '+str(averageProfit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.61, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Average Income : '+str(averageIncome), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.64, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Average Expenses : '+str(averageExpenses), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.67, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Postcode : '+str(postcode), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.7, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'16',), text='Address', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.75, anchor=CENTER)
+    generalLabel = Text(root, font=(font.data,'14',), bg=secondry.data,fg=primary.data,height=3,width=35,border=0)
+    generalLabel.place(relx=0.15, rely=0.805, anchor=CENTER)
+    generalLabel.insert('1.0', address)
+    generalLabel = Label(root, font=(font.data,'16',), text='Notes', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.87, anchor=CENTER)
+    generalLabel = Text(root, font=(font.data,'14',), bg=secondry.data,fg=primary.data,height=3,width=35,border=0)
+    generalLabel.place(relx=0.15, rely=0.925, anchor=CENTER)
+    generalLabel.insert('1.0', general_Notes)
     root.mainloop()
+
+def mortgageLengthCalculator(loan_ID):
+    openDatabase()
+    loanInfo = cursor.execute("SELECT capital_Owed, instalments, interest_Rate FROM loan WHERE loan_ID = '" + str(loan_ID) + "'").fetchall()
+    closeDatabase()
+    capitalOwed = float(deScramble(loanInfo[0][0]))
+    instalments = float(deScramble(loanInfo[0][1]))
+    interestRate = float(deScramble(loanInfo[0][2]))
+    monthsTaken = 0
+    if instalments != 0:
+        while capitalOwed > 0 and monthsTaken != 12000:
+            monthsTaken = monthsTaken + 1
+            capitalOwed = (capitalOwed-instalments)*(1+(interestRate/100))
+        if monthsTaken > 11998:
+            monthsTaken = 'Infinite'
+    else:
+        monthsTaken = 'Infinite'
+    return(monthsTaken)
 
 def createTableForIndividualUnit(startValueForUnitListing):
     frameToGiveOtheCanvasABorder = Frame(root,width=760,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
@@ -3384,7 +3509,7 @@ def createTableForIndividualUnit(startValueForUnitListing):
             rent_Late = bool(deScramble(unitBriefInfo[i][6]))
             equity_In_Property = deScramble(unitBriefInfo[i][7])
             income = deScramble(unitBriefInfo[i][8])
-            date = str(month) + '/' + str(year)
+            date = str(int(month)) + '/' + str(int(year))
             total_Expenses = float(taxable_Expenses) + float(non_Taxable_Expenses)
             if rent_Paid == True:
                 if rent_Late == True:
@@ -3441,9 +3566,18 @@ def deleteTenantPage(tenant_ID):
 def editTenantPage(tenant_ID):
     pass
 
+def loanManagment(unit_ID):
+    pass
+
+def editUnitPage(unit_ID):
+    pass
+
+def editsellPage(unit_ID):
+    pass
+
 initialise()
 print('Program Finished')
 
 #TODO: list
 #ReAdjustScore after late or missed rents
-#individual properties page
+#order stuff in tables
