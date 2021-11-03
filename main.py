@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            tenantPage('TA1')
+            propertiesPage()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1132,6 +1132,91 @@ def propertiesPage():
     global startValueForUnitListing 
     startValueForUnitListing = createTableForUnit(0)
     displayMenuButton()
+    addNewUnitButton = Button(root, text='Want to add a new unit?', font=(font.data,'16','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newUnitPage).place(relx=0.65, rely=0.9, anchor=CENTER)
+
+
+    #get all data
+    #defining defulat variables incase there is no units
+    numberOfUnits = 0
+    totalEquity =0 
+    meanEquity = 0
+    totalMostRecentValuation = 0
+    meanMostRecentValuation = 0
+    totalSuspectedValue = 0
+    meanSuspectedValue = 0
+    totalExpectedRent = 0
+    meanExpectedRent = 0
+    meanPropertyEquity = "0%"
+    meanMontlhyProfitMargin = "0%"
+    totalMonthsOfData = 0
+    totalIncome = 0
+    totalExpenses = 0
+    meanIncome = 0
+    meanExpenses = 0
+    meanProfit = 0
+
+    openDatabase()
+
+    closeDatabase()
+
+    openDatabase()
+    unitInfo = cursor.execute("SELECT most_Recent_Valuation, property_Equity, rent, unit_ID FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+    closeDatabase()
+    for i in range(len(unitInfo)):
+        numberOfUnits = numberOfUnits + 1
+        totalEquity = totalEquity + float(deScramble(unitInfo[i][1]))
+        totalMostRecentValuation = totalMostRecentValuation + float(deScramble(unitInfo[i][0]))
+        totalExpectedRent = totalExpectedRent + float(deScramble(unitInfo[i][2]))
+        scrmabled_Unit_ID = unitInfo[i][3]
+        openDatabase()
+        susValueDateInfo = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scrmabled_Unit_ID + "'").fetchall()
+        closeDatabase()
+        if len(susValueDateInfo) != 0:
+            month, year = returnMostRecentMonth(susValueDateInfo)
+            openDatabase()
+            mostRecentSusValue = deScramble(cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scrmabled_Unit_ID + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'").fetchall()[0][0])
+            closeDatabase()
+            totalSuspectedValue = totalSuspectedValue + mostRecentSusValue
+        else:
+            totalSuspectedValue = totalSuspectedValue + float(deScramble(unitInfo[i][0]))
+        openDatabase()
+        profitMarginInfo = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scrmabled_Unit_ID + "'").fetchall()
+        totalUnitMonthlyExpenses = 0
+        totalUnitMonthlyIncome = 0
+        for x in range(len(profitMarginInfo)):
+            totalMonthsOfData = totalMonthsOfData + 1
+            income = float(deScramble(profitMarginInfo[x][0]))
+            nonTaxableExpenses = float(deScramble(profitMarginInfo[x][1]))
+            TaxableExpenses = float(deScramble(profitMarginInfo[x][2]))
+            totalUnitMonthlyExpenses = totalUnitMonthlyExpenses + nonTaxableExpenses + TaxableExpenses
+            totalUnitMonthlyIncome = totalUnitMonthlyIncome + income
+        totalIncome = totalIncome + totalUnitMonthlyIncome
+        totalExpenses = totalExpenses + totalUnitMonthlyExpenses
+    if totalMonthsOfData != 0:
+        meanIncome = totalIncome/totalMonthsOfData
+        meanExpenses = totalExpenses/totalMonthsOfData
+        meanProfitMargin = str(round(((meanIncome-meanExpenses)/meanIncome) * 100)) + "%"
+        meanProfit = meanIncome - meanExpenses 
+    if numberOfUnits != 0:
+        meanEquity = totalEquity/numberOfUnits
+        meanMostRecentValuation = totalMostRecentValuation/numberOfUnits
+        meanSuspectedValue = totalSuspectedValue/numberOfUnits
+        meanExpectedRent = totalExpectedRent/numberOfUnits
+        meanPropertyEquity = str(round(totalEquity/totalMostRecentValuation*100,2)) + "%"
+    
+    #display all data
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.4, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Number Of units : '+str(numberOfUnits), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.45, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Total Equity in Units : '+str(totalEquity), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.48, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Most Recent Valuation Of Portfolio : '+str(totalMostRecentValuation), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.51, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Total Suspected Value : '+str(totalSuspectedValue), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.54, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Total expected monthly rent : '+str(totalExpectedRent), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.57, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Mean Property Equity % : '+str(meanPropertyEquity), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.60, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Mean Montlhy Profit Margin : '+str(meanProfitMargin), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.63, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Total income : '+str(totalIncome), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.66, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Total expenses : '+str(totalExpenses), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.69, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14',), text='Mean profit : '+str(meanProfit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.72, anchor=CENTER)
+
     root.mainloop()
 
 def createTableForUnit(startValueForUnitListing):
