@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            unitPage('LT2')
+            homePage()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -662,12 +662,14 @@ def homePage():
     initialiseWindow()
     root.title('Property managment system - Home Page')
     root.configure(bg=secondry.data)
+    addPageSeperator()
     topBorder = Label(root, text='Home', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    addPageSeperator2()
     displayMenuButton()
     displayBackButton()
     global previousPage
     previousPage = 'Home'
-    happyFace = Label(root, text=':)', font=(font.data,'40'),fg=primary.data,bg=secondry.data,justify='center').place(relx=0.5,rely=0.5,anchor=CENTER)
+    #TODO: add side info
     root.mainloop()
 
 def displayBackButton():
@@ -2583,6 +2585,11 @@ def addPageSeperator():
     xCord = 0.3
     frontOfThinLine = Label(root,bg=primary.data,width=1,height=100).place(relx=xCord,rely=0)
     backgroundOfThinLine = Label(root,bg=secondry.data,width=1,height=100).place(relx=xCord+0.002,rely=0)
+
+def addPageSeperator2():
+    yCord = 0.55
+    frontOfThinLine = Label(root,bg=primary.data,width=200,height=1).place(relx=0.302,rely=yCord)
+    backgroundOfThinLine = Label(root,bg=secondry.data,width=200,height=1).place(relx=0.302,rely=yCord+0.0035)
 
 def tenantPage(tenant_ID):
     global current_tenant_ID
