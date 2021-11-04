@@ -669,7 +669,20 @@ def homePage():
     displayBackButton()
     global previousPage
     previousPage = 'Home'
-    #TODO: add side info
+
+    #get all data
+    #defining default variables
+    totalMostRecentVariation = 0 
+
+    openDatabase()
+    mostRecentValuationInfo = cursor.execute("SELECT most_Recent_Valuation FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+    for i in range(len(mostRecentValuationInfo)):
+        totalMostRecentVariation = totalMostRecentVariation + float(deScramble(mostRecentValuationInfo[i][0]))
+
+    closeDatabase()
+
+    #place all data
+    
     root.mainloop()
 
 def displayBackButton():
