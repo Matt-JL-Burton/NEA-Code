@@ -678,7 +678,7 @@ def homePage():
     mostRecentValuationInfo = cursor.execute("SELECT most_Recent_Valuation FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
     for i in range(len(mostRecentValuationInfo)):
         totalMostRecentVariation = totalMostRecentVariation + float(deScramble(mostRecentValuationInfo[i][0]))
-
+    #comment
     closeDatabase()
 
     #place all data
