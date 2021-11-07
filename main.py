@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             displayTCs()
-            #homePage()
+            homePage()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -673,14 +673,17 @@ def homePage():
     #get all data
     #defining default variables
     totalMostRecentVariation = 0 
+    totalOwedValue = 0
+    totalBoughtValue = 0
 
     openDatabase()
-    mostRecentValuationInfo = cursor.execute("SELECT most_Recent_Valuation FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
-    for i in range(len(mostRecentValuationInfo)):
-        totalMostRecentVariation = totalMostRecentVariation + float(deScramble(mostRecentValuationInfo[i][0]))
-    #comment
-    closeDatabase()
-
+    account_units = cursor.execute("SELECT unit_ID, buy_Price, rent, most_Recent_Valuation FROM units WHER account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+    for i in range(len(account_units)):
+        scrambledUnitID = account_units[i][0]
+        buyPrice = float(deScramble(account_units[i][1]))
+        rent = float(deScramble(account_units[i][2]))
+        totalMostRecentVariation = totalMostRecentVariation + float(deScramble(account_units[i][3]))
+        
     #place all data
     
     root.mainloop()
