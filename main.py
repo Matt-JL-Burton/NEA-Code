@@ -38,7 +38,7 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
-            displayTCs()
+            #displayTCs()
             homePage()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
@@ -671,19 +671,59 @@ def homePage():
     previousPage = 'Home'
 
     #get all data
-    #defining default variables
+    #defining default variables for home page
     totalMostRecentVariation = 0 
     totalOwedValue = 0
     totalBoughtValue = 0
+    totalExpectedIncome = 0
+    totalIncome = 0
+    totalExpenses = 0
+    totalInstallments = 0
+    nOfUnresovledComplaints = 0
+    totalComplaintsNumber = 0
+    year = datetime.now().year
+    month = datetime.now().month
+    lastMonthTotalIncome = 0
+    lastMonthTotalExpenses = 0
+    nofComplaitnsLastMomth = 0
 
     openDatabase()
-    account_units = cursor.execute("SELECT unit_ID, buy_Price, rent, most_Recent_Valuation FROM units WHER account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+    account_units = cursor.execute("SELECT unit_ID, buy_Price, rent, most_Recent_Valuation FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
     for i in range(len(account_units)):
         scrambledUnitID = account_units[i][0]
         buyPrice = float(deScramble(account_units[i][1]))
         rent = float(deScramble(account_units[i][2]))
         totalMostRecentVariation = totalMostRecentVariation + float(deScramble(account_units[i][3]))
-        
+        totalExpectedIncome = totalExpectedIncome + rent
+        totalBoughtValue = totalBoughtValue + buyPrice
+        loanInfo = cursor.execute("SELECT capital_Owed, instalments FROM loan WHERE unit_ID = '" + scrambledUnitID + "'").fetchall()
+        for ii in range(len(loanInfo)):
+            totalOwedValue = totalOwedValue + float(deScramble(loanInfo[ii][0]))
+            totalInstallments = totalInstallments + float(deScramble(loanInfo[ii][1]))
+        unit_MonthlyInfo = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "'").fetchall()
+        for iii in range(len(unit_MonthlyInfo)):
+            totalIncome = totalIncome + float(deScramble(unit_MonthlyInfo[iii][0]))
+            totalExpenses = totalExpenses + float(deScramble(unit_MonthlyInfo[iii][1])) + float(deScramble(unit_MonthlyInfo[iii][2]))
+            lastMonthInfo = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE month = '" + scramble(month) + "' AND year = '" + scramble(year) + "' AND unit_ID = '" + scrambledUnitID + "'").fetchall()
+            for y in range(len(lastMonthInfo)):
+                lastMonthTotalIncome = lastMonthTotalIncome + float(deScramble(lastMonthInfo[y][0]))
+                lastMonthTotalExpenses = lastMonthTotalExpenses + float(deScramble(lastMonthInfo[y][1])) + float(deScramble(lastMonthInfo[y][2]))
+        tenantInfo = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+        for x in range(len(tenantInfo)):
+            scarambledtenatnID = tenantInfo[x][0]
+            lastMonthComplaintscomplaintsInfo = cursor.execute("SELECT complaint_ID FROM complaints WHERE month = '" + scramble(month) + "' AND year = '" + scramble(year) + "' AND tenant_ID = '" + scarambledtenatnID + "'").fetchall()
+            for yy in range(len(lastMonthComplaintscomplaintsInfo)):
+                nofComplaitnsLastMomth = nofComplaitnsLastMomth + 1
+            complaintsInfo = cursor.execute("SELECT resoltion FROM complaints WHERE tenant_ID = '" + scarambledtenatnID + "'").fetchall()
+            for xx in range(len(complaintsInfo)):
+                resolution = deScramble(complaintsInfo[xx][0])
+                if resolution == None:
+                    nOfUnresovledComplaints = nOfUnresovledComplaints + 1
+                totalComplaintsNumber = totalComplaintsNumber + 1
+
+    closeDatabase()
+
+
     #place all data
     
     root.mainloop()
