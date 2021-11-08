@@ -686,6 +686,9 @@ def homePage():
     lastMonthTotalIncome = 0
     lastMonthTotalExpenses = 0
     nofComplaitnsLastMomth = 0
+    totalYearlyIncome = 0 
+    totalTaxableExpenses = 0
+    totalNoneTaxableExpenses = 0
 
     openDatabase()
     account_units = cursor.execute("SELECT unit_ID, buy_Price, rent, most_Recent_Valuation FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
@@ -720,6 +723,40 @@ def homePage():
                 if resolution == None:
                     nOfUnresovledComplaints = nOfUnresovledComplaints + 1
                 totalComplaintsNumber = totalComplaintsNumber + 1
+
+        #working out tax due
+        #getting tax data
+        unit_Monthly_Tax = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND year = '" + scramble(year) + "'").fetchall()
+        for z in range(len(unit_Monthly_Tax)):
+            totalYearlyIncome = totalYearlyIncome + float(deScramble(unit_Monthly_Tax[z][0]))
+            totalTaxableExpenses = totalTaxableExpenses + float(deScramble(unit_Monthly_Tax[z][1]))
+            totalNoneTaxableExpenses = totalNoneTaxableExpenses + float(deScramble(unit_Monthly_Tax[z][2]))
+        accountTaxInfo = cursor.execute("SELECT operation_Type, personal_Income_Allowence, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, national_Insurance_Due FROM accounts WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+        operation_Type = deScramble(accountTaxInfo[0][0])
+        personal_Income_Allowence = float(deScramble(accountTaxInfo[0][1]))
+        other_Income_Estimate = float(deScramble(accountTaxInfo[0][2]))
+        basic_Income_Rate = float(deScramble(accountTaxInfo[0][3]))
+        high_Income_Rate = float(deScramble(accountTaxInfo[0][4]))
+        additional_Income_Rate = float(deScramble(accountTaxInfo[0][5]))
+        basic_Income_Cut_Off = float(deScramble(accountTaxInfo[0][6]))
+        high_Income_Cut_Off = float(deScramble(accountTaxInfo[0][7]))
+        corporation_Rate = float(deScramble(accountTaxInfo[0][8]))
+        national_Insurance_Due = float(deScramble(accountTaxInfo[0][9]))
+
+        #tax logiv
+        if operation_Type == 'Personal':
+            totalTaxableIncome = other_Income_Estimate + totalYearlyIncome
+            unTaxedIncome = totalTaxableIncome
+            if totalTaxableIncome > personal_Income_Allowence:
+                unTaxedIncome = unTaxedIncome - personal_Income_Allowence
+                if unTaxedIncome
+            else:
+                incomeTaxToPay = 0
+        else:
+            totalTaxableIncome = other_Income_Estimate + totalYearlyIncome - totalTaxableExpenses
+            incomeTaxToPay = totalTaxableIncome * (corporation_Rate/100)
+
+
 
     closeDatabase()
 
@@ -3645,3 +3682,4 @@ print('Program Finished')
 #ReAdjustScore after late or missed rents
 #order stuff in tables
 #Home page
+#add message saying personal accounts should report all expenses as none taxable however it doesnt matter
