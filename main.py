@@ -744,14 +744,26 @@ def homePage():
         national_Insurance_Due = float(deScramble(accountTaxInfo[0][9]))
 
         #tax logiv
+        incomeTaxToPay = 0
         if operation_Type == 'Personal':
             totalTaxableIncome = other_Income_Estimate + totalYearlyIncome
             unTaxedIncome = totalTaxableIncome
             if totalTaxableIncome > personal_Income_Allowence:
                 unTaxedIncome = unTaxedIncome - personal_Income_Allowence
-                if unTaxedIncome
+                if totalTaxableIncome > basic_Income_Cut_Off:
+                    unTaxedIncome = unTaxedIncome - ((basic_Income_Cut_Off - personal_Income_Allowence) * (basic_Income_Rate/100))
+                    incomeTaxToPay = incomeTaxToPay + ((basic_Income_Cut_Off - personal_Income_Allowence) * (basic_Income_Rate/100))
+                    if totalTaxableIncome > high_Income_Cut_Off:
+                        unTaxedIncome = unTaxedIncome - ((high_Income_Cut_Off - basic_Income_Cut_Off) * (high_Income_Rate/100))
+                        incomeTaxToPay = incomeTaxToPay + ((high_Income_Cut_Off - basic_Income_Cut_Off) * (high_Income_Rate/100))
+                        incomeTaxToPay = incomeTaxToPay + ((totalTaxableIncome - high_Income_Cut_Off) * (additional_Income_Rate/100))
+                    else:
+                        incomeTaxToPay = incomeTaxToPay + ((totalTaxableIncome - basic_Income_Cut_Off) * (high_Income_Rate/100))
+                else:
+                    incomeTaxToPay = incomeTaxToPay + ((totalTaxableIncome - personal_Income_Allowence) * (basic_Income_Rate/100))
             else:
                 incomeTaxToPay = 0
+            incomeTaxToPay = incomeTaxToPay + national_Insurance_Due
         else:
             totalTaxableIncome = other_Income_Estimate + totalYearlyIncome - totalTaxableExpenses
             incomeTaxToPay = totalTaxableIncome * (corporation_Rate/100)
@@ -3294,6 +3306,9 @@ def monthlyAdditionsPage(unitID):
     dateSubMessage = Label(root, text='In the form MM/YYYY',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.815,rely=0.72,anchor=CENTER)
 
     writableNoneWritbaleLabelExplaied = Label(root, text='A writable expense is an expense that can be classified\n as a tax write off.To put agaisnt your income\n and therefore pay less tax\n\nMortgage payments : none writable\nMortgage intrest payments : writable \nLarge imporvments : none writable\nGeneral Repairs : writable\nInsurance : writable\nManagment Fees : writable\nUtilities & services : writable',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.185,rely=0.86,anchor=CENTER)
+
+    personalVsBuisnessOptions = Label(root, text='All expenses are none writable if your\naccount type is personal. However if\nthis is the case it is irrelevent\nwhich box you put an expense in',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.815,rely=0.86,anchor=CENTER)
+
 
     global monthlyAdditionsCords
     monthlyAdditionsCords = {'rent_Paid':{'x':0.185,'y':0.32},'rent_Late':{'x':0.5,'y':0.32},'income':{'x':0.815,'y':0.32},'non_Taxable_Expenses':{'x':0.185,'y':0.52},'taxable_Expenses':{'x':0.5,'y':0.52},'suspected_Property_Value':{'x':0.815,'y':0.52},'equity_In_Property':{'x':0.5,'y':0.72},'money_Taken_From_Deposit':{'x':0.185,'y':0.72},'year':{'x':0.815,'y':0.72},'month':{'x':0.815,'y':0.72}}
