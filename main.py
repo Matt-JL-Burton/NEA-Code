@@ -768,13 +768,12 @@ def homePage():
             totalTaxableIncome = other_Income_Estimate + totalYearlyIncome - totalTaxableExpenses
             incomeTaxToPay = totalTaxableIncome * (corporation_Rate/100)
 
-
-
+        #TODO: rememebr to implament capital gains tax calculations
     closeDatabase()
-
 
     #place all data
     
+
     root.mainloop()
 
 def displayBackButton():
@@ -3697,4 +3696,4 @@ print('Program Finished')
 #ReAdjustScore after late or missed rents
 #order stuff in tables
 #Home page
-#add message saying personal accounts should report all expenses as none taxable however it doesnt matter
+#rememebr to implament capital gains tax calculations in home page after sell unit page done
