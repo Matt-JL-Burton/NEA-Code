@@ -778,7 +778,11 @@ def homePage():
     closeDatabase()
 
     #place all data
-    
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.2, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'16',), text='Portfolio Value : ' + str(round(totalMostRecentValuation,2)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.25, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'16',), text='Total Capital Owed : ' + str(round(totalOwedValue,2)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.28, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'16',), text='Total Gross Income : ' + str(round(totalIncome,2)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.31, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'16',), text='Total Gross Expenditure : ' + str(round(totalExpenses,2)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.34, anchor=CENTER)
 
     root.mainloop()
 
@@ -1318,16 +1322,16 @@ def propertiesPage():
     
     #display all data
     generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.4, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Number Of units : '+str(numberOfUnits), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.45, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Number Of units : '+str(numberOfUnits), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.45, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'12',), text='Total Equity in Units : '+str(totalEquity), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.48, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'12',), text='Most Recent Valuation Of Portfolio : '+str(totalMostRecentValuation), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.51, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'12',), text='Total Suspected Value : '+str(totalSuspectedValue), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.54, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Total expected monthly rent : '+str(totalExpectedRent), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.57, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Mean Property Equity % : '+str(meanPropertyEquity), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.60, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Mean Montlhy Profit Margin : '+str(meanProfitMargin), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.63, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Total expected monthly rent : '+str(totalExpectedRent), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.57, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Mean Property Equity % : '+str(meanPropertyEquity), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.60, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Mean Montlhy Profit Margin : '+str(meanProfitMargin), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.63, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'12',), text='Total income : '+str(totalIncome), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.66, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'12',), text='Total expenses : '+str(totalExpenses), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.69, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14',), text='Mean profit : '+str(meanProfit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.72, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'12',), text='Mean profit : '+str(meanProfit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.72, anchor=CENTER)
 
     root.mainloop()
 
