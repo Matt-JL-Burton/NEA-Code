@@ -774,9 +774,7 @@ def homePage():
 
         #expected info for next monht
         nextMonthExpectedIncome = round(totalExpectedIncome)
-        nextMonthExpectedIncome = round(totalInstallments + (totalMostRecentValuation*0.02)/12,2)
-
-
+        nextMonthExpectedExpenses = round(totalInstallments + (totalMostRecentValuation*0.02)/12,2)
     closeDatabase()
 
     #place all data
