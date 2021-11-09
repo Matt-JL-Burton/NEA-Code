@@ -672,7 +672,7 @@ def homePage():
 
     #get all data
     #defining default variables for home page
-    totalMostRecentVariation = 0 
+    totalMostRecentValuation = 0 
     totalOwedValue = 0
     totalBoughtValue = 0
     totalExpectedIncome = 0
@@ -689,6 +689,7 @@ def homePage():
     totalYearlyIncome = 0 
     totalTaxableExpenses = 0
     totalNoneTaxableExpenses = 0
+    nextMonthExpectedIncome = 0
 
     openDatabase()
     account_units = cursor.execute("SELECT unit_ID, buy_Price, rent, most_Recent_Valuation FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
@@ -696,13 +697,14 @@ def homePage():
         scrambledUnitID = account_units[i][0]
         buyPrice = float(deScramble(account_units[i][1]))
         rent = float(deScramble(account_units[i][2]))
-        totalMostRecentVariation = totalMostRecentVariation + float(deScramble(account_units[i][3]))
+        totalMostRecentValuation = totalMostRecentValuation + float(deScramble(account_units[i][3]))
         totalExpectedIncome = totalExpectedIncome + rent
         totalBoughtValue = totalBoughtValue + buyPrice
         loanInfo = cursor.execute("SELECT capital_Owed, instalments FROM loan WHERE unit_ID = '" + scrambledUnitID + "'").fetchall()
         for ii in range(len(loanInfo)):
             totalOwedValue = totalOwedValue + float(deScramble(loanInfo[ii][0]))
-            totalInstallments = totalInstallments + float(deScramble(loanInfo[ii][1]))
+            if float(deScramble(loanInfo[ii][0])) != 0:
+                totalInstallments = totalInstallments + float(deScramble(loanInfo[ii][1]))
         unit_MonthlyInfo = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "'").fetchall()
         for iii in range(len(unit_MonthlyInfo)):
             totalIncome = totalIncome + float(deScramble(unit_MonthlyInfo[iii][0]))
@@ -769,6 +771,12 @@ def homePage():
             incomeTaxToPay = totalTaxableIncome * (corporation_Rate/100)
 
         #TODO: rememebr to implament capital gains tax calculations
+
+        #expected info for next monht
+        nextMonthExpectedIncome = round(totalExpectedIncome)
+        nextMonthExpectedIncome = round(totalInstallments + (totalMostRecentValuation*0.02)/12,2)
+
+
     closeDatabase()
 
     #place all data
