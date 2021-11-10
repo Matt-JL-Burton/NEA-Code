@@ -804,6 +804,15 @@ def homePage():
     generalLabel = Label(root, font=(font.data,'14'), text='Capital Gains Tax Due : ' + str(float(capitalGainsTaxDue)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.92, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'14'), text='Total Tax Due : ' + str(float(capitalGainsTaxDue + incomeTaxToPay)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.95, anchor=CENTER)
 
+    #creating the graphs
+    openDatabase()
+    unitsIDInfo = cursor.execute("SELECT unit_ID FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+    listOfLastSixMonthIncome = [0,0,0,0,0,0]
+    listOfLastSixMonthExpenses = [0,0,0,0,0,0]
+    for w in range(len(unitsIDInfo)):
+        scrambledUnitID = unitsIDInfo[w][0]
+        
+    closeDatabase()
 
     root.mainloop()
 
