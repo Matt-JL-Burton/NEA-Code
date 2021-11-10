@@ -809,12 +809,37 @@ def homePage():
     unitsIDInfo = cursor.execute("SELECT unit_ID FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
     listOfLastSixMonthIncome = [0,0,0,0,0,0]
     listOfLastSixMonthExpenses = [0,0,0,0,0,0]
+    listOfLastSixMonthsDates = [0,0,0,0,0,0]
     for w in range(len(unitsIDInfo)):
         scrambledUnitID = unitsIDInfo[w][0]
+        for ww in range(6):
+            currentmonth, currentyear = yearMonthSubtraction(month, year, ww) 
+            expensesIncomeInfo = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND month = '" + scramble(currentmonth) + "' AND year = '" + scramble(currentyear) + "'").fetchall()
+            if len(expensesIncomeInfo) != 0:
+                listOfLastSixMonthIncome[5-ww] = listOfLastSixMonthIncome[5-ww] + float(deScramble(expensesIncomeInfo[0][0]))
+                listOfLastSixMonthExpenses[5-ww] = listOfLastSixMonthExpenses[5-ww] + float(deScramble(expensesIncomeInfo[0][1])) + float(deScramble(expensesIncomeInfo[0][2]))
+            listOfLastSixMonthsDates[5-ww] = str(currentmonth) + "/" + str(currentyear)
+    #Data to create graph
+    #print(listOfLastSixMonthIncome)
+    #print(listOfLastSixMonthExpenses)
+    #print(listOfLastSixMonthsDates)
+
+        
         
     closeDatabase()
 
     root.mainloop()
+
+def yearMonthSubtraction(month,year,i):
+    monthToCheck = month - i
+    if monthToCheck < 1:
+        returnYear = year - 1
+        monthToCheck = 12 - monthToCheck
+        returnmonth = monthToCheck
+    else:
+        returnYear = year
+        returnmonth = monthToCheck
+    return [returnmonth,returnYear]
 
 def displayBackButton():
     if previousPage == None:
@@ -907,7 +932,6 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'individualunit':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: unitPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
-
 
 def displayGovermentNationalInsurancePage():
     try:
