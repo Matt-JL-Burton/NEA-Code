@@ -790,19 +790,19 @@ def homePage():
     generalLabel = Label(root, font=(font.data,'14',), text='Number of unresolved complaints : ' + str(round(nOfUnresovledComplaints,2)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.4, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'14',), text='Total complaints : ' + str(round(totalComplaintsNumber,2)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.43, anchor=CENTER)
 
-    generalLabel = Label(root, font=(font.data,'20','bold'), text='Last Month', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.48, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Income : ' + str(float(lastMonthTotalIncome)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.51, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Expenses : ' + str(float(lastMonthTotalExpenses)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.54, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Number of Complaints : ' + str(int(nofComplaitnsLastMomth)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.57, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='Last Month', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.52, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Income : ' + str(float(lastMonthTotalIncome)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.55, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Expenses : ' + str(float(lastMonthTotalExpenses)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.58, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Number of Complaints : ' + str(int(nofComplaitnsLastMomth)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.61, anchor=CENTER)
 
-    generalLabel = Label(root, font=(font.data,'20','bold'), text='Next Month (estimates)', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.62, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Income : ' + str(float(nextMonthExpectedIncome)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.65, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Expenses : ' + str(float(nextMonthExpectedExpenses)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.68, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='Next Month (estimates)', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.7, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Income : ' + str(float(nextMonthExpectedIncome)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.73, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Expenses : ' + str(float(nextMonthExpectedExpenses)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.76, anchor=CENTER)
 
-    generalLabel = Label(root, font=(font.data,'20','bold'), text='Tax (estimates) ' + str(year) + "/" + str(year + 1), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.73, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Income Tax Due : ' + str(float(incomeTaxToPay)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.76, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Capital Gains Tax Due : ' + str(float(capitalGainsTaxDue)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.79, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Total Tax Due : ' + str(float(capitalGainsTaxDue + incomeTaxToPay)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.82, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'20','bold'), text='Tax (estimates) ' + str(year) + "/" + str(year + 1), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.86, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Income Tax Due : ' + str(float(incomeTaxToPay)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.89, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Capital Gains Tax Due : ' + str(float(capitalGainsTaxDue)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.92, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Total Tax Due : ' + str(float(capitalGainsTaxDue + incomeTaxToPay)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.95, anchor=CENTER)
 
 
     root.mainloop()
