@@ -819,6 +819,7 @@ def homePage():
                 listOfLastSixMonthIncome[5-ww] = listOfLastSixMonthIncome[5-ww] + float(deScramble(expensesIncomeInfo[0][0]))
                 listOfLastSixMonthExpenses[5-ww] = listOfLastSixMonthExpenses[5-ww] + float(deScramble(expensesIncomeInfo[0][1])) + float(deScramble(expensesIncomeInfo[0][2]))
             listOfLastSixMonthsDates[5-ww] = str(currentmonth) + "/" + str(currentyear)
+    
     #Data to create graph
     #print(listOfLastSixMonthIncome)
     #print(listOfLastSixMonthExpenses)
