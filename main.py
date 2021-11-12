@@ -17,7 +17,7 @@ import pathlib
 import platform
 import tkinter.font as tkfont
 import urllib.request
-from matplotlib.pyplot import autoscale, fill, flag, get, pink, prism, show, table, text, title
+from matplotlib import pyplot as plt
 import webbrowser
 from PIL import Image, ImageColor, ImageFilter
 import random
@@ -809,6 +809,7 @@ def homePage():
     unitsIDInfo = cursor.execute("SELECT unit_ID FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
     listOfLastSixMonthIncome = [0,0,0,0,0,0]
     listOfLastSixMonthExpenses = [0,0,0,0,0,0]
+    listOfLastSixMonthProfit = [0,0,0,0,0,0]
     listOfLastSixMonthsDates = [0,0,0,0,0,0]
     for w in range(len(unitsIDInfo)):
         scrambledUnitID = unitsIDInfo[w][0]
@@ -819,16 +820,25 @@ def homePage():
                 listOfLastSixMonthIncome[5-ww] = listOfLastSixMonthIncome[5-ww] + float(deScramble(expensesIncomeInfo[0][0]))
                 listOfLastSixMonthExpenses[5-ww] = listOfLastSixMonthExpenses[5-ww] + float(deScramble(expensesIncomeInfo[0][1])) + float(deScramble(expensesIncomeInfo[0][2]))
             listOfLastSixMonthsDates[5-ww] = str(currentmonth) + "/" + str(currentyear)
-    
-    #Data to create graph
-    #print(listOfLastSixMonthIncome)
-    #print(listOfLastSixMonthExpenses)
-    #print(listOfLastSixMonthsDates)
-
-        
-        
     closeDatabase()
-
+    for e in range(6):
+        listOfLastSixMonthProfit[e] = listOfLastSixMonthIncome[e] - listOfLastSixMonthExpenses[e]
+        listOfLastSixMonthExpenses[e] = -listOfLastSixMonthExpenses[e]
+    plt.style.use('seaborn-bright')
+    #plt.clf()
+    plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthIncome, label = 'Income', color = '#30B700', linewidth = 1, marker = 'o', markersize = 4)
+    plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthExpenses, label = 'Expenses', color = '#CD001A', linewidth = 1, marker = 'o', markersize = 4)
+    plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthProfit, label = 'Profit', color = '#00A3E1', linewidth = 1, marker = 'o', markersize = 4)
+    plt.xlabel('Dates')
+    plt.ylabel('Money in £')
+    plt.title("6 Month Income vs Expenditure")
+    plt.grid()
+    plt.legend()
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        chdir(f'.{path_seperator}Assets')
+    plt.savefig('6_Month_Income_Vs_Expenses.png')
+    graph = PhotoImage(file = '6_Month_Income_Vs_Expenses.png')
+    graphLabel = Label(image = graph,border = 0).place(relx = 0.3, rely= 0.3)
     root.mainloop()
 
 def yearMonthSubtraction(month,year,i):
