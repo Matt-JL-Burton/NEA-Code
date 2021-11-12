@@ -825,7 +825,9 @@ def homePage():
         listOfLastSixMonthProfit[e] = listOfLastSixMonthIncome[e] - listOfLastSixMonthExpenses[e]
         listOfLastSixMonthExpenses[e] = -listOfLastSixMonthExpenses[e]
     plt.style.use('seaborn-bright')
-    #plt.clf()
+    plt.set_figheight(15)
+    plt.set_figwidth(15)
+    plt.clf()
     plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthIncome, label = 'Income', color = '#30B700', linewidth = 1, marker = 'o', markersize = 4)
     plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthExpenses, label = 'Expenses', color = '#CD001A', linewidth = 1, marker = 'o', markersize = 4)
     plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthProfit, label = 'Profit', color = '#00A3E1', linewidth = 1, marker = 'o', markersize = 4)
@@ -837,6 +839,8 @@ def homePage():
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
         chdir(f'.{path_seperator}Assets')
     plt.savefig('6_Month_Income_Vs_Expenses.png')
+    graphImage = Image.open('6_Month_Income_Vs_Expenses.png')
+    #resizea and resahpe
     graph = PhotoImage(file = '6_Month_Income_Vs_Expenses.png')
     graphLabel = Label(image = graph,border = 0).place(relx = 0.3, rely= 0.3)
     root.mainloop()
