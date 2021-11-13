@@ -841,6 +841,7 @@ def homePage():
     plt.savefig('6_Month_Income_Vs_Expenses.png')
     graphImage = Image.open('6_Month_Income_Vs_Expenses.png')
     #resizea and resahpe
+    
     graph = PhotoImage(file = '6_Month_Income_Vs_Expenses.png')
     graphLabel = Label(image = graph,border = 0).place(relx = 0.3, rely= 0.3)
     root.mainloop()
