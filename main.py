@@ -714,18 +714,18 @@ def homePage():
             for y in range(len(lastMonthInfo)):
                 lastMonthTotalIncome = lastMonthTotalIncome + float(deScramble(lastMonthInfo[y][0]))
                 lastMonthTotalExpenses = lastMonthTotalExpenses + float(deScramble(lastMonthInfo[y][1])) + float(deScramble(lastMonthInfo[y][2]))
-        tenantInfo = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
-        for x in range(len(tenantInfo)):
-            scarambledtenatnID = tenantInfo[x][0]
-            lastMonthComplaintscomplaintsInfo = cursor.execute("SELECT complaint_ID FROM complaints WHERE month = '" + scramble(month) + "' AND year = '" + scramble(year) + "' AND tenant_ID = '" + scarambledtenatnID + "'").fetchall()
-            for yy in range(len(lastMonthComplaintscomplaintsInfo)):
-                nofComplaitnsLastMomth = nofComplaitnsLastMomth + 1
-            complaintsInfo = cursor.execute("SELECT resoltion FROM complaints WHERE tenant_ID = '" + scarambledtenatnID + "'").fetchall()
-            for xx in range(len(complaintsInfo)):
-                resolution = deScramble(complaintsInfo[xx][0])
-                if resolution == None:
-                    nOfUnresovledComplaints = nOfUnresovledComplaints + 1
-                totalComplaintsNumber = totalComplaintsNumber + 1
+    tenantInfo = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+    for x in range(len(tenantInfo)):
+        scarambledtenatnID = tenantInfo[x][0]
+        lastMonthComplaintscomplaintsInfo = cursor.execute("SELECT complaint_ID FROM complaints WHERE month = '" + scramble(month) + "' AND year = '" + scramble(year) + "' AND tenant_ID = '" + scarambledtenatnID + "'").fetchall()
+        for yy in range(len(lastMonthComplaintscomplaintsInfo)):
+            nofComplaitnsLastMomth = nofComplaitnsLastMomth + 1
+        complaintsInfo = cursor.execute("SELECT resoltion, complaint_Nature FROM complaints WHERE tenant_ID = '" + scarambledtenatnID + "'").fetchall()
+        for xx in range(len(complaintsInfo)):
+            resolution = deScramble(complaintsInfo[xx][0])
+            if resolution == None:
+                nOfUnresovledComplaints = nOfUnresovledComplaints + 1
+            totalComplaintsNumber = totalComplaintsNumber + 1
 
         #working out tax due
         #getting tax data
@@ -825,6 +825,7 @@ def homePage():
         listOfLastSixMonthExpenses[e] = -listOfLastSixMonthExpenses[e]
     plt.style.use('seaborn-bright')
     plt.clf()
+    plt.figure(figsize=(7,4))
     plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthIncome, label = 'Income', color = '#30B700', linewidth = 1, marker = 'o', markersize = 4)
     plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthExpenses, label = 'Expenses', color = '#CD001A', linewidth = 1, marker = 'o', markersize = 4)
     plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthProfit, label = 'Profit', color = '#00A3E1', linewidth = 1, marker = 'o', markersize = 4)
@@ -839,10 +840,29 @@ def homePage():
 
     #resizing image
     graphImage = Image.open('6_Month_Income_Vs_Expenses.png')
-    resizedGraphImage = graphImage.resize((300,225), Image.ANTIALIAS)
+    resizedGraphImage = graphImage.resize((480,325), Image.ANTIALIAS)
     newPic = ImageTk.PhotoImage(resizedGraphImage)
 
-    graphLabel = Label(image = newPic,border = 0).place(relx = 0.3, rely= 0.3)
+    graphLabel = Label(image = newPic,border = 0).place(relx = 0.31, rely= 0.16)
+
+    totalinward = 0
+    totaloutward = 0 
+    for i in range(6):
+        totalinward = totalinward + listOfLastSixMonthIncome[i]
+        totaloutward = totaloutward + listOfLastSixMonthExpenses[i]
+    averageInward = round(totalinward/6,2)
+    averageOutward = -round(totaloutward/6,2)
+    averfeProfit = averageInward - averageOutward
+    averageProfitMargin = str(round((averfeProfit/averageInward)*100,2)) + '%'
+
+    #placing top half of home page data
+    sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'16','bold'), text='6 Month Income vs Expenditure', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.83, rely=0.26, anchor=CENTER)
+    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Income : ' + str(averageInward), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.83, rely=0.29, anchor=CENTER)
+    sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'14'), text='Average Expenses : ' + str(averageOutward), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.83, rely=0.32, anchor=CENTER)
+    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Profit : ' + str(averfeProfit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.83, rely=0.35, anchor=CENTER)
+    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Profit Margnin : ' + str(averageProfitMargin), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.83, rely=0.38, anchor=CENTER)
+
+
     root.mainloop()
 
 def yearMonthSubtraction(month,year,i):
