@@ -19,10 +19,9 @@ import tkinter.font as tkfont
 import urllib.request
 from matplotlib import pyplot as plt
 import webbrowser
-from PIL import Image, ImageColor, ImageFilter
+from PIL import Image, ImageColor, ImageFilter, ImageTk
 import random
 import string
-
 from numpy.distutils.command.install import install
 from dataObjectClass import uInputDataObj
 from datetime import datetime
@@ -825,8 +824,6 @@ def homePage():
         listOfLastSixMonthProfit[e] = listOfLastSixMonthIncome[e] - listOfLastSixMonthExpenses[e]
         listOfLastSixMonthExpenses[e] = -listOfLastSixMonthExpenses[e]
     plt.style.use('seaborn-bright')
-    plt.set_figheight(15)
-    plt.set_figwidth(15)
     plt.clf()
     plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthIncome, label = 'Income', color = '#30B700', linewidth = 1, marker = 'o', markersize = 4)
     plt.plot(listOfLastSixMonthsDates, listOfLastSixMonthExpenses, label = 'Expenses', color = '#CD001A', linewidth = 1, marker = 'o', markersize = 4)
@@ -839,11 +836,13 @@ def homePage():
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
         chdir(f'.{path_seperator}Assets')
     plt.savefig('6_Month_Income_Vs_Expenses.png')
+
+    #resizing image
     graphImage = Image.open('6_Month_Income_Vs_Expenses.png')
-    #resizea and resahpe
-    
-    graph = PhotoImage(file = '6_Month_Income_Vs_Expenses.png')
-    graphLabel = Label(image = graph,border = 0).place(relx = 0.3, rely= 0.3)
+    resizedGraphImage = graphImage.resize((300,225), Image.ANTIALIAS)
+    newPic = ImageTk.PhotoImage(resizedGraphImage)
+
+    graphLabel = Label(image = newPic,border = 0).place(relx = 0.3, rely= 0.3)
     root.mainloop()
 
 def yearMonthSubtraction(month,year,i):
