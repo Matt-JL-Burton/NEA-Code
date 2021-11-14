@@ -838,11 +838,10 @@ def homePage():
         chdir(f'.{path_seperator}Assets')
     plt.savefig('6_Month_Income_Vs_Expenses.png')
 
-    #resizing image
+    #resizing and placing graph image
     graphImage = Image.open('6_Month_Income_Vs_Expenses.png')
     resizedGraphImage = graphImage.resize((480,325), Image.ANTIALIAS)
     newPic = ImageTk.PhotoImage(resizedGraphImage)
-
     graphLabel = Label(image = newPic,border = 0).place(relx = 0.31, rely= 0.16)
 
     totalinward = 0
@@ -862,8 +861,89 @@ def homePage():
     sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Profit : ' + str(averfeProfit), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.83, rely=0.35, anchor=CENTER)
     sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Profit Margnin : ' + str(averageProfitMargin), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.83, rely=0.38, anchor=CENTER)
 
+    #making second graph.
+    listOfDatesWhichHaveMonthlyEntryies = []
+    listOfListedDates = []
+    openDatabase()
+    unitsInfo = cursor.execute("SELECT unit_ID FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+    for i in range(len(unitsInfo)):
+        scrambledUnitID = unitsInfo[i][0]
+        unit_MonthlyInfo = cursor.execute("SELECT year, month FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "'").fetchall()
+        for ii in range(len(unit_MonthlyInfo)):
+            year = str(int(deScramble(unit_MonthlyInfo[ii][0])))
+            month = str(int(deScramble(unit_MonthlyInfo[ii][1])))
+            listOfListedDates.append([month,year])
+            listOfDatesWhichHaveMonthlyEntryies.append(month + "/" + year)
+    closeDatabase()
+    dictOfDates = dict.fromkeys(listOfDatesWhichHaveMonthlyEntryies)
+    for key in dictOfDates.keys():
+        dictOfDates[key] = 0
+    orderedListOfListedDates = orderListOfListedDates(listOfListedDates)
+    openDatabase()
+    for i in range(len(unitsInfo)):
+        scrambledUnitID = unitsInfo[i][0]
+        unit_MonthlyInfo = cursor.execute("SELECT year, month FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "'").fetchall()
+        for i in range(len(orderedListOfListedDates)):
+            susValue = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND year = '" + scramble(orderedListOfListedDates[i][1]) + "' AND month = '" + scramble(orderedListOfListedDates[i][0]) + "'").fetchall()
+            if len(susValue) != 0:
+                dictOfDates[(orderedListOfListedDates[i][0] + "/" + orderedListOfListedDates[i][1])] = dictOfDates[(orderedListOfListedDates[i][0] + "/" + orderedListOfListedDates[i][1])] + susValue[0][0]
+    closeDatabase()
+    firstMonth = orderedListOfListedDates[0][0] + "/" +  orderedListOfListedDates[0][1]
+    lastMonth = orderedListOfListedDates[len(orderedListOfListedDates) - 1][0] + "/" +  orderedListOfListedDates[len(orderedListOfListedDates) - 1][1]
+    yValuesSuspropertyValues = list(dictOfDates.values())
+    monthlyDates = list(dictOfDates.keys())
 
+    plt.style.use('seaborn-bright')
+    plt.clf()
+    plt.figure(figsize=(7,4))
+    plt.plot(monthlyDates, yValuesSuspropertyValues, label = 'Income', color = '#30B700', linewidth = 1, marker = 'o', markersize = 4)
+    plt.xlabel('Dates')
+    plt.ylabel('Suspected Property Valuation (£)')
+    plt.title("Monthly Suspected Property Valuation (£)")
+    plt.grid()
+    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+        chdir(f'.{path_seperator}Assets')
+    plt.savefig('suspected_Portfolio_Valuation_Against_Time.png')
+
+    #resizing and placing graph image
+    graphImageTwo = Image.open('suspected_Portfolio_Valuation_Against_Time.png')
+    resizedGraphImageTwo = graphImageTwo.resize((480,325), Image.ANTIALIAS)
+    newPicTwo = ImageTk.PhotoImage(resizedGraphImageTwo)
+    graphLabel = Label(image = newPicTwo,border = 0).place(relx = 0.63, rely= 0.58)
+    
+    startValue = yValuesSuspropertyValues[0]
+    endValue = yValuesSuspropertyValues[len(yValuesSuspropertyValues)-1]
+    totalValueIncrease = round(endValue - startValue,2)
+    totalValueIncreasePercentage = str(round((((endValue/startValue)*100)-100),2)) + "%"
+    averageMonthlyIncrease = round(totalValueIncrease/(len(monthlyDates)-1),2)
+    averageGrowthRate = str(round(((((endValue/startValue)**(1/(len(monthlyDates)-1))) * 100) - 100),4)) + "%"
+
+    sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'16','bold'), text='Portfolio Value over time', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.7, anchor=CENTER)
+    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Montlhy Value Increase (%) : ' + str(averageGrowthRate), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.73, anchor=CENTER)
+    sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'14'), text='Average Value Increase (£) : ' + str(averageMonthlyIncrease), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.76, anchor=CENTER)
+    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Total Value Increase (%) : ' + str(totalValueIncreasePercentage), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.79, anchor=CENTER)
+    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Total Value Increase (£) : ' + str(totalValueIncrease), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.82, anchor=CENTER)
+    
     root.mainloop()
+
+def orderListOfListedDates(listOfListedDates):
+    appendedListOfListedDates = listOfListedDates
+    orderedListOfListedDates = []
+    while len(appendedListOfListedDates) != 0:
+        currentMostRecentMonth = 0
+        currentMostRecentYear = 0
+        for z in range(len(appendedListOfListedDates)):
+            month = int(appendedListOfListedDates[z][0])
+            year = int(appendedListOfListedDates[z][1])
+            if year > currentMostRecentYear:
+                currentMostRecentYear = year
+                currentMostRecentMonth = month
+            elif year == currentMostRecentYear and month > currentMostRecentMonth:
+                currentMostRecentYear = year
+                currentMostRecentMonth = month
+        orderedListOfListedDates.insert(0,[str(currentMostRecentMonth),str(currentMostRecentYear)])
+        appendedListOfListedDates.remove([str(currentMostRecentMonth),str(currentMostRecentYear)])
+    return(orderedListOfListedDates)
 
 def yearMonthSubtraction(month,year,i):
     monthToCheck = month - i
