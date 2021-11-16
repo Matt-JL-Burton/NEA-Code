@@ -77,7 +77,7 @@ def definingDefaultVariables():
     title = uInputDataObj(None,str)
     listOfIdealTables = ['accounts', 'complaints', 'loan', 'refinance', 'sold_Units', "tenants", "units_Monthly", 'units']
     databaseName = 'Property Managment System Database.db'
-    listOfIdealAssets = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico','Long-Normal 2.PNG','lockImage.PNG']
+    listOfIdealAssets = ['Long-Fat.PNG','Long-Normal.PNG','Long-Skinny.PNG','Short-Fat.PNG','Short-Normal.PNG','House.ico','Long-Normal 2.PNG']
     connectionError = Tk()
     connectionError.destroy()
     previousPage = None
@@ -3870,10 +3870,11 @@ def editTenantPage(tenant_ID):
     shortFat = PhotoImage(file = "Short-Fat.PNG")
     tenantIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
     global tenantIDEntryBox
-    tenantIDEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    tenantIDEntryBox = Label(root, text=tenant_ID,bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     tenantIDEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
     tenantIDEntryLabel = Label(root, text='Tenant ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
-    tenantIDEntryBoxSubText = Label(root, text='This input is unchangable once submitted', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.175, rely=0.3175,anchor=CENTER)
+    dateEntryBoxSubText = Label(root, text='Locked', bg=primary.data, fg=secondry.data, font=(font.data,9,'italic'), justify='center', relief='flat').place(relx=0.175, rely=0.214,anchor=CENTER)
+
 
     tileEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
     global titleEntryBoxTenant
