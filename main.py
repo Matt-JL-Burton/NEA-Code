@@ -1,5 +1,6 @@
 #importing modules
 from email import message
+import email
 from http.client import GATEWAY_TIMEOUT
 from sqlite3.dbapi2 import Connection, Error
 from tkinter import ttk
@@ -1001,6 +1002,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'individualunit':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: unitPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Edit Tenant Page':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editTenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1047,6 +1050,10 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'individualunit':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: unitPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Edit Tenant Page':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editTenantPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+
+
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -3857,6 +3864,8 @@ def deleteTenantPage(tenant_ID):
     pass
 
 def editTenantPage(tenant_ID):
+    global current_tenant_ID
+    current_tenant_ID = tenant_ID
     initialiseWindow()
     root.title('Property managment system - Edit Tenant Page')
     topBorder = Label(root, text='Edit Tenant ' + tenant_ID, height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
@@ -3929,45 +3938,69 @@ def editTenantPage(tenant_ID):
     surnameEntryLabel = Label(root, text='Surname',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
 
     nOtherOccupantsEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.43,anchor=CENTER)
+    openDatabase()
+    numberOfOtherOccupants = int(deScramble(cursor.execute("SELECT total_Residents FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0]))
+    closeDatabase()
     global nOtherOccupantsEntryBoxTenant
     nOtherOccupantsEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    nOtherOccupantsEntryBoxTenant.insert(0,numberOfOtherOccupants)
     nOtherOccupantsEntryBoxTenant.place(relx=0.5,rely=0.43,anchor=CENTER)
     nOtherOccupantsEntryBoxTenantLabel = Label(root, text='Total Occupants',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.35,anchor=CENTER)
 
     tenantsDepositEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.61,anchor=CENTER)
+    openDatabase()
+    deposit = deScramble(cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+    closeDatabase()
     global tenantsDepositEntryBox
     tenantsDepositEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    tenantsDepositEntryBox.insert(0,deposit)
     tenantsDepositEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
     tenantsDepositEntryBoxLabel = Label(root, text="Tenant's deposit (£)",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
 
     firstnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.25,anchor=CENTER)
+    openDatabase()
+    fistName = deScramble(cursor.execute("SELECT first_Name FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+    closeDatabase()
     global firstnameEntryBox
     firstnameEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    firstnameEntryBox.insert(0,fistName)
     firstnameEntryBox.place(relx=0.825,rely=0.25,anchor=CENTER)
     firstnameEntryLabel = Label(root, text='Forename',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.17,anchor=CENTER)
 
     startOfLeaseDateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.43,anchor=CENTER)
     slashLabel2 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.815,rely=0.385)
+    openDatabase()
+    month, year = deScramble(cursor.execute("SELECT start_Date FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0]).split('/')
+    closeDatabase()
     global startOfLeaseDateMonthEntryBoxTenant
     startOfLeaseDateMonthEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
+    startOfLeaseDateMonthEntryBoxTenant.insert(0,month)
     startOfLeaseDateMonthEntryBoxTenant.place(relx=0.76,rely=0.43,anchor=CENTER)
     global startOfLeaseDateYearEntryBoxTenant
     startOfLeaseDateYearEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10, font=(font.data,18),justify='center',relief='flat')
+    startOfLeaseDateYearEntryBoxTenant.insert(0,year)
     startOfLeaseDateYearEntryBoxTenant.place(relx=0.89,rely=0.43,anchor=CENTER)
     startOfLeaseDateEntryBoxTenantLabel = Label(root, text='Start of lease date',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.35,anchor=CENTER)
     startOfLeaseDateEntryBoxSubText = Label(root, text='In the form MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.4975,anchor=CENTER)
 
     scoreEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.61,anchor=CENTER)
+    openDatabase()
+    score = deScramble(cursor.execute("SELECT score FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+    closeDatabase()
     global scoreEntryBox
     scoreEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    scoreEntryBox.insert(END,'100')
+    scoreEntryBox.insert(END,score)
     scoreEntryBox.place(relx=0.825,rely=0.61,anchor=CENTER)
     scoreEntryBoxLabel = Label(root, text="Score",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.53,anchor=CENTER)
     scoreEntryBoxSubText = Label(root, text='Keep 100 unless you have previous experience with this tenant', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.6756,anchor=CENTER)
 
     emailEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.79,anchor=CENTER)
+    openDatabase()
+    email = deScramble(cursor.execute("SELECT tenant_Email FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+    closeDatabase()
     global emailEntryBox
     emailEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    emailEntryBox.insert(0,email)
     emailEntryBox.place(relx=0.825,rely=0.79,anchor=CENTER)
     emailEntryBoxLabel = Label(root, text="Tenant email",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.71,anchor=CENTER)
 
@@ -3977,6 +4010,7 @@ def editTenantPage(tenant_ID):
     submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addTenant).place(relx=0.5, rely=0.93, anchor=CENTER)
 
     root.mainloop()
+
 def loanManagment(unit_ID):
     pass
 
@@ -3995,3 +4029,4 @@ print('Program Finished')
 #Home page
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
 #add just first and last months to lower home page graph
+#need to finished edit unit page - bakc end
