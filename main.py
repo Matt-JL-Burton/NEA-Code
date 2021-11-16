@@ -3877,35 +3877,54 @@ def editTenantPage(tenant_ID):
 
 
     tileEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
+    openDatabase()
+    title = deScramble(cursor.execute("SELECT title FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+    closeDatabase()
     global titleEntryBoxTenant
     titleEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23,font=(font.data,18),justify='center',relief='flat')
+    titleEntryBoxTenant.insert(0,title)
     titleEntryBoxTenant.place(relx=0.175,rely=0.43,anchor=CENTER)
     titleEntryBoxTenantLabel = Label(root, text='Title',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.35,anchor=CENTER)
 
     dateOfEntryBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.61,anchor=CENTER)
     slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.125,rely=0.565)
     slashLabel2 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.205,rely=0.565)
+    openDatabase()
+    dOb = deScramble(cursor.execute("SELECT date_Of_Birth FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+    closeDatabase()
+    day, month, year = dOb.split('/')
     global dayEntryBox
     dayEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=6, font=(font.data,18),justify='center',relief='flat')
+    dayEntryBox.insert(0,day)
     dayEntryBox.place(relx=0.093,rely=0.61,anchor=CENTER)
     global monthEntryBox
     monthEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=5, font=(font.data,18),justify='center',relief='flat')
+    monthEntryBox.insert(0,month)
     monthEntryBox.place(relx=0.177,rely=0.61, anchor=CENTER)
     global yearEntryBox
     yearEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=6, font=(font.data,18),justify='center',relief='flat')
+    yearEntryBox.insert(0,year)
     yearEntryBox.place(relx=0.26,rely=0.61, anchor=CENTER)
     dateEntryBoxTenantLabel = Label(root, text='Date of birth',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.53,anchor=CENTER)
     dateEntryBoxSubText = Label(root, text='In the form DD/MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.175, rely=0.6775,anchor=CENTER)
 
     geneneralNotesEntryBoxbackground = Label(image = shortFat, border = 0).place(relx=0.175,rely=0.84,anchor=CENTER)
+    openDatabase()
+    generalNotes = deScramble(cursor.execute("SELECT gerneral_Notes FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+    closeDatabase()
     global geneneralNotesEntryBoxTenant
     geneneralNotesEntryBoxTenant = Text(root, bg=primary.data,fg=secondry.data, width=22,height = 3,font=(font.data,18),relief='flat')
+    geneneralNotesEntryBoxTenant.insert(INSERT,generalNotes)
     geneneralNotesEntryBoxTenant.place(relx=0.175,rely=0.84,anchor=CENTER)
     geneneralNotesEntryBoxTenantLabel = Label(root, text='General notes',bg=primary.data,fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.705,anchor=CENTER)
 
     surnameEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.25,anchor=CENTER)
+    openDatabase()
+    last_Name = deScramble(cursor.execute("SELECT last_Name FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+    closeDatabase()
     global surnameEntryBoxTenant
     surnameEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    surnameEntryBoxTenant.insert(0,last_Name)
     surnameEntryBoxTenant.place(relx=0.5,rely=0.25,anchor=CENTER)
     surnameEntryLabel = Label(root, text='Surname',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
 
