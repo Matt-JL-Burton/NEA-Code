@@ -4028,5 +4028,3 @@ print('Program Finished')
 #order stuff in tables
 #Home page
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
-#add just first and last months to lower home page graph
-#need to finished edit unit page - bakc end
