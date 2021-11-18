@@ -1004,6 +1004,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: unitPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Edit Tenant Page':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editTenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'ConfirmDelete':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: deleteTenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1052,6 +1054,8 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: unitPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Edit Tenant Page':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editTenantPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'ConfirmDelete':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: deleteTenantPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -3859,6 +3863,8 @@ def createUnitMonthlyYaxisLines(y):
     canvasForTable.create_line(0,y,850,y,fill=primary.data)
 
 def deleteTenantPage(tenant_ID):
+    global current_tenant_ID
+    current_tenant_ID = tenant_ID
     initialiseWindow()
     root.title('Property managment system - Confirm Tenant Delete Page')
     displayBackButton()
