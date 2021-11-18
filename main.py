@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            deleteTenantPage('TA1')
+            deleteTenantPage('TA2')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1864,20 +1864,21 @@ def tenantsPage():
         closeDatabase()
         for i in range(len(unitInfo)):
             scrambledTenant_ID = str(unitInfo[i][0])
-            occupyingPrimaryTenants = occupyingPrimaryTenants + 1
-            totalRent = totalRent + float(deScramble(unitInfo[i][1]))
-            openDatabase()
-            tenantsLivingInUnit = float(deScramble(cursor.execute("SELECT total_Residents FROM tenants WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()[0][0]))
-            closeDatabase()
-            occupyingTotalTenants = occupyingTotalTenants + tenantsLivingInUnit
-            openDatabase()
-            unitsMonthlyInfo = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()
-            closeDatabase()
-            for i in range(len(unitsMonthlyInfo)):
-                totalRentsPaid = totalRentsPaid + 1
-                rentLent = int(deScramble(unitsMonthlyInfo[i][0]))
-                if rentLent == True:
-                    totalLateRent = totalLateRent + 1
+            if deScramble(scrambledTenant_ID) != '':
+                occupyingPrimaryTenants = occupyingPrimaryTenants + 1
+                totalRent = totalRent + float(deScramble(unitInfo[i][1]))
+                openDatabase()
+                tenantsLivingInUnit = float(deScramble(cursor.execute("SELECT total_Residents FROM tenants WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()[0][0]))
+                closeDatabase()
+                occupyingTotalTenants = occupyingTotalTenants + tenantsLivingInUnit
+                openDatabase()
+                unitsMonthlyInfo = cursor.execute("SELECT rent_Late FROM units_Monthly WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()
+                closeDatabase()
+                for i in range(len(unitsMonthlyInfo)):
+                    totalRentsPaid = totalRentsPaid + 1
+                    rentLent = int(deScramble(unitsMonthlyInfo[i][0]))
+                    if rentLent == True:
+                        totalLateRent = totalLateRent + 1
         if totalRentsPaid != 0:
             lateRentChance = str((totalLateRent/totalRentsPaid) * 100) + "%"
         else:
@@ -2733,7 +2734,7 @@ def deleteAccountPage():
     displayMenuButton()
 
     longNormalTwo = PhotoImage(file = "Long-Normal 2.PNG")
-    cautionLabel = Label(root, text='Caution',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18,'bold'), justify='center',relief='flat').place(relx=0.5,rely=0.28,anchor=CENTER)
+    cautionLabel = Label(root, text='Caution',bg=primary.data, fg=bannedColours['warningYellow'], width=23, font=(font.data,18,'bold','underline'), justify='center',relief='flat').place(relx=0.5,rely=0.28,anchor=CENTER)
     cautionSubLabel = Label(root, text='Once an account is deleted all data linked to that account is lost. There is no way to retrieve an\naccount once it is deleted! Once an account is deleted it is gone for ever.',bg=primary.data, fg=secondry.data, width=100, font=(font.data,14), justify='center',relief='flat').place(relx=0.5,rely=0.33,anchor=CENTER)
 
     passwordForConfirmationBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.55,anchor=CENTER)
@@ -2774,7 +2775,7 @@ def deleteAccount():
         closeDatabase()
         displayConfirmation('Login')
     else:
-        warning = Label(root, text = 'Password incorrect',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=0.5,rely=0.63,anchor=CENTER)
+        warning = Label(root, text = 'Password incorrect',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,14),justify='center').place(relx=0.5,rely=0.63,anchor=CENTER)
 
 def changeUsernamePage():
     initialiseWindow()
@@ -3863,15 +3864,52 @@ def createUnitMonthlyYaxisLines(y):
     canvasForTable.create_line(0,y,850,y,fill=primary.data)
 
 def deleteTenantPage(tenant_ID):
-    global current_tenant_ID
-    current_tenant_ID = tenant_ID
+    global current_tenant_ID_Delete
+    current_tenant_ID_Delete = tenant_ID
     initialiseWindow()
     root.title('Property managment system - Confirm Tenant Delete Page')
+    topBorder = Label(root, text='Delete Tenant ' + str(tenant_ID), height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
     previousPage = 'ConfirmDelete'
     displayMenuButton()
+
+    longNormalTwo = PhotoImage(file = "Long-Normal 2.PNG")
+    cautionLabel = Label(root, text='Caution',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18,'bold','underline'), justify='center',relief='flat').place(relx=0.5,rely=0.28,anchor=CENTER)
+    cautionSubLabel = Label(root, text='Once an tenant is deleted all data linked to that tenant is lost There is no way to \n retrieve an account once it is deleted! Once an tenant is deleted it is gone for ever.',bg=primary.data, fg=secondry.data, width=100, font=(font.data,14), justify='center',relief='flat').place(relx=0.5,rely=0.33,anchor=CENTER)
+    cautionSubLabel = Label(root, text='Do not do this just because a tenant is no longer in one your units!',bg=primary.data, fg=bannedColours['warningYellow'], width=100, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.2,anchor=CENTER)
+
+    passwordForConfirmationBackGround = Label(image = longNormalTwo, border = 0).place(relx=0.5,rely=0.55,anchor=CENTER)
+    global passwordForConfirmationEntryBox
+    passwordForConfirmationEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    passwordForConfirmationEntryBox.place(relx=0.5,rely=0.55,anchor=CENTER)
+    passwordForConfirmationEntryBoxLabel = Label(root, text='Enter password as confirmation',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.46,anchor=CENTER)
+    hidePasswordChangePN = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordForConfirmationEntryBox,0.14,0.55)).place(relx=0.14, rely=0.55, anchor=CENTER)
+
+    deleteAccountButton = Button(root, text='Delete Account', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteTenant(tenant_ID)).place(relx=0.5, rely=0.8, anchor=CENTER)
+    canceldeleteAccountButton = Button(root, text='Cancel Deletion', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: tenantPage(tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+
     root.mainloop()
+
+def deleteTenant(tenant_ID):
+    passwordForConfirmation = uInputDataObj(passwordForConfirmationEntryBox.get(),str)
+    
+    openDatabase()
+    passwordD = cursor.execute("SELECT password FROM accounts WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.getData())+"'")
+    password = deScramble(passwordD.fetchall()[0][0])
+    closeDatabase()
+
+    if passwordForConfirmation.data == password:
+        coverUpLabel = Label(root,bg=primary.data, width=60, justify='center',relief='flat').place(relx=0.5,rely=0.63,anchor=CENTER)
+        openDatabase()
+        cursor.execute("UPDATE units_Monthly SET tenant_ID = '' WHERE tenant_ID = '" + scramble(tenant_ID) + "'") #replace tenantID with blank tenant to symbolise tenant is gone
+        cursor.execute("UPDATE units SET tenant_ID = '' WHERE tenant_ID = '" + scramble(tenant_ID) + "'") #replace tenantID with blank tenant to symbolise tenant is gone
+        cursor.execute("DELETE FROM complaints WHERE tenant_ID = '" + scramble(tenant_ID) + "'") #deletes complaitns as once a tenant leaves the complaint is no longer relevent
+        cursor.execute("DELETE FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'") #deletes tenant record
+        closeDatabase()
+        displayConfirmation('Tenants')
+    else:
+        warning = Label(root, text = 'Password incorrect',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,14),justify='center').place(relx=0.5,rely=0.63,anchor=CENTER)
 
 def editTenantPage(tenant_ID):
     global current_tenant_ID
