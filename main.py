@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            editTenantPage('TA1')
+            deleteTenantPage('TA1')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -3859,7 +3859,13 @@ def createUnitMonthlyYaxisLines(y):
     canvasForTable.create_line(0,y,850,y,fill=primary.data)
 
 def deleteTenantPage(tenant_ID):
-    pass
+    initialiseWindow()
+    root.title('Property managment system - Confirm Tenant Delete Page')
+    displayBackButton()
+    global previousPage
+    previousPage = 'ConfirmDelete'
+    displayMenuButton()
+    root.mainloop()
 
 def editTenantPage(tenant_ID):
     global current_tenant_ID
@@ -4074,8 +4080,6 @@ def updateTenant(tenant_ID_Parsed):
         closeDatabase()
         displayConfirmation('Edit Tenant Page')
         # cursor.execute("UPDATE complaints SET month = '" + newComplaintsField[2] + "', year = '" + newComplaintsField[3] + "', complaint_Nature = '" + newComplaintsField[4] + "', resoltion = '" + newComplaintsField[5] + "' WHERE complaint_ID = '" + scramble(complaint_ID.data) + "'")
-
-
 
 def loanManagment(unit_ID):
     pass
