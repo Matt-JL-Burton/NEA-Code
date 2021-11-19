@@ -1006,6 +1006,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editTenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'ConfirmDelete':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: deleteTenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Edit unit':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editUnitPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -4146,15 +4148,19 @@ def editUnitPage(unit_ID):
 
     unitIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
     global unitIDEntryBox
-    unitIDEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    unitIDEntryBox = Label(root, bg=primary.data,fg=secondry.data, width=23, text=unit_ID, font=(font.data,18),justify='center',relief='flat')
     unitIDEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
+    dateEntryBoxSubText = Label(root, text='Locked', bg=primary.data, fg=secondry.data, font=(font.data,9,'italic'), justify='center', relief='flat').place(relx=0.175, rely=0.214,anchor=CENTER)
     unitIDEntryLabel = Label(root, text='Unit ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
-    unittIDEntryBoxSubText = Label(root, text='This input is unchangable once submitted', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.175, rely=0.3175,anchor=CENTER)
 
     dateOfPurchaseEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
     global monthDateOfPurchaseEntryBoxTenant
     slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.165,rely=0.385)
     monthDateOfPurchaseEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    openDatabase()
+    month = int(deScramble(cursor.execute("SELECT buy_Month FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0]))
+    closeDatabase()
+    monthDateOfPurchaseEntryBoxTenant.insert(0,month)
     monthDateOfPurchaseEntryBoxTenant.place(relx=0.110,rely=0.43,anchor=CENTER)
     global yearDateOfPurchaseEntryBoxTenant
     yearDateOfPurchaseEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
