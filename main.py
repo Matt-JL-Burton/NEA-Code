@@ -4177,12 +4177,10 @@ def editUnitPage(unit_ID):
     propertyEquity = int(deScramble(cursor.execute("SELECT property_Equity FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0]))
     closeDatabase()
     global downPaymentEntryBox
-    downPaymentEntryBox = Label(root, bg=primary.data,text = propertyEquity,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    downPaymentEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    downPaymentEntryBox.insert(0,propertyEquity)
     downPaymentEntryBox.place(relx=0.175,rely=0.61,anchor=CENTER)
-    dateEntryBoxSubText = Label(root, text='Locked', bg=primary.data, fg=secondry.data, font=(font.data,9,'italic'), justify='center', relief='flat').place(relx=0.175, rely=0.574,anchor=CENTER)
     downPaymentBoxTenantLabel = Label(root, text='Property Equity',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.53,anchor=CENTER)
-    downPaymentBoxTenantLabelSubText = Label(root, text='Go to refinance page to change this data', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.175, rely=0.6775,anchor=CENTER)
-
 
     addressEntryBoxbackground = Label(image = shortFat, border = 0).place(relx=0.175,rely=0.84,anchor=CENTER)
     global addressEntryBoxTenant
@@ -4239,26 +4237,21 @@ def editUnitPage(unit_ID):
     openDatabase()
     mortgageInrestRate = deScramble(cursor.execute("SELECT interest_Rate FROM loan WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0])
     closeDatabase()
-    dateEntryBoxSubText = Label(root, text='Locked', bg=primary.data, fg=secondry.data, font=(font.data,9,'italic'), justify='center', relief='flat').place(relx=0.5, rely=0.3975,anchor=CENTER)
     global mortgageIntrestRateEntryBoxTenant
-    mortgageIntrestRateEntryBoxTenant = Label(root, bg=primary.data,fg=secondry.data,text = mortgageInrestRate, width=23, font=(font.data,18),justify='center',relief='flat')
+    mortgageIntrestRateEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    mortgageIntrestRateEntryBoxTenant.insert(0,mortgageInrestRate)
     mortgageIntrestRateEntryBoxTenant.place(relx=0.5,rely=0.43,anchor=CENTER)
     mortgageIntrestRateEntryBoxTenantLabel = Label(root, text='Mortage Intrest Rate (%)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.35,anchor=CENTER)
-    imortgageIntrestRateEntryBoxTenantLabelSubText = Label(root, text='Go to refinance page to change this data', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.4975,anchor=CENTER)
 
     mortgageInstallmentsEntryBoxBachground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.61,anchor=CENTER)
     openDatabase()
     mortgageInstallments = deScramble(cursor.execute("SELECT instalments FROM loan WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0])
     closeDatabase()
-    dateEntryBoxSubText = Label(root, text='Locked', bg=primary.data, fg=secondry.data, font=(font.data,9,'italic'), justify='center', relief='flat').place(relx=0.5, rely=0.5775,anchor=CENTER)
     global mortgageInstallmentsEntryBox
-    mortgageInstallmentsEntryBox = Label(root, bg=primary.data,fg=secondry.data, text = mortgageInstallments,width=23, font=(font.data,18),justify='center',relief='flat')
+    mortgageInstallmentsEntryBox = Entry(root, bg=primary.data,fg=secondry.data,width=23, font=(font.data,18),justify='center',relief='flat')
+    mortgageInstallmentsEntryBox.insert(0,mortgageInstallments)
     mortgageInstallmentsEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
     mortgageInstallmentsEntryBoxLabel = Label(root, text="Mortage Installments size (£)",bg=primary.data, fg=secondry.data, width=24, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.53,anchor=CENTER)
-    imortgageIntrestRateEntryBoxTenantLabelSubText = Label(root, text='Go to refinance page to change this data', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.6775,anchor=CENTER)
-
-
-
 
     rentEntryBoxBachground2 = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.79,anchor=CENTER)
     openDatabase()
@@ -4295,12 +4288,10 @@ def editUnitPage(unit_ID):
     mortgageOwed = deScramble(cursor.execute("SELECT capital_Owed FROM loan WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0])
     closeDatabase()
     global mortageSizeEntryBox
-    mortageSizeEntryBox = Label(root, bg=primary.data,fg=secondry.data, text = mortgageOwed, width=23, font=(font.data,18),justify='center',relief='flat')
+    mortageSizeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    mortageSizeEntryBox.insert(0,mortgageOwed)
     mortageSizeEntryBox.place(relx=0.825,rely=0.61,anchor=CENTER)
-    dateEntryBoxSubText = Label(root, text='Locked', bg=primary.data, fg=secondry.data, font=(font.data,9,'italic'), justify='center', relief='flat').place(relx=0.825, rely=0.5775,anchor=CENTER)
     mortageSizeEntryBoxLabel = Label(root, text="Remaining Mortgage Size (£)",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.53,anchor=CENTER)
-    mortgageIntrestRateEntryBoxTenantLabelSubText = Label(root, text='Go to refinance page to change this data', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.825, rely=0.6775,anchor=CENTER)
-
 
     generalNotesEntryBoxBachground = Label(image = shortFat, border = 0).place(relx=0.825,rely=0.84,anchor=CENTER)
     openDatabase()
@@ -4312,8 +4303,8 @@ def editUnitPage(unit_ID):
     generalNotesEntryBox.place(relx=0.825,rely=0.84,anchor=CENTER)
     generalNotesEntryBoxLabel = Label(root, text="General Notes",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.71,anchor=CENTER)
 
-    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addUnit).place(relx=0.5, rely=0.93, anchor=CENTER)
-    refinancePageButton = Button(root, text='Refinance Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.98, anchor=CENTER)
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addUnit).place(relx=0.5, rely=0.9, anchor=CENTER)
+    refinancePageButton = Button(root, text='Refinance Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.95, anchor=CENTER)
 
     global newUnitPageCords
     newUnitPageCords = {'unit_ID':{'x':0.175,'y':0.3175},'tenant_ID':{'x':0.5,'y':0.3175},'postcode':{'x':0.825,'y':0.3175},'buy_Month':{'x':0.175,'y':0.4975},'buy_Year':{'x':0.175,'y':0.4975},'dayOfPurchase':{'x':0.175,'y':0.4975},'intrest_Rate':{'x':0.5,'y':0.4975},'loan_ID':{'x':0.825,'y':0.4975},'property_Equity':{'x':0.175,'y':0.6775},'instalments':{'x':0.5,'y':0.6775},'capital_Owed':{'x':0.825,'y':0.6775},'address':{'x':0.175,'y':0.96},'rent':{'x':0.5,'y':0.8575},'general_Notes':{'x':0.825,'y':0.96}}
