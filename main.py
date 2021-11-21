@@ -4258,6 +4258,8 @@ def editUnitPage(unit_ID):
     imortgageIntrestRateEntryBoxTenantLabelSubText = Label(root, text='Go to refinance page to change this data', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.6775,anchor=CENTER)
 
 
+
+
     rentEntryBoxBachground2 = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.79,anchor=CENTER)
     openDatabase()
     rent = deScramble(cursor.execute("SELECT rent FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0])
