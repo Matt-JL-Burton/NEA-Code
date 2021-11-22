@@ -4303,12 +4303,80 @@ def editUnitPage(unit_ID):
     generalNotesEntryBox.place(relx=0.825,rely=0.84,anchor=CENTER)
     generalNotesEntryBoxLabel = Label(root, text="General Notes",bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.71,anchor=CENTER)
 
-    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=addUnit).place(relx=0.5, rely=0.9, anchor=CENTER)
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: updateUnit(unit_ID,loanID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     refinancePageButton = Button(root, text='Refinance Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.95, anchor=CENTER)
 
     global newUnitPageCords
     newUnitPageCords = {'unit_ID':{'x':0.175,'y':0.3175},'tenant_ID':{'x':0.5,'y':0.3175},'postcode':{'x':0.825,'y':0.3175},'buy_Month':{'x':0.175,'y':0.4975},'buy_Year':{'x':0.175,'y':0.4975},'dayOfPurchase':{'x':0.175,'y':0.4975},'intrest_Rate':{'x':0.5,'y':0.4975},'loan_ID':{'x':0.825,'y':0.4975},'property_Equity':{'x':0.175,'y':0.6775},'instalments':{'x':0.5,'y':0.6775},'capital_Owed':{'x':0.825,'y':0.6775},'address':{'x':0.175,'y':0.96},'rent':{'x':0.5,'y':0.8575},'general_Notes':{'x':0.825,'y':0.96}}
     root.mainloop()
+
+def updateUnit(current_unit_ID, loanID):
+    unit_ID = uInputDataObj(current_unit_ID,str)
+    buy_Month = uInputDataObj(monthDateOfPurchaseEntryBoxTenant.get(),int)
+    buy_Year = uInputDataObj(yearDateOfPurchaseEntryBoxTenant.get(),int)
+    property_Equity = uInputDataObj(downPaymentEntryBox.get(),float)
+    address = uInputDataObj(addressEntryBoxTenant.get('1.0','end-1c'),str)
+    tenant_ID = uInputDataObj(occupyingTenantMenu.get(),str)
+    intrest_Rate = uInputDataObj(mortgageIntrestRateEntryBoxTenant.get(),float)
+    instalments = uInputDataObj(mortgageInstallmentsEntryBox.get(),float)
+    postcode = uInputDataObj(postCodeEntryBox.get(),str)
+    loan_ID =  uInputDataObj(loanID,str)
+    capital_Owed = uInputDataObj(mortageSizeEntryBox.get(),float)
+    general_Notes = uInputDataObj(generalNotesEntryBox.get('1.0','end-1c'),str)
+    rent = uInputDataObj(rentEntryBox2.get(),str)
+
+    most_Recent_Valuation = castingTypeCheckFunc(property_Equity.data,property_Equity.prefferredType)+castingTypeCheckFunc(capital_Owed.data,capital_Owed.prefferredType)
+
+    newUnitArray = [unit_ID.data,databaseCurrentAccount_ID.data,tenant_ID.data,most_Recent_Valuation,most_Recent_Valuation,address.data,postcode.data,buy_Month.data,buy_Year.data,property_Equity.data,rent.data,general_Notes.data]
+    newLoanArary = [loan_ID.data,unit_ID.data,intrest_Rate.data,instalments.data,capital_Owed.data]
+    unitFields = ['unit_ID','account_ID','tenant_ID','property_Equity','most_Recent_Valuation','buy_Price','address','postcode','buy_Month','buy_Year','property_Equity','rent','general_Notes']
+    loanFields = ['loan_ID','unit_ID','interest_ID','instalments','capital_Owed']
+    total_Fields = unitFields + loanFields
+
+    global dictOfDataValdationResults
+    dictOfDataValdationResults = dict.fromkeys(total_Fields)
+    #dictOfDataValdationResults['unit_ID'] = {'presenceCheck':presenceCheck(unit_ID),'noSpaces':pictureCheck(unit_ID,'',0,0),'uniqueDataCheck':uniqueDataCheck(unit_ID,'unit_ID','units')}
+    dictOfDataValdationResults['tenant_ID'] = {'menuOptionCheck':menuOptionCheck(tenant_ID,occupyingTenantOptions)}
+    dictOfDataValdationResults['postcode'] = {'presenceCheck':presenceCheck(postcode),'lengthCheck':rangeCheck(postcode,6,11),'mustContainsLetters':containsLetters(postcode),'mustContainNumbers':containsNumbers(postcode)}
+    dictOfDataValdationResults['buy_Month'] = {'presenceCheck':presenceCheck(buy_Month),'monthBetween1/12':rangeCheck(buy_Month,1,12)}
+    dictOfDataValdationResults['buy_Year'] = {'presenceCheck':presenceCheck(buy_Year),'yearBetween1900/2100':rangeCheck(buy_Year,1900,2100)}
+    dictOfDataValdationResults['intrest_Rate'] = {'presenceCheck':presenceCheck(intrest_Rate),'between0/100':rangeCheck(intrest_Rate,0,100)}
+    #dictOfDataValdationResults['loan_ID'] = {'presenceCheck':presenceCheck(loan_ID),'noSpaces':pictureCheck(unit_ID,'',0,0),'uniqueDataCheck':uniqueDataCheck(loan_ID,'loan_ID','loan')}
+    dictOfDataValdationResults['property_Equity'] = {'presenceCheck':presenceCheck(property_Equity),'positiveCheck':rangeCheck(property_Equity,0,None)}
+    dictOfDataValdationResults['instalments'] = {'presenceCheck':presenceCheck(instalments),'positiveCheck':rangeCheck(property_Equity,0,None)}
+    dictOfDataValdationResults['capital_Owed'] = {'presenceCheck':presenceCheck(capital_Owed),'positiveCheck':rangeCheck(capital_Owed,0,None)}
+    dictOfDataValdationResults['address'] = {'presenceCheck':presenceCheck(address),'mustContainsLetters':containsLetters(address)}
+    dictOfDataValdationResults['rent'] = {'presenceCheck':presenceCheck(rent),'positiveCheck':rangeCheck(rent,0,None)}
+    dictOfDataValdationResults['general_Notes'] = {'presenceCheck':presenceCheck(general_Notes),'mustContainsLetters':containsLetters(general_Notes)}
+    newUntCoverUp()
+    
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,newUnitPageCords[entryboxData]['x'],newUnitPageCords[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+
+    countOfFailedTests = 0
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+    if countOfFailedTests == 0:
+        for i in range(len(newUnitArray)):
+            newUnitArray[i] = scramble(newUnitArray[i])
+        for i in range(len(newLoanArary)):
+            newLoanArary[i] = scramble(newLoanArary[i])
+
+        openDatabase()
+        cursor.execute("UPDATE loan SET loan_ID = '" + newLoanArary[0] + "', interest_Rate = '" + newLoanArary[2] + "', instalments = '" + newLoanArary[3] + "', capital_Owed = '" + newLoanArary[4] + "' WHERE unit_ID = '" + newLoanArary[1] + "'")
+        cursor.execute("UPDATE units SET tenant_ID = '" + newUnitArray[2] +  "', ")
+        closeDatabase()
+        
+        displayConfirmation('Edit unit')
 
 def editsellPage(unit_ID):
     pass
