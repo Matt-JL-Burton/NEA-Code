@@ -4327,9 +4327,11 @@ def updateUnit(current_unit_ID, loanID):
 
     most_Recent_Valuation = castingTypeCheckFunc(property_Equity.data,property_Equity.prefferredType)+castingTypeCheckFunc(capital_Owed.data,capital_Owed.prefferredType)
 
-    newUnitArray = [unit_ID.data,databaseCurrentAccount_ID.data,tenant_ID.data,most_Recent_Valuation,most_Recent_Valuation,address.data,postcode.data,buy_Month.data,buy_Year.data,property_Equity.data,rent.data,general_Notes.data]
+    newUnitArray = [unit_ID.data,databaseCurrentAccount_ID.data,tenant_ID.data,most_Recent_Valuation,address.data,postcode.data,buy_Month.data,buy_Year.data,property_Equity.data,rent.data,general_Notes.data]
+    print(len(newUnitArray))
     newLoanArary = [loan_ID.data,unit_ID.data,intrest_Rate.data,instalments.data,capital_Owed.data]
     unitFields = ['unit_ID','account_ID','tenant_ID','property_Equity','most_Recent_Valuation','buy_Price','address','postcode','buy_Month','buy_Year','property_Equity','rent','general_Notes']
+    print(len(unitFields))
     loanFields = ['loan_ID','unit_ID','interest_ID','instalments','capital_Owed']
     total_Fields = unitFields + loanFields
 
@@ -4373,7 +4375,7 @@ def updateUnit(current_unit_ID, loanID):
 
         openDatabase()
         cursor.execute("UPDATE loan SET loan_ID = '" + newLoanArary[0] + "', interest_Rate = '" + newLoanArary[2] + "', instalments = '" + newLoanArary[3] + "', capital_Owed = '" + newLoanArary[4] + "' WHERE unit_ID = '" + newLoanArary[1] + "'")
-        cursor.execute("UPDATE units SET tenant_ID = '" + newUnitArray[2] +  "', ")
+        cursor.execute("UPDATE units SET tenant_ID = '" + newUnitArray[2] +  "', property_Equity = '" + newUnitArray[3] + "', most_Recent_Valuation = '" + newUnitArray[4] + "', buy_Price = '" + newUnitArray[5] + "', address = '" + newUnitArray[6] + "', postcode = '" + newUnitArray[7] + "', buy_Month = '" + newUnitArray[8] + "', buy_Year = '" + newUnitArray[9] + "', property_Equity = '" + newUnitArray[10] + "', rent = '" + newUnitArray[11] + "', general_Notes = '" + newUnitArray[12] + "' WHERE unit_ID = '" + newUnitArray[0] + "'")
         closeDatabase()
         
         displayConfirmation('Edit unit')
