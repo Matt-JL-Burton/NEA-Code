@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            editUnitPage('LT2')
+            refinancePage('LT2')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1008,6 +1008,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: deleteTenantPage(current_tenant_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Edit unit':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editUnitPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Refinance':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1060,6 +1062,8 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: deleteTenantPage(current_tenant_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Edit unit':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editUnitPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Refinance':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -3690,6 +3694,7 @@ def unitPage(unitID):
     closeDatabase()
     address = deScramble(unitInfo[0][0])
     most_Recent_Valuation = float(deScramble(unitInfo[0][1]))
+    print(unitInfo[0][2])
     buy_Price = float(deScramble(unitInfo[0][2]))
     postcode = deScramble(unitInfo[0][3])
     buy_Month = deScramble(unitInfo[0][4])
@@ -4330,14 +4335,12 @@ def updateUnit(current_unit_ID, loanID):
     
     #getting the buy price so as to get a list of all the correct data to be added (and in the correct order which makes it easier to upate the record)
     openDatabase()
-    buyPrice = deScramble(cursor.execute("SELECT buy_Price FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'"))
+    buyPrice = deScramble(cursor.execute("SELECT buy_Price FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0])
     closeDatabase()
 
     newUnitArray = [unit_ID.data,databaseCurrentAccount_ID.data,tenant_ID.data,property_Equity.data,most_Recent_Valuation,buyPrice,address.data,postcode.data,buy_Month.data,buy_Year.data,property_Equity.data,rent.data,general_Notes.data]
-    print(len(newUnitArray))
     newLoanArary = [loan_ID.data,unit_ID.data,intrest_Rate.data,instalments.data,capital_Owed.data]
     unitFields = ['unit_ID','account_ID','tenant_ID','property_Equity','most_Recent_Valuation','buy_Price','address','postcode','buy_Month','buy_Year','property_Equity','rent','general_Notes']
-    print(len(unitFields))
     loanFields = ['loan_ID','unit_ID','interest_ID','instalments','capital_Owed']
     total_Fields = unitFields + loanFields
 
@@ -4391,9 +4394,68 @@ def editsellPage(unit_ID):
     pass
 
 def refinancePage(unit_ID):
+    #Code to intialise page and add general utility such as header, menu, back button etc
     initialiseWindow()
-    global current_tenant_ID
-    current_tenant_ID = unit_ID
+    global current_Unit_ID
+    current_Unit_ID = unit_ID
+    root.title('Property managment system - Refinance Page')
+    topBorder = Label(root, text='Refinance Unit ' + unit_ID, height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Refinance'
+    displayMenuButton()
+
+    #defining images to use in this page
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    shortFat = PhotoImage(file = "Short-Fat.PNG")
+
+    loanIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
+    global loanIDEntryBox
+    loanIDEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    loanIDEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
+    loanIDEntryLabel = Label(root, text='Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
+
+    newUnitValuationEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.25,anchor=CENTER)
+    global newUnitValuationEntryBox
+    newUnitValuationEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    newUnitValuationEntryBox.place(relx=0.5,rely=0.25,anchor=CENTER)
+    newUnitValuationEntryBoxLabel = Label(root, text='New Valuation of Unit',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.17,anchor=CENTER)
+
+    loanValueBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.25,anchor=CENTER)
+    global loanValueEntryBox
+    loanValueEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    loanValueEntryBox.place(relx=0.825,rely=0.25,anchor=CENTER)
+    loanValueEntryBoxLabel = Label(root, text='Loan Value (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.17,anchor=CENTER)
+
+    dateOfRefinanceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
+    global monthDateOfRefinanceEntryBoxTenant
+    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.165,rely=0.385)
+    monthDateOfRefinanceEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    monthDateOfRefinanceEntryBoxTenant.place(relx=0.110,rely=0.43,anchor=CENTER)
+    global yearDateOfRefinanceEntryBoxTenant
+    yearDateOfRefinanceEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    yearDateOfRefinanceEntryBoxTenant.place(relx=0.24,rely=0.43,anchor=CENTER)
+    dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Refinance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.35,anchor=CENTER)
+    dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.175, rely=0.4975,anchor=CENTER)
+
+    loanIntrestRateBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.43,anchor=CENTER)
+    global loanIntrestRateEntryBox
+    loanIntrestRateEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    loanIntrestRateEntryBox.place(relx=0.5,rely=0.43,anchor=CENTER)
+    loanIntrestRateEntryBoxLabel = Label(root, text='Loan Intrest Rate (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.35,anchor=CENTER)
+
+    loanInstallmentsBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.43,anchor=CENTER)
+    global loanInstallmentsEntryBox
+    loanInstallmentsEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    loanInstallmentsEntryBox.place(relx=0.825,rely=0.43,anchor=CENTER)
+    loanInstallmentsEntryBoxLabel = Label(root, text='Loan Installments (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.35,anchor=CENTER)
+
+    remainingEquityBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.51,anchor=CENTER)
+    global remainingEquityEntryBox
+    remainingEquityEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    remainingEquityEntryBox.place(relx=0.5,rely=0.58,anchor=CENTER)
+    remainingEquityEntryBoxLabel = Label(root, text='Remaing Equity in unit',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.51,anchor=CENTER)
+
     root.mainloop()
 
 
