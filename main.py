@@ -4311,6 +4311,7 @@ def editUnitPage(unit_ID):
     root.mainloop()
 
 def updateUnit(current_unit_ID, loanID):
+    #getting all the appropriate data from the frot end (except unit_ID and loan_ID as these are passed as they are not alteratble and it is more efficent to pass these varaibles than to access them via the tkinter Label I have placed them in)
     unit_ID = uInputDataObj(current_unit_ID,str)
     buy_Month = uInputDataObj(monthDateOfPurchaseEntryBoxTenant.get(),int)
     buy_Year = uInputDataObj(yearDateOfPurchaseEntryBoxTenant.get(),int)
@@ -4326,8 +4327,13 @@ def updateUnit(current_unit_ID, loanID):
     rent = uInputDataObj(rentEntryBox2.get(),str)
 
     most_Recent_Valuation = castingTypeCheckFunc(property_Equity.data,property_Equity.prefferredType)+castingTypeCheckFunc(capital_Owed.data,capital_Owed.prefferredType)
+    
+    #getting the buy price so as to get a list of all the correct data to be added (and in the correct order which makes it easier to upate the record)
+    openDatabase()
+    buyPrice = deScramble(cursor.execute("SELECT buy_Price FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'"))
+    closeDatabase()
 
-    newUnitArray = [unit_ID.data,databaseCurrentAccount_ID.data,tenant_ID.data,most_Recent_Valuation,address.data,postcode.data,buy_Month.data,buy_Year.data,property_Equity.data,rent.data,general_Notes.data]
+    newUnitArray = [unit_ID.data,databaseCurrentAccount_ID.data,tenant_ID.data,property_Equity.data,most_Recent_Valuation,buyPrice,address.data,postcode.data,buy_Month.data,buy_Year.data,property_Equity.data,rent.data,general_Notes.data]
     print(len(newUnitArray))
     newLoanArary = [loan_ID.data,unit_ID.data,intrest_Rate.data,instalments.data,capital_Owed.data]
     unitFields = ['unit_ID','account_ID','tenant_ID','property_Equity','most_Recent_Valuation','buy_Price','address','postcode','buy_Month','buy_Year','property_Equity','rent','general_Notes']
@@ -4335,15 +4341,14 @@ def updateUnit(current_unit_ID, loanID):
     loanFields = ['loan_ID','unit_ID','interest_ID','instalments','capital_Owed']
     total_Fields = unitFields + loanFields
 
+    #unit_ID and loanID and buy price validation remvoed as they have already been validated when entering the sytem and are not possible to be altered by the user at this stage
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(total_Fields)
-    #dictOfDataValdationResults['unit_ID'] = {'presenceCheck':presenceCheck(unit_ID),'noSpaces':pictureCheck(unit_ID,'',0,0),'uniqueDataCheck':uniqueDataCheck(unit_ID,'unit_ID','units')}
     dictOfDataValdationResults['tenant_ID'] = {'menuOptionCheck':menuOptionCheck(tenant_ID,occupyingTenantOptions)}
     dictOfDataValdationResults['postcode'] = {'presenceCheck':presenceCheck(postcode),'lengthCheck':rangeCheck(postcode,6,11),'mustContainsLetters':containsLetters(postcode),'mustContainNumbers':containsNumbers(postcode)}
     dictOfDataValdationResults['buy_Month'] = {'presenceCheck':presenceCheck(buy_Month),'monthBetween1/12':rangeCheck(buy_Month,1,12)}
     dictOfDataValdationResults['buy_Year'] = {'presenceCheck':presenceCheck(buy_Year),'yearBetween1900/2100':rangeCheck(buy_Year,1900,2100)}
     dictOfDataValdationResults['intrest_Rate'] = {'presenceCheck':presenceCheck(intrest_Rate),'between0/100':rangeCheck(intrest_Rate,0,100)}
-    #dictOfDataValdationResults['loan_ID'] = {'presenceCheck':presenceCheck(loan_ID),'noSpaces':pictureCheck(unit_ID,'',0,0),'uniqueDataCheck':uniqueDataCheck(loan_ID,'loan_ID','loan')}
     dictOfDataValdationResults['property_Equity'] = {'presenceCheck':presenceCheck(property_Equity),'positiveCheck':rangeCheck(property_Equity,0,None)}
     dictOfDataValdationResults['instalments'] = {'presenceCheck':presenceCheck(instalments),'positiveCheck':rangeCheck(property_Equity,0,None)}
     dictOfDataValdationResults['capital_Owed'] = {'presenceCheck':presenceCheck(capital_Owed),'positiveCheck':rangeCheck(capital_Owed,0,None)}
@@ -4368,11 +4373,13 @@ def updateUnit(current_unit_ID, loanID):
                     countOfFailedTests = countOfFailedTests +1
 
     if countOfFailedTests == 0:
+        #scrambles the data to update to the DB
         for i in range(len(newUnitArray)):
             newUnitArray[i] = scramble(newUnitArray[i])
         for i in range(len(newLoanArary)):
             newLoanArary[i] = scramble(newLoanArary[i])
 
+        #updates the appropriate records in the DB
         openDatabase()
         cursor.execute("UPDATE loan SET loan_ID = '" + newLoanArary[0] + "', interest_Rate = '" + newLoanArary[2] + "', instalments = '" + newLoanArary[3] + "', capital_Owed = '" + newLoanArary[4] + "' WHERE unit_ID = '" + newLoanArary[1] + "'")
         cursor.execute("UPDATE units SET tenant_ID = '" + newUnitArray[2] +  "', property_Equity = '" + newUnitArray[3] + "', most_Recent_Valuation = '" + newUnitArray[4] + "', buy_Price = '" + newUnitArray[5] + "', address = '" + newUnitArray[6] + "', postcode = '" + newUnitArray[7] + "', buy_Month = '" + newUnitArray[8] + "', buy_Year = '" + newUnitArray[9] + "', property_Equity = '" + newUnitArray[10] + "', rent = '" + newUnitArray[11] + "', general_Notes = '" + newUnitArray[12] + "' WHERE unit_ID = '" + newUnitArray[0] + "'")
