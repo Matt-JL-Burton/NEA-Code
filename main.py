@@ -4413,7 +4413,7 @@ def refinancePage(unit_ID):
     global loanIDEntryBox
     loanIDEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     loanIDEntryBox.place(relx=0.175,rely=0.25,anchor=CENTER)
-    loanIDEntryLabel = Label(root, text='Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
+    loanIDEntryBoxLabel = Label(root, text='Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.17,anchor=CENTER)
 
     newUnitValuationEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.25,anchor=CENTER)
     global newUnitValuationEntryBox
@@ -4428,13 +4428,13 @@ def refinancePage(unit_ID):
     loanValueEntryBoxLabel = Label(root, text='Loan Value (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.17,anchor=CENTER)
 
     dateOfRefinanceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.43,anchor=CENTER)
-    global monthDateOfRefinanceEntryBoxTenant
+    global monthDateOfRefinanceEntryBox
     slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.165,rely=0.385)
-    monthDateOfRefinanceEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
-    monthDateOfRefinanceEntryBoxTenant.place(relx=0.110,rely=0.43,anchor=CENTER)
-    global yearDateOfRefinanceEntryBoxTenant
-    yearDateOfRefinanceEntryBoxTenant = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
-    yearDateOfRefinanceEntryBoxTenant.place(relx=0.24,rely=0.43,anchor=CENTER)
+    monthDateOfRefinanceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    monthDateOfRefinanceEntryBox.place(relx=0.110,rely=0.43,anchor=CENTER)
+    global yearDateOfRefinanceEntryBox
+    yearDateOfRefinanceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    yearDateOfRefinanceEntryBox.place(relx=0.24,rely=0.43,anchor=CENTER)
     dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Refinance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.35,anchor=CENTER)
     dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.175, rely=0.4975,anchor=CENTER)
 
@@ -4450,14 +4450,65 @@ def refinancePage(unit_ID):
     loanInstallmentsEntryBox.place(relx=0.825,rely=0.43,anchor=CENTER)
     loanInstallmentsEntryBoxLabel = Label(root, text='Loan Installments (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.35,anchor=CENTER)
 
-    remainingEquityBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.51,anchor=CENTER)
+    remainingEquityEntryBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.62,anchor=CENTER)
     global remainingEquityEntryBox
     remainingEquityEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    remainingEquityEntryBox.place(relx=0.5,rely=0.58,anchor=CENTER)
-    remainingEquityEntryBoxLabel = Label(root, text='Remaing Equity in unit',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.51,anchor=CENTER)
+    remainingEquityEntryBox.place(relx=0.5,rely=0.61,anchor=CENTER)
+    remainingEquityEntryBoxLabel = Label(root, text='Remaining Equity in Unit',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.54,anchor=CENTER)
+
+    #cords for placing error messages upon validation
+    global refinanceCordsDict
+    refinanceCordsDict = {}
+    
+    #submit button to call function to get and validate data and also to add the correct database records
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= refinance).place(relx=0.5, rely=0.9, anchor=CENTER)
+    
+    #Button to link to view loan Mannagment page
+    loanManagmentPageButton = Button(root, text='Loan Managment Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: loanManagmentPage(unit_ID)).place(relx=0.825, rely=0.9, anchor=CENTER)
 
     root.mainloop()
 
+def refinance(unit_ID):
+    #getting data from the front end to update the DB with
+    loan_ID = uInputDataObj(loanIDEntryBox.get(),str)
+    property_Equity = uInputDataObj(remainingEquityEntryBox.get(),float)
+    most_Recent_Valuation = uInputDataObj(newUnitValuationEntryBox.get(),float)
+    capital_Owed = uInputDataObj(loanValueEntryBox.get(),float)
+    equity_Withdrawn = capital_Owed.data
+    month = uInputDataObj(monthDateOfRefinanceEntryBox.get(),int)
+    year = uInputDataObj(yearDateOfRefinanceEntryBox.get(),int)
+    interest_Rate = uInputDataObj(loanIntrestRateEntryBox.get(),float)
+    instalments = uInputDataObj(loanInstallmentsEntryBox.get(),float)
+
+    #defining the refinance entity fields and data- for use in testing and SQL
+    refinanceDataArray = [unit_ID, month.data, year.data, equity_Withdrawn]
+    refinanceFieldsArray = ['unit_ID','month','year','equity_Withdrawn']
+
+    #defining the loan entity fields and data- for use in testing and SQL
+    loanDataArray = [loan_ID.data,unit_ID,interest_Rate.data,instalments.data,capital_Owed.data]
+    loanFieldArray = ['loan_ID','unit_ID','interest_Rate','instalments','capital_Owed']
+
+    #There is no need to define the units page in the same way as Im only updating this entity, not adding a record
+
+    #makes a list, then dictionary of all the fields to be tested
+    total_Fields = loanFieldArray + refinanceFieldsArray + ['most_Recent_Valuation'] 
+    
+    global dictOfDataValdationResults
+    dictOfDataValdationResults = dict.fromkeys(total_Fields)
+    dictOfDataValdationResults['loan_ID'] = {'presenceCheck':presenceCheck(loan_ID),'uniqueDataCheck':uniqueDataCheck(loan_ID,'loan_ID','loan')}
+    dictOfDataValdationResults['property_Equity'] = {'presenceCheck':presenceCheck(property_Equity),'positiveCheck':rangeCheck(property_Equity,0,None)}
+    dictOfDataValdationResults['most_Recent_Valuation'] = {'presenceCheck':presenceCheck(most_Recent_Valuation),'positiveCheck':rangeCheck(most_Recent_Valuation,0,None)}
+    dictOfDataValdationResults['capital_Owed'] = {'presenceCheck':presenceCheck(capital_Owed),'positiveCheck':rangeCheck(capital_Owed,0,None)}
+    dictOfDataValdationResults['equity_Withdrawn'] = {'presenceCheck':presenceCheck(equity_Withdrawn),'positiveCheck':rangeCheck(equity_Withdrawn,0,None)}
+    dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
+    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+    dictOfDataValdationResults['interest_Rate'] = {'presenceCheck':presenceCheck(interest_Rate),'positiveCheck':rangeCheck(interest_Rate,0,None)}
+    dictOfDataValdationResults['instalments'] = {'presenceCheck':presenceCheck(instalments),'positiveCheck':rangeCheck(instalments,0,None)}
+
+    #special test to check equity, equity withdran, capital owed and most recent valuation all work together.
+
+def loanManagmentPage(unit_ID):
+    pass
 
 initialise()
 print('Program Finished')
@@ -4467,3 +4518,4 @@ print('Program Finished')
 #order stuff in tables
 #Home page
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
+#Todo add entry box coords for refinace page.
