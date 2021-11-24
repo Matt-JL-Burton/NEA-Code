@@ -1010,6 +1010,9 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editUnitPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Refinance':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'LoanManagment':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1064,6 +1067,9 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editUnitPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Refinance':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'LoanManagment':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -4458,10 +4464,10 @@ def refinancePage(unit_ID):
 
     #cords for placing error messages upon validation
     global refinanceCordsDict
-    refinanceCordsDict = {}
+    refinanceCordsDict = {'loan_ID':{'x':0.175,'y':0.3175},'most_Recent_Valuation':{'x':0.5,'y':0.3175},'capital_Owed':{'x':0.825,'y':0.3175},'month':{'x':0.175,'y':0.4975},'year':{'x':0.175,'y':0.4975},'interest_Rate':{'x':0.5,'y':0.4975},'instalments':{'x':0.825,'y':0.4975},'property_Equity':{'x':0.5,'y':0.6875}}
     
     #submit button to call function to get and validate data and also to add the correct database records
-    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= refinance).place(relx=0.5, rely=0.9, anchor=CENTER)
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinance(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     
     #Button to link to view loan Mannagment page
     loanManagmentPageButton = Button(root, text='Loan Managment Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: loanManagmentPage(unit_ID)).place(relx=0.825, rely=0.9, anchor=CENTER)
@@ -4469,6 +4475,10 @@ def refinancePage(unit_ID):
     root.mainloop()
 
 def refinance(unit_ID):
+    #defining the current unit_ID so as to allow the loan managment page to load the correct data when it is clicked
+    global current_Unit_ID
+    current_Unit_ID = unit_ID
+    
     #getting data from the front end to update the DB with
     loan_ID = uInputDataObj(loanIDEntryBox.get(),str)
     property_Equity = uInputDataObj(remainingEquityEntryBox.get(),float)
@@ -4493,22 +4503,69 @@ def refinance(unit_ID):
     #makes a list, then dictionary of all the fields to be tested
     total_Fields = loanFieldArray + refinanceFieldsArray + ['most_Recent_Valuation'] 
     
+    #tests the data to be entered into the list
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(total_Fields)
     dictOfDataValdationResults['loan_ID'] = {'presenceCheck':presenceCheck(loan_ID),'uniqueDataCheck':uniqueDataCheck(loan_ID,'loan_ID','loan')}
     dictOfDataValdationResults['property_Equity'] = {'presenceCheck':presenceCheck(property_Equity),'positiveCheck':rangeCheck(property_Equity,0,None)}
     dictOfDataValdationResults['most_Recent_Valuation'] = {'presenceCheck':presenceCheck(most_Recent_Valuation),'positiveCheck':rangeCheck(most_Recent_Valuation,0,None)}
     dictOfDataValdationResults['capital_Owed'] = {'presenceCheck':presenceCheck(capital_Owed),'positiveCheck':rangeCheck(capital_Owed,0,None)}
-    dictOfDataValdationResults['equity_Withdrawn'] = {'presenceCheck':presenceCheck(equity_Withdrawn),'positiveCheck':rangeCheck(equity_Withdrawn,0,None)}
     dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
     dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
     dictOfDataValdationResults['interest_Rate'] = {'presenceCheck':presenceCheck(interest_Rate),'positiveCheck':rangeCheck(interest_Rate,0,None)}
     dictOfDataValdationResults['instalments'] = {'presenceCheck':presenceCheck(instalments),'positiveCheck':rangeCheck(instalments,0,None)}
+    refinancePageCoverUp()
 
-    #special test to check equity, equity withdran, capital owed and most recent valuation all work together.
+    #displays and counts invalid inputs
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,refinanceCordsDict[entryboxData]['x'],refinanceCordsDict[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+    countOfFailedTests = 0
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+    if countOfFailedTests == 0:
+        for i in range(len(refinanceDataArray)):
+            refinanceDataArray[i] = scramble(refinanceDataArray[i])
+        for i in range(len(loanDataArray)):
+            loanDataArray[i] = scramble(loanDataArray[i])
+
+        openDatabase()
+        refinanceInsertRecordCommand = ("""INSERT INTO refinance (unit_ID,month,year,equity_Withdrawn)
+        VALUES (?,?,?,?)""")
+        cursor.execute(refinanceInsertRecordCommand,refinanceDataArray)
+        loanInsertRecordCommand = ("""INSERT INTO loan (loan_ID,unit_ID,interest_Rate,instalments,capital_Owed)
+        VALUES (?,?,?,?,?)""")     
+        cursor.execute(loanInsertRecordCommand,loanDataArray)
+        cursor.execute("UPDATE units SET most_Recent_Valuation = '" + scramble(most_Recent_Valuation.data) + "' WHERE unit_ID = '" + unit_ID + "'")   
+        closeDatabase()
+
+        displayConfirmation('LoanManagment')
+
+def refinancePageCoverUp():
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            coverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=refinanceCordsDict[entryboxData]['x'],rely=refinanceCordsDict[entryboxData]['y'],anchor=CENTER)
 
 def loanManagmentPage(unit_ID):
-    pass
+    initialiseWindow()
+    global current_Unit_ID
+    current_Unit_ID = unit_ID
+    root.title('Property managment system - Loan Managment')
+    topBorder = Label(root, text='Loan Managment for ' + unit_ID, height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'LoanManagment'
+    displayMenuButton()
+
+    root.mainloop()
 
 initialise()
 print('Program Finished')
