@@ -68,7 +68,7 @@ def definingDefaultVariables():
     tertiary = uInputDataObj('#a9a9a9',str)
     listOfSecondryColourOptions = ['white','grey','black']
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#FDDA0D','activeTextColor':'dark grey','emaraldGreen':'#50C878'}
-    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password','matchesNewPassword':'Your new passwords are not matching, please enter matching passwords','lessThanDeposit':'The deposit spent is more than the tenant has in their deposit','dateForUnitUsed':'Sorry a monthly entry for this month in this unit already exsists'}
+    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 7 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password','matchesNewPassword':'Your new passwords are not matching, please enter matching passwords','lessThanDeposit':'The deposit spent is more than the tenant has in their deposit','dateForUnitUsed':'Sorry a monthly entry for this month in this unit already exsists','refinanceDateError':'Sorry a refinance for this month already exsits for this unit'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     operation_Type = uInputDataObj(None,str)
     recovery_Email = uInputDataObj(None,str)
@@ -1013,7 +1013,6 @@ def displayBackButton():
     elif previousPage == 'LoanManagment':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
-
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
         pass
@@ -1069,7 +1068,6 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'LoanManagment':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
-
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -4531,6 +4529,14 @@ def refinance(unit_ID):
                 if test == False:
                     countOfFailedTests = countOfFailedTests +1
 
+    #specialist data validation -- checks month, year and unit_ID combine to make a unique primary key
+    openDatabase()
+    listOfItemsWithSamePrimaryKey = cursor.execute("SELECT unit_ID FROM refinance WHERE month = '" + scramble(month.data) + "' AND year = '" + scramble(year.data) + "' AND unit_ID = '" + scramble(unit_ID) + "'").fetchall()
+    closeDatabase()
+    if len(listOfItemsWithSamePrimaryKey) != 0 or True:
+        countOfFailedTests = countOfFailedTests + 1
+        disaplayEM('refinanceDateError',refinanceCordsDict['month']['x'],refinanceCordsDict['month']['y'])
+
     if countOfFailedTests == 0:
         for i in range(len(refinanceDataArray)):
             refinanceDataArray[i] = scramble(refinanceDataArray[i])
@@ -4572,7 +4578,5 @@ print('Program Finished')
 
 #TODO: list
 #ReAdjustScore after late or missed rents
-#order stuff in tables
-#Home page
+#order stuff in tablesx``
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
-#Todo add entry box coords for refinace page.
