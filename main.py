@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            refinancePage('LT2')
+            loanManagmentPage('LT2','loan1')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -3655,9 +3655,9 @@ def unitPage(unitID):
     startValueForMonth = createTableForIndividualUnit(0)
     displayMenuButton()
     complaintsManagmentButton = Button(root, text='Add monthly data', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
-    complaintsManagmentButton = Button(root, text='Loan managment', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: loanManagment(current_unit_ID)).place(relx=0.8, rely=0.85, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Loan managment', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: loanManagmentPage(current_unit_ID)).place(relx=0.8, rely=0.85, anchor=CENTER)
     complaintsManagmentButton = Button(root, text='Edit unit data', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: editUnitPage(current_unit_ID)).place(relx=0.5, rely=0.95, anchor=CENTER)
-    complaintsManagmentButton = Button(root, text='Want to sell/delete this unit?', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: editsellPage(current_unit_ID)).place(relx=0.8, rely=0.95, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Want to sell/delete this unit?', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: deletesellPage(current_unit_ID)).place(relx=0.8, rely=0.95, anchor=CENTER)
     
     #get all data
     #define Defualt data
@@ -3938,6 +3938,7 @@ def editTenantPage(tenant_ID):
     
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
     shortFat = PhotoImage(file = "Short-Fat.PNG")
+
     tenantIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.25,anchor=CENTER)
     global tenantIDEntryBox
     tenantIDEntryBox = Label(root, text=tenant_ID,bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
@@ -4137,9 +4138,6 @@ def updateTenant(tenant_ID_Parsed):
         closeDatabase()
         displayConfirmation('Edit Tenant Page')
         # cursor.execute("UPDATE complaints SET month = '" + newComplaintsField[2] + "', year = '" + newComplaintsField[3] + "', complaint_Nature = '" + newComplaintsField[4] + "', resoltion = '" + newComplaintsField[5] + "' WHERE complaint_ID = '" + scramble(complaint_ID.data) + "'")
-
-def loanManagment(unit_ID):
-    pass
 
 def editUnitPage(unit_ID):
     global current_unit_ID
@@ -4394,7 +4392,7 @@ def updateUnit(current_unit_ID, loanID):
         
         displayConfirmation('Edit unit')
 
-def editsellPage(unit_ID):
+def deletesellPage(unit_ID):
     pass
 
 def refinancePage(unit_ID):
@@ -4560,16 +4558,90 @@ def refinancePageCoverUp():
         if dictOfDataValdationResults[entryboxData] != None:
             coverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=refinanceCordsDict[entryboxData]['x'],rely=refinanceCordsDict[entryboxData]['y'],anchor=CENTER)
 
-def loanManagmentPage(unit_ID):
+def loanManagmentPage(unit_ID,loan_ID):
     initialiseWindow()
+    global current_loan_ID
+    current_loan_ID = loan_ID
     global current_Unit_ID
     current_Unit_ID = unit_ID
     root.title('Property managment system - Loan Managment')
-    topBorder = Label(root, text='Loan Managment for ' + unit_ID, height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    topBorder = Label(root, text='Loan Managment for ' + unit_ID, height=1 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0.05)
+    topBorderSubText = Label(root, text='Loan ID = ' + loan_ID, height=1 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,25), justify='center').place(relx=0.5,rely=0.17,anchor=CENTER)
     displayBackButton()
     global previousPage
     previousPage = 'LoanManagment'
     displayMenuButton()
+    longNormal = PhotoImage(file="Long-Normal.PNG")
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+
+    #loan ID element
+    loanIDEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.35,anchor=CENTER)
+    openDatabase()
+    loanIDs = cursor.execute("SELECT loan_ID FROM loan WHERE unit_ID = '" + unit_ID + "'").fetchall()
+    closeDatabase()
+    cleanLoanIDsList = []
+    for i in range(len(loanIDs)):
+        cleanLoanIDsList.append(deScramble(loanIDs[i][0]))
+    global loanIDOptions
+    loanIDOptions = cleanLoanIDsList
+    global operationTypeMenu
+    operationTypeMenu = ttk.Combobox(root, value=loanIDOptions,width = 50, justify=tkinter.CENTER, font=(font.data,18))
+    operationTypeMenu.current(0)
+    operationTypeMenu.place(relx=0.5,rely=0.35,anchor=CENTER)
+    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
+    loanIDEntryLabel = Label(root, text='Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.27,anchor=CENTER)
+    loanIDEntrySubLabel = Label(root, text='If you change the selected loan ID make sure to refresh the page values',bg=primary.data, fg=bannedColours['warningYellow'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.42,anchor=CENTER)
+
+    #getting loan ID to use on the rest of the page
+    loan_ID = operationTypeMenu.get()
+    #per annum intrest rate element genrating and placement
+    openDatabase()
+    intrestRate = deScramble(cursor.execute("SELECT interest_Rate FROM loan WHERE loan_ID = '" + scramble(loan_ID) + "'").fetchall()[0][0])
+    closeDatabase()
+    intrestRateEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.6,anchor=CENTER)
+    global intrestRateEntryBox
+    intrestRateEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    intrestRateEntryBox.insert(0,intrestRate)
+    intrestRateEntryBox.place(relx=0.175,rely=0.6,anchor=CENTER)
+    intrestRateEntryBoxLabel = Label(root, text='Per Annum intrest rate (%)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.52,anchor=CENTER)
+
+    #installments element genrating and placement
+    openDatabase()
+    installments = deScramble(cursor.execute("SELECT instalments FROM loan WHERE loan_ID = '" + scramble(loan_ID) + "'").fetchall()[0][0])
+    closeDatabase()
+    isntallmentsEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.6,anchor=CENTER)
+    global isntallmentsEntryBox
+    isntallmentsEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    isntallmentsEntryBox.insert(0,installments)
+    isntallmentsEntryBox.place(relx=0.5,rely=0.6,anchor=CENTER)
+    isntallmentsEntryBoxlabel = Label(root, text='Monthly Instalments (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+
+    #Remaining Capital genrating and placement
+    openDatabase()
+    capitalOwed = deScramble(cursor.execute("SELECT capital_Owed FROM loan WHERE loan_ID = '" + scramble(loan_ID) + "'").fetchall()[0][0])
+    closeDatabase()
+    capitalOwedEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.6,anchor=CENTER)
+    global capitalOwedEntryBox
+    capitalOwedEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    capitalOwedEntryBox.insert(0,capitalOwed)
+    capitalOwedEntryBox.place(relx=0.825,rely=0.6,anchor=CENTER)
+    capitalOwedEntryBoxLabel = Label(root, text='Remaining Capital Owed',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.52,anchor=CENTER)
+
+    #placing buttons to refres the values for the correct loan and also to submit data to the screen
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: updateUnit(unit_ID)).place(relx=0.5, rely=0.8 , anchor=CENTER)
+    refreshValuesButton = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
+    refreshValuesButton = Button(root, text='Delete Loan', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    refreshValuesButton2 = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.875, rely=0.35, anchor=CENTER)
+
+    #getting data to show as the calculated data
+    loanLength = mortgageLengthCalculator(loan_ID)
+    totalCost = loanLength * installments
+
+    #displaying calculated data
+    calculatedDataTitle = Label(root, text='Calculated Data',bg=primary.data, fg=secondry.data, font=(font.data,18,'underline'), justify='center',relief='flat').place(relx=0.175,rely=0.75,anchor=CENTER)
+    repaymentsPeriodLabel = Label(root, text='Repayment Period : ' + str(loanLength) + ' month(s)',bg=primary.data, fg=secondry.data, font=(font.data,16), justify='center',relief='flat').place(relx=0.175,rely=0.8,anchor=CENTER)
+    totalCostLabel = Label(root, text='total cost estimate : £' + str(round(float(totalCost),2)),bg=primary.data, fg=secondry.data, font=(font.data,16), justify='center',relief='flat').place(relx=0.175,rely=0.85,anchor=CENTER)
+    calculatedDataSubText = Label(root, text='* assuming all payments are made on time',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.175,rely=0.88,anchor=CENTER)
 
     root.mainloop()
 
