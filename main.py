@@ -4652,3 +4652,4 @@ print('Program Finished')
 #ReAdjustScore after late or missed rents
 #order stuff in tablesx``
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
+#back end of loan managment
