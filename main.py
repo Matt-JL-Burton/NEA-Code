@@ -4596,7 +4596,7 @@ def loanManagmentPage(unit_ID,loan_ID):
     loanIDOptions = cleanLoanIDsList
     global operationTypeMenu
     operationTypeMenu = ttk.Combobox(root, value=loanIDOptions,width = 50, justify=tkinter.CENTER, font=(font.data,18))
-    operationTypeMenu.current(0)
+    operationTypeMenu.current(loanIDOptions.index(loan_ID))
     operationTypeMenu.place(relx=0.5,rely=0.35,anchor=CENTER)
     root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
     loanIDEntryLabel = Label(root, text='Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.27,anchor=CENTER)
@@ -4639,9 +4639,9 @@ def loanManagmentPage(unit_ID,loan_ID):
 
     #placing buttons to refres the values for the correct loan and also to submit data to the screen
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: updateUnit(unit_ID)).place(relx=0.5, rely=0.8 , anchor=CENTER)
-    refreshValuesButton = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
+    refreshValuesButton = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshRefinancePage(unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
     refreshValuesButton = Button(root, text='Delete Loan', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
-    refreshValuesButton2 = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.875, rely=0.35, anchor=CENTER)
+    refreshValuesButton2 = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshRefinancePage(unit_ID)).place(relx=0.875, rely=0.35, anchor=CENTER)
 
     #getting data to show as the calculated data
     loanLength = mortgageLengthCalculator(loan_ID)
@@ -4654,6 +4654,10 @@ def loanManagmentPage(unit_ID,loan_ID):
     calculatedDataSubText = Label(root, text='* assuming all payments are made on time',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.175,rely=0.88,anchor=CENTER)
 
     root.mainloop()
+
+def refreshRefinancePage(unit_ID):
+    loan_ID = operationTypeMenu.get()
+    loanManagmentPage(unit_ID,loan_ID)
 
 initialise()
 print('Program Finished')
