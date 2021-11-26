@@ -1011,7 +1011,7 @@ def displayBackButton():
     elif previousPage == 'Refinance':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'LoanManagment':
-        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID,current_loan_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1067,7 +1067,7 @@ def displayNextButton(nextPageCommand):
     elif nextPageCommand == 'Refinance':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'LoanManagment':
-        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID,current_loan_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -3654,8 +3654,14 @@ def unitPage(unitID):
     global startValueForMonth
     startValueForMonth = createTableForIndividualUnit(0)
     displayMenuButton()
+
+    #finding a loanID to pass to the loanID page, every unit will have atleast one loan so this is not an issue
+    openDatabase()
+    loan_ID_To_Parse = deScramble(cursor.execute("SELECT loan_ID FROM loan WHERE unit_ID = '" + scramble(unitID) + "'").fetchall()[0][0])
+    closeDatabase()
+
     complaintsManagmentButton = Button(root, text='Add monthly data', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: monthlyAdditionsPage(current_unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
-    complaintsManagmentButton = Button(root, text='Loan managment', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: loanManagmentPage(current_unit_ID)).place(relx=0.8, rely=0.85, anchor=CENTER)
+    complaintsManagmentButton = Button(root, text='Loan managment', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: loanManagmentPage(current_unit_ID,loan_ID_To_Parse)).place(relx=0.8, rely=0.85, anchor=CENTER)
     complaintsManagmentButton = Button(root, text='Edit unit data', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: editUnitPage(current_unit_ID)).place(relx=0.5, rely=0.95, anchor=CENTER)
     complaintsManagmentButton = Button(root, text='Want to sell/delete this unit?', font=(font.data,'14','underline'),bg=secondry.data,fg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command= lambda: deletesellPage(current_unit_ID)).place(relx=0.8, rely=0.95, anchor=CENTER)
     
@@ -3698,7 +3704,6 @@ def unitPage(unitID):
     closeDatabase()
     address = deScramble(unitInfo[0][0])
     most_Recent_Valuation = float(deScramble(unitInfo[0][1]))
-    print(unitInfo[0][2])
     buy_Price = float(deScramble(unitInfo[0][2]))
     postcode = deScramble(unitInfo[0][3])
     buy_Month = deScramble(unitInfo[0][4])
@@ -4465,8 +4470,13 @@ def refinancePage(unit_ID):
     #submit button to call function to get and validate data and also to add the correct database records
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinance(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     
+    #finding a loanID to pass to the loanID page, every unit will have atleast one loan so this is not an issue
+    openDatabase()
+    loan_ID_To_Parse = deScramble(cursor.execute("SELECT loan_ID FROM loan WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0])
+    closeDatabase()
+
     #Button to link to view loan Mannagment page
-    loanManagmentPageButton = Button(root, text='Loan Managment Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: loanManagmentPage(unit_ID)).place(relx=0.825, rely=0.9, anchor=CENTER)
+    loanManagmentPageButton = Button(root, text='Loan Managment Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: loanManagmentPage(unit_ID,loan_ID_To_Parse)).place(relx=0.825, rely=0.9, anchor=CENTER)
 
     root.mainloop()
 
