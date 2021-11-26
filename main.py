@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            loanManagmentPage('LT2','loan1')
+            loanManagmentPage('LT2','LT2')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -4572,8 +4572,8 @@ def loanManagmentPage(unit_ID,loan_ID):
     initialiseWindow()
     global current_loan_ID
     current_loan_ID = loan_ID
-    global current_Unit_ID
-    current_Unit_ID = unit_ID
+    global current_unit_ID
+    current_unit_ID = unit_ID
     root.title('Property managment system - Loan Managment')
     topBorder = Label(root, text='Loan Managment for ' + unit_ID, height=1 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0.05)
     topBorderSubText = Label(root, text='Loan ID = ' + loan_ID, height=1 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,25), justify='center').place(relx=0.5,rely=0.17,anchor=CENTER)
@@ -4594,16 +4594,16 @@ def loanManagmentPage(unit_ID,loan_ID):
         cleanLoanIDsList.append(deScramble(loanIDs[i][0]))
     global loanIDOptions
     loanIDOptions = cleanLoanIDsList
-    global operationTypeMenu
-    operationTypeMenu = ttk.Combobox(root, value=loanIDOptions,width = 50, justify=tkinter.CENTER, font=(font.data,18))
-    operationTypeMenu.current(loanIDOptions.index(loan_ID))
-    operationTypeMenu.place(relx=0.5,rely=0.35,anchor=CENTER)
+    global loanIDTypeMenu
+    loanIDTypeMenu = ttk.Combobox(root, value=loanIDOptions,width = 50, justify=tkinter.CENTER, font=(font.data,18))
+    loanIDTypeMenu.current(loanIDOptions.index(loan_ID))
+    loanIDTypeMenu.place(relx=0.5,rely=0.35,anchor=CENTER)
     root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
     loanIDEntryLabel = Label(root, text='Loan ID',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.27,anchor=CENTER)
     loanIDEntrySubLabel = Label(root, text='If you change the selected loan ID make sure to refresh the page values',bg=primary.data, fg=bannedColours['warningYellow'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.42,anchor=CENTER)
 
     #getting loan ID to use on the rest of the page
-    loan_ID = operationTypeMenu.get()
+    loan_ID = loanIDTypeMenu.get()
     #per annum intrest rate element genrating and placement
     openDatabase()
     intrestRate = deScramble(cursor.execute("SELECT interest_Rate FROM loan WHERE loan_ID = '" + scramble(loan_ID) + "'").fetchall()[0][0])
@@ -4638,26 +4638,110 @@ def loanManagmentPage(unit_ID,loan_ID):
     capitalOwedEntryBoxLabel = Label(root, text='Remaining Capital Owed',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.52,anchor=CENTER)
 
     #placing buttons to refres the values for the correct loan and also to submit data to the screen
-    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: updateUnit(unit_ID)).place(relx=0.5, rely=0.8 , anchor=CENTER)
+    submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: updateLoan(unit_ID,loan_ID)).place(relx=0.5, rely=0.8 , anchor=CENTER)
     refreshValuesButton = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshLoanManagmentPage(unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
-    refreshValuesButton = Button(root, text='Delete Loan', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    deleteLoanButton = Button(root, text='Delete Loan', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteLoan(loan_ID,unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     refreshValuesButton2 = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshLoanManagmentPage(unit_ID)).place(relx=0.875, rely=0.35, anchor=CENTER)
 
     #getting data to show as the calculated data
     loanLength = mortgageLengthCalculator(loan_ID)
-    totalCost = loanLength * installments
+    if loanLength == 'Infinite':
+        totalCost = 'Infinte'
+    else:
+        totalCost = loanLength * installments
 
     #displaying calculated data
     calculatedDataTitle = Label(root, text='Calculated Data',bg=primary.data, fg=secondry.data, font=(font.data,18,'underline'), justify='center',relief='flat').place(relx=0.175,rely=0.75,anchor=CENTER)
     repaymentsPeriodLabel = Label(root, text='Repayment Period : ' + str(loanLength) + ' month(s)',bg=primary.data, fg=secondry.data, font=(font.data,16), justify='center',relief='flat').place(relx=0.175,rely=0.8,anchor=CENTER)
-    totalCostLabel = Label(root, text='total cost estimate : £' + str(round(float(totalCost),2)),bg=primary.data, fg=secondry.data, font=(font.data,16), justify='center',relief='flat').place(relx=0.175,rely=0.85,anchor=CENTER)
+    if type(totalCost) == float:
+        totalCostLabel = Label(root, text='total cost estimate : £' + str(round(float(totalCost),2)),bg=primary.data, fg=secondry.data, font=(font.data,16), justify='center',relief='flat').place(relx=0.175,rely=0.85,anchor=CENTER)
+    else:
+        totalCostLabel = Label(root, text='total cost estimate : Infinite',bg=primary.data, fg=secondry.data, font=(font.data,16), justify='center',relief='flat').place(relx=0.175,rely=0.85,anchor=CENTER)
     calculatedDataSubText = Label(root, text='* assuming all payments are made on time',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.175,rely=0.88,anchor=CENTER)
+
+    #adding extra info to tell the user to delete the appropraite refinance data if they delete a loan which came from the refinaceing
+    warningToCatchEye = Label(root, text='Extra Info',bg=primary.data, fg=bannedColours['warningYellow'], font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.75,anchor=CENTER)
+    repaymentsPeriodLabel = Label(root, text='If you delete a loan created by refinancing\nthis unit be sure to delete the\nappropriate refinance data',bg=primary.data, fg=secondry.data, font=(font.data,16), justify='center',relief='flat').place(relx=0.825,rely=0.82,anchor=CENTER)
+
+    global loanManagmentCoverUpCords
+    loanManagmentCoverUpCords = {'loan_ID':{'x':0.5,'y':0.425},'interest_Rate':{'x':0.175,'y':0.665},'instalments':{'x':0.5,'y':0.665},'capital_Owed':{'x':0.825,'y':0.665}}
 
     root.mainloop()
 
 def refreshLoanManagmentPage(unit_ID):
-    loan_ID = operationTypeMenu.get()
+    loan_ID = loanIDTypeMenu.get()
     loanManagmentPage(unit_ID,loan_ID)
+
+def deleteLoan(loan_ID,unit_ID):
+    #checks that there is atelast 2 loans so as to have 1 remaing lona on a unit at all times - This unit can have 0 capital owed so effectivly work as a none loan but this allows my system to work
+    openDatabase()
+    loanIDs = cursor.execute("SELECT loan_ID FROM loan WHERE unit_ID = '" + unit_ID + "'").fetchall()
+    closeDatabase()
+    if len(loanIDOptions) != 1:
+        openDatabase()
+        cursor.execute("DELETE FROM loan WHERE loan_ID = '" + scramble(loan_ID) + "'")
+        closeDatabase()
+        displayConfirmation('individualunit')
+    else:
+        #displayed error message to portray the issue outlined by the above comment
+        invalidDeleteMessageDisplayed = Label(root, text="You can't delete this loan as there must be atleast 1 loan on a property at once - set the capital owed/installments to 0 if you own a property outright",bg=primary.data, fg=bannedColours['warningYellow'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.95,anchor=CENTER)
+
+
+def updateLoan(passed_Unit_ID,passed_Loan_ID):
+    #get data from screen and via arguments
+    unit_ID = uInputDataObj(passed_Unit_ID,str)
+    loan_ID = uInputDataObj(passed_Loan_ID,str)
+    interest_Rate = uInputDataObj(intrestRateEntryBox.get(),float)
+    instalments = uInputDataObj(isntallmentsEntryBox.get(),float)
+    capital_Owed = uInputDataObj(capitalOwedEntryBox.get(),float)
+
+    #defining the fields and data for the loan table
+    loanDataArray = [loan_ID.data, unit_ID.data, interest_Rate.data, instalments.data, capital_Owed.data]
+    loanFieldsArray = ['loan_ID','unit_ID','interest_Rate','instalments','capital_Owed']
+
+    #tests the data to be entered into the list
+    global dictOfDataValdationResults
+    dictOfDataValdationResults = dict.fromkeys(loanFieldsArray)
+    dictOfDataValdationResults['loan_ID'] = {'menuOptionCheck':menuOptionCheck(loan_ID,loanIDOptions)}
+    dictOfDataValdationResults['interest_Rate'] = {'presenceCheck':presenceCheck(interest_Rate),'positiveCheck':rangeCheck(interest_Rate,0,None)}
+    dictOfDataValdationResults['instalments'] = {'presenceCheck':presenceCheck(instalments),'positiveCheck':rangeCheck(instalments,0,None)}
+    dictOfDataValdationResults['capital_Owed'] = {'presenceCheck':presenceCheck(capital_Owed),'positiveCheck':rangeCheck(capital_Owed,0,None)}
+    loanManagmentPageCoverUp()
+
+    #displaying the correct error messages to the correct boxes
+    for entryboxData in dictOfDataValdationResults.keys():
+        countOfFailedTests = 0
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].keys():
+                while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                    disaplayEM(test,loanManagmentCoverUpCords[entryboxData]['x'],loanManagmentCoverUpCords[entryboxData]['y'])
+                    countOfFailedTests = countOfFailedTests + 1
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            for test in dictOfDataValdationResults[entryboxData].values():
+                if test == False:
+                    countOfFailedTests = countOfFailedTests +1
+
+    if countOfFailedTests == 0:
+        #scrambling data to add to database
+        for i in range(len(loanDataArray)):
+            loanDataArray[i] = scramble(loanDataArray[i])
+
+        #updating the loan record 
+        openDatabase()
+        cursor.execute("UPDATE loan SET interest_Rate = '" + scramble(interest_Rate.data) +  "', instalments = '" + scramble(instalments.data) + "', capital_Owed = '" + scramble(capital_Owed.data) + "' WHERE loan_ID = '" + scramble(loan_ID.data) + "'")
+        closeDatabase()
+
+        displayConfirmation('individualunit')
+
+def loanManagmentPageCoverUp():
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            if loanManagmentCoverUpCords[entryboxData]['y'] == 0.425:
+                coverUp = Label(root,bg=primary.data,width=125,font=(font.data,7),justify='center').place(relx=loanManagmentCoverUpCords[entryboxData]['x'],rely=loanManagmentCoverUpCords[entryboxData]['y'],anchor=CENTER)
+            else:
+                coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=loanManagmentCoverUpCords[entryboxData]['x'],rely=loanManagmentCoverUpCords[entryboxData]['y'],anchor=CENTER)
+
 
 initialise()
 print('Program Finished')
