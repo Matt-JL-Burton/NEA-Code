@@ -4398,6 +4398,7 @@ def updateUnit(current_unit_ID, loanID):
         displayConfirmation('Edit unit')
 
 def deletesellPage(unit_ID):
+    #Code to intialise page and add general utility such as header, menu, back button etc
     global current_unit_ID
     current_unit_ID = unit_ID
     initialiseWindow()
@@ -4407,6 +4408,36 @@ def deletesellPage(unit_ID):
     global previousPage
     previousPage = 'Edit unit'
     displayMenuButton()
+
+    longNormalTwo = PhotoImage(file = "Long-Normal 2.PNG")
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+
+    cautionLabel = Label(root, text='Caution',bg=primary.data, fg=bannedColours['warningYellow'], width=23, font=(font.data,18,'bold','underline'), justify='center',relief='flat').place(relx=0.5,rely=0.18,anchor=CENTER)
+    cautionSubLabel = Label(root, text='Once an account is deleted all data linked to that account is lost. There is no way to retrieve an\naccount once it is deleted! Once an account is deleted it is gone for ever.',bg=primary.data, fg=secondry.data, width=100, font=(font.data,14), justify='center',relief='flat').place(relx=0.5,rely=0.23,anchor=CENTER)
+
+    salePriceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.40,anchor=CENTER)
+    global salePriceEntryBox
+    salePriceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    salePriceEntryBox.place(relx=0.175,rely=0.40,anchor=CENTER)
+    salePriceEntryBoxLabel = Label(root, text='Sale Price',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.32,anchor=CENTER)
+
+    dateOfSaleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
+    global monthDateOfSaleEntryBox
+    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.5,rely=0.40)
+    monthDateOfSaleEntryBox = Entry(root, bg='pink',fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    monthDateOfSaleEntryBox.place(relx=0.435,rely=0.40,anchor=CENTER)
+    global yearDateOfSaleEntryBox
+    yearDateOfSaleEntryBox = Entry(root, bg='pink',fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    yearDateOfSaleEntryBox.place(relx=0.565,rely=0.40,anchor=CENTER)
+    dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Sale',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
+    dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.5475,anchor=CENTER)
+
+
+    loanValueBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.40,anchor=CENTER)
+    global loanValueEntryBox
+    loanValueEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    loanValueEntryBox.place(relx=0.825,rely=0.40,anchor=CENTER)
+    loanValueEntryBoxLabel = Label(root, text='Loan Value (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.32,anchor=CENTER)
 
     root.mainloop()
 
