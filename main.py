@@ -4409,7 +4409,7 @@ def deletesellPage(unit_ID):
     previousPage = 'Edit unit'
     displayMenuButton()
 
-    longNormalTwo = PhotoImage(file = "Long-Normal 2.PNG")
+    longNormal = PhotoImage(file = "Long-Normal.PNG")
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
 
     cautionLabel = Label(root, text='Caution',bg=primary.data, fg=bannedColours['warningYellow'], width=23, font=(font.data,18,'bold','underline'), justify='center',relief='flat').place(relx=0.5,rely=0.18,anchor=CENTER)
@@ -4423,21 +4423,32 @@ def deletesellPage(unit_ID):
 
     dateOfSaleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
     global monthDateOfSaleEntryBox
-    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.5,rely=0.40)
-    monthDateOfSaleEntryBox = Entry(root, bg='pink',fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.49,rely=0.355)
+    monthDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
     monthDateOfSaleEntryBox.place(relx=0.435,rely=0.40,anchor=CENTER)
     global yearDateOfSaleEntryBox
-    yearDateOfSaleEntryBox = Entry(root, bg='pink',fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
-    yearDateOfSaleEntryBox.place(relx=0.565,rely=0.40,anchor=CENTER)
+    yearDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    yearDateOfSaleEntryBox.place(relx=0.575,rely=0.40,anchor=CENTER)
     dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Sale',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
-    dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.5475,anchor=CENTER)
+    dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.4675,anchor=CENTER)
 
+    capGainsTaxPaidBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.40,anchor=CENTER)
+    global capGainsPaidOptions
+    capGainsPaidOptions = ['Paid','Not Paid'] 
+    global capGainsMenu
+    capGainsMenu = ttk.Combobox(root, value=capGainsPaidOptions, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+    capGainsMenu.place(relx=0.825,rely=0.40,anchor=CENTER)
+    capGainsMenu.current(capGainsPaidOptions.index('Paid'))
+    root.option_add('*TCombobox*Listbox.font', (font.data,14))
+    global capGainsTaxPaidEntryBox
+    capGainsTaxPaidEntryBoxLabel = Label(root, text='Capital Gains Tax paid',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.32,anchor=CENTER)
 
-    loanValueBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.40,anchor=CENTER)
-    global loanValueEntryBox
-    loanValueEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    loanValueEntryBox.place(relx=0.825,rely=0.40,anchor=CENTER)
-    loanValueEntryBoxLabel = Label(root, text='Loan Value (£)',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.32,anchor=CENTER)
+    passwordValidatiomEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
+    global passwordValidatiomEntryBox
+    passwordValidatiomEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
+    passwordValidatiomEntryBox.place(relx=0.5,rely=0.60,anchor=CENTER)
+    passwordValidatiomEntryBoxLabel = Label(root, text='Enter password as verfication',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+
 
     root.mainloop()
 
