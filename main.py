@@ -39,7 +39,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            loanManagmentPage('LT2','LT2')
+            deletesellPage('LT2')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -4398,7 +4398,17 @@ def updateUnit(current_unit_ID, loanID):
         displayConfirmation('Edit unit')
 
 def deletesellPage(unit_ID):
-    pass
+    global current_unit_ID
+    current_unit_ID = unit_ID
+    initialiseWindow()
+    root.title('Property managment system - Delete/Sell Unit Page')
+    topBorder = Label(root, text='Delete/Sell Unit ' + unit_ID, height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Edit unit'
+    displayMenuButton()
+
+    root.mainloop()
 
 def refinancePage(unit_ID):
     #Code to intialise page and add general utility such as header, menu, back button etc
@@ -4685,7 +4695,6 @@ def deleteLoan(loan_ID,unit_ID):
     else:
         #displayed error message to portray the issue outlined by the above comment
         invalidDeleteMessageDisplayed = Label(root, text="You can't delete this loan as there must be atleast 1 loan on a property at once - set the capital owed/installments to 0 if you own a property outright",bg=primary.data, fg=bannedColours['warningYellow'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.95,anchor=CENTER)
-
 
 def updateLoan(passed_Unit_ID,passed_Loan_ID):
     #get data from screen and via arguments
