@@ -4450,12 +4450,45 @@ def deletesellPage(unit_ID):
     passwordValidatiomEntryBoxLabel = Label(root, text='Enter password as verfication',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
     hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordValidatiomEntryBox,0.14,0.60)).place(relx=0.14, rely=0.60, anchor=CENTER)
 
-    sellUnitB = Button(root, text='Confirm unit sold', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.8, anchor=CENTER)
+    sellUnitB = Button(root, text='Confirm unit sold', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: sellunit(unit_ID)).place(relx=0.5, rely=0.8, anchor=CENTER)
     sellUnitBSub = Label(root, text='Click this once you are happy with your sell detials',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.83,anchor=CENTER)
-    deleteUnitB = Button(root, text='Just delete unit', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    deleteUnitB = Button(root, text='Just delete unit', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteunit(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     sellUnitBSub = Label(root, text='It will be as if the unit never exsisted',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.93,anchor=CENTER)
 
     root.mainloop()
+
+def deleteunit(unit_ID):
+    openDatabase()
+    cursor.execute("DELETE FROM units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+    cursor.execute("DELETE FROM loan WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+    cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+    cursor.execute("DELETE FROM sold_Units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+    cursor.execute("DELETE FROM units_Monthly WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+    closeDatabase()
+    displayConfirmation('Properties')
+
+def sellunit(unit_ID):
+    #getting data from units db to place into sold units table
+    #This still conforms to 1 NF (no repeating data) as the data which is being copied from the units table is about to be deleted
+    openDatabase()
+    buy_Price_Data = deScramble(cursor.execute("SELECT buy_Price FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0])
+    closeDatabase()
+
+
+    #getting data from the front and and placing pre-gotten data in the rigth form
+    unit_ID = uInputDataObj(unit_ID,str)
+    account_ID = databaseCurrentAccount_ID
+    buy_Price = uInputDataObj(buy_Price_Data,float)
+    sell_Price = uInputDataObj(salePriceEntryBox.get(),float)
+    sell_Month = uInputDataObj(monthDateOfSaleEntryBox.get(),int)
+    sell_Year = uInputDataObj(yearDateOfSaleEntryBox.get(),int)
+    tax_Due = uInputDataObj(workOutCapGainsDue(unit_ID),float)
+    tax_Paid = uInputDataObj(capGainsMenu.get(),str)
+
+    
+def workOutCapGainsDue(unit_ID):
+    return 10
+
 
 def refinancePage(unit_ID):
     #Code to intialise page and add general utility such as header, menu, back button etc
