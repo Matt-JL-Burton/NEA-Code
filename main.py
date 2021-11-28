@@ -1349,7 +1349,6 @@ def lessThanDeposit(unit_ID,inputData):
             return False
     else:
         return False
-
 # end of data validation tests
 
 def disaplayEM(errorType,x,y):
@@ -4474,7 +4473,6 @@ def sellunit(unit_ID):
     buy_Price_Data = deScramble(cursor.execute("SELECT buy_Price FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0])
     closeDatabase()
 
-
     #getting data from the front and and placing pre-gotten data in the rigth form
     unit_ID = uInputDataObj(unit_ID,str)
     account_ID = databaseCurrentAccount_ID
@@ -4485,10 +4483,8 @@ def sellunit(unit_ID):
     tax_Due = uInputDataObj(workOutCapGainsDue(unit_ID),float)
     tax_Paid = uInputDataObj(capGainsMenu.get(),str)
 
-    
 def workOutCapGainsDue(unit_ID):
     return 10
-
 
 def refinancePage(unit_ID):
     #Code to intialise page and add general utility such as header, menu, back button etc
