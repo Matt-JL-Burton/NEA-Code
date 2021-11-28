@@ -4448,7 +4448,12 @@ def deletesellPage(unit_ID):
     passwordValidatiomEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
     passwordValidatiomEntryBox.place(relx=0.5,rely=0.60,anchor=CENTER)
     passwordValidatiomEntryBoxLabel = Label(root, text='Enter password as verfication',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+    hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordValidatiomEntryBox,0.14,0.60)).place(relx=0.14, rely=0.60, anchor=CENTER)
 
+    sellUnitB = Button(root, text='Confirm unit sold', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.8, anchor=CENTER)
+    sellUnitBSub = Label(root, text='Click this once you are happy with your sell detials',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.83,anchor=CENTER)
+    deleteUnitB = Button(root, text='Just delete unit', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refinancePage(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    sellUnitBSub = Label(root, text='It will be as if the unit never exsisted',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.93,anchor=CENTER)
 
     root.mainloop()
 
