@@ -4408,18 +4408,23 @@ def deletesellPage(unit_ID):
     previousPage = 'Edit unit'
     displayMenuButton()
 
+    #defiing images to use in the page layout
     longNormal = PhotoImage(file = "Long-Normal.PNG")
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
 
+    #placing/generating caution to warn user of delete 
     cautionLabel = Label(root, text='Caution',bg=primary.data, fg=bannedColours['warningYellow'], width=23, font=(font.data,18,'bold','underline'), justify='center',relief='flat').place(relx=0.5,rely=0.18,anchor=CENTER)
-    cautionSubLabel = Label(root, text='Once an account is deleted all data linked to that account is lost. There is no way to retrieve an\naccount once it is deleted! Once an account is deleted it is gone for ever.',bg=primary.data, fg=secondry.data, width=100, font=(font.data,14), justify='center',relief='flat').place(relx=0.5,rely=0.23,anchor=CENTER)
+    cautionSubLabel = Label(root, text='Once a unit is deleted all data linked to that unit is lost. There is no way to retrieve a\nunit once it is deleted! Once an unit is deleted it is gone for ever.',bg=primary.data, fg=secondry.data, width=100, font=(font.data,14), justify='center',relief='flat').place(relx=0.5,rely=0.23,anchor=CENTER)
 
+    #placing elements to rerive inputs from user
+    #sale price entry box + extras for visual
     salePriceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.40,anchor=CENTER)
     global salePriceEntryBox
     salePriceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
     salePriceEntryBox.place(relx=0.175,rely=0.40,anchor=CENTER)
     salePriceEntryBoxLabel = Label(root, text='Sale Price',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.32,anchor=CENTER)
-
+    
+    #date of sale price entry box + extras for visual, includes month and year entry boxes seperatly for easyier back end retrival
     dateOfSaleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
     global monthDateOfSaleEntryBox
     slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.49,rely=0.355)
@@ -4431,6 +4436,7 @@ def deletesellPage(unit_ID):
     dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Sale',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
     dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.4675,anchor=CENTER)
 
+    #capital gains entry box + extras for visual
     capGainsTaxPaidBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.40,anchor=CENTER)
     global capGainsPaidOptions
     capGainsPaidOptions = ['Paid','Not Paid'] 
@@ -4442,6 +4448,7 @@ def deletesellPage(unit_ID):
     global capGainsTaxPaidEntryBox
     capGainsTaxPaidEntryBoxLabel = Label(root, text='Capital Gains Tax paid',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.32,anchor=CENTER)
 
+    #password entry box + extras for visual, used for validating the delete/sell request
     passwordValidatiomEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
     global passwordValidatiomEntryBox
     passwordValidatiomEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
@@ -4449,6 +4456,7 @@ def deletesellPage(unit_ID):
     passwordValidatiomEntryBoxLabel = Label(root, text='Enter password as verfication',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
     hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordValidatiomEntryBox,0.14,0.60)).place(relx=0.14, rely=0.60, anchor=CENTER)
 
+    #places action buttons and respective descriptors for the action buttons
     sellUnitB = Button(root, text='Confirm unit sold', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: sellunit(unit_ID)).place(relx=0.5, rely=0.8, anchor=CENTER)
     sellUnitBSub = Label(root, text='Click this once you are happy with your sell detials',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.83,anchor=CENTER)
     deleteUnitB = Button(root, text='Just delete unit', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteunit(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
@@ -4456,7 +4464,8 @@ def deletesellPage(unit_ID):
 
     root.mainloop()
 
-def deleteunit(unit_ID):
+def deleteunit(unit_ID): 
+    #TODO: if password is correct
     openDatabase()
     cursor.execute("DELETE FROM units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
     cursor.execute("DELETE FROM loan WHERE unit_ID = '" + scramble(unit_ID)  + "'")
@@ -4836,3 +4845,4 @@ print('Program Finished')
 #order stuff in tablesx``
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
 #back end of loan managment
+#fix delete unit without password issue
