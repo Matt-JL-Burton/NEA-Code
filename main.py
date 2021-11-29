@@ -4482,8 +4482,9 @@ def deleteunit(unit_ID):
         displayConfirmation('Properties')
     else:
         #displayed error message to say as such
-        pass
-    
+        warning = Label(root, text = 'Sorry the entered password was incorrect',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
+
+
 
 def sellunit(unit_ID):
     #getting data from units db to place into sold units table
