@@ -1077,7 +1077,7 @@ def displayGovermentNationalInsurancePage():
                 displayConnectionError()
 
 def getTaxRate(accountID):
-    if type(other_Income_Estimate) == float or type(other_Income_Estimate) == int:
+    if type(other_Income_Estimate.data) == float or type(other_Income_Estimate.data) == int:
         if operation_Type.data == 'personal':
             if other_Income_Estimate < bIncCutOff.data:
                 tax_Rate = 'b'
@@ -1088,7 +1088,7 @@ def getTaxRate(accountID):
         elif operation_Type == 'buisness':
             tax_Rate = 'c'
     else:
-        tax_Rate='b'
+        print('Getting Tax Rate went wrong, fix me :(')
     return(tax_Rate)
 
 #scrambling alg used for encrpytin data so that it cannot be easily read straight from the DB file
@@ -4462,6 +4462,10 @@ def deletesellPage(unit_ID):
     deleteUnitB = Button(root, text='Just delete unit', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteunit(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     sellUnitBSub = Label(root, text='It will be as if the unit never exsisted',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.93,anchor=CENTER)
 
+    #defining coords for placing error messages
+    global deelteSellCoords
+    deelteSellCoords = {'sell_Price':{'x':0.175,'y':0.47},'sell_Month':{'x':0.5,'y':0.47},'sell_Year':{'x':0.5,'y':0.47},'tax_Paid':{'x':0.825,'y':0.47},'password':{'x':0.5,'y':0.67}}
+
     root.mainloop()
 
 def deleteunit(unit_ID): 
@@ -4484,8 +4488,6 @@ def deleteunit(unit_ID):
         #displayed error message to say as such
         warning = Label(root, text = 'Sorry the entered password was incorrect',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
 
-
-
 def sellunit(unit_ID):
     #getting data from units db to place into sold units table
     #This still conforms to 1 NF (no repeating data) as the data which is being copied from the units table is about to be deleted
@@ -4493,19 +4495,121 @@ def sellunit(unit_ID):
     buy_Price_Data = deScramble(cursor.execute("SELECT buy_Price FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0])
     closeDatabase()
 
-    #getting data from the front and and placing pre-gotten data in the rigth form
-    unit_ID = uInputDataObj(unit_ID,str)
-    account_ID = databaseCurrentAccount_ID
-    buy_Price = uInputDataObj(buy_Price_Data,float)
-    sell_Price = uInputDataObj(salePriceEntryBox.get(),float)
-    sell_Month = uInputDataObj(monthDateOfSaleEntryBox.get(),int)
-    sell_Year = uInputDataObj(yearDateOfSaleEntryBox.get(),int)
-    tax_Due = uInputDataObj(workOutCapGainsDue(unit_ID),float)
-    tax_Paid = uInputDataObj(capGainsMenu.get(),str)
+    #geting the correct password from DB
+    openDatabase()
+    correct_Password = deScramble(cursor.execute("SELECT Password FROM accounts WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()[0][0])
+    closeDatabase()
+    #getting entered password
+    enteredPassword = passwordValidatiomEntryBox.get()
+    if enteredPassword == str(correct_Password):
+        #getting data from the front and and placing pre-gotten data in the rigth form
+        unit_ID = uInputDataObj(unit_ID,str)
+        account_ID = databaseCurrentAccount_ID
+        buy_Price = uInputDataObj(buy_Price_Data,float)
+        sell_Price = uInputDataObj(salePriceEntryBox.get(),float)
+        sell_Month = uInputDataObj(monthDateOfSaleEntryBox.get(),int)
+        sell_Year = uInputDataObj(yearDateOfSaleEntryBox.get(),int)
+        tax_Paid = uInputDataObj(capGainsMenu.get(),str)
+        
+        #defining sell unit array
+        soldUnitDataArray = [unit_ID.data, account_ID.data,buy_Price.data,sell_Price.data,sell_Month.data,sell_Year.data,tax_Paid.data]
+        soldUnitFieldsArray = ['unit_ID','account_ID','buy_Price','sell_Price','sell_Month','sell_Year','tax_Paid']
+
+        #testing data to add to sold unit data
+        global dictOfDataValdationResults
+        dictOfDataValdationResults = dict.fromkeys(soldUnitFieldsArray)
+        dictOfDataValdationResults['sell_Price'] = {'presenceCheck':presenceCheck(sell_Price),'positiveCheck':rangeCheck(sell_Price,0,None)}
+        dictOfDataValdationResults['sell_Month'] = {'presenceCheck':presenceCheck(sell_Month),'monthBetween1/12':rangeCheck(sell_Month,1,12)}
+        dictOfDataValdationResults['sell_Year'] = {'presenceCheck':presenceCheck(sell_Year),'yearBetween1900/2100':rangeCheck(sell_Year,1900,2100)}
+        dictOfDataValdationResults['tax_Paid'] = {'menuOptionCheck':menuOptionCheck(tax_Paid,capGainsPaidOptions)}
+        selldeleteCoverUp()
+
+        #displaying the correct error messages
+        for entryboxData in dictOfDataValdationResults.keys():
+            countOfFailedTests = 0
+            if dictOfDataValdationResults[entryboxData] != None:
+                for test in dictOfDataValdationResults[entryboxData].keys():
+                    while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                        disaplayEM(test,deelteSellCoords[entryboxData]['x'],deelteSellCoords[entryboxData]['y'])
+                        countOfFailedTests = countOfFailedTests + 1
+        
+        #counting the number of failed tests
+        countOfFailedTests = 0
+        for entryboxData in dictOfDataValdationResults.keys():
+            if dictOfDataValdationResults[entryboxData] != None:
+                for test in dictOfDataValdationResults[entryboxData].values():
+                    if test == False:
+                        countOfFailedTests = countOfFailedTests +1
+        
+        if countOfFailedTests == 0:
+            tax_Due = uInputDataObj(workOutCapGainsDue(unit_ID.data),float)
+            soldUnitDataArray.insert(6,tax_Due.data)
+            #scrambles the data to update to the DB
+            for i in range(len(soldUnitDataArray)):
+                soldUnitDataArray[i] = scramble(soldUnitDataArray[i])
+            openDatabase()
+            #adding sold units record to DV
+            sellUnitSQLCommand = """INSERT INTO sold_Units (unit_ID,account_ID,buy_Price,sell_Price,sell_Month,sell_Year,tax_Due,tax_Paid)
+            VALUES (?,?,?,?,?,?,?,?)"""
+            cursor.execute(sellUnitSQLCommand,soldUnitDataArray)
+            #deleteing the references of the old the unit in the 'main database'
+            cursor.execute("DELETE FROM units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+            cursor.execute("DELETE FROM loan WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+            cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+            cursor.execute("DELETE FROM sold_Units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+            cursor.execute("DELETE FROM units_Monthly WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+            closeDatabase()
+            displayConfirmation('Properties')
+
+    else:
+        warning = Label(root, text = 'Sorry the entered password was incorrect',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
+
+def selldeleteCoverUp(): 
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            coverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=deelteSellCoords[entryboxData]['x'],rely=deelteSellCoords[entryboxData]['y'],anchor=CENTER)
+    passwordWrongCoverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
 
 def workOutCapGainsDue(unit_ID):
-    return 10
+    #getting data to be used in calculating capital gains due
+    openDatabase()
+    buy_Price = float(deScramble(cursor.execute("SELECT buy_Price FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()[0][0]))
+    tax_Rate,capitalGainsAllowence,bGainsRate,hGainsRate, aGainsRate, cGainsRate = cursor.execute("SELECT tax_Rate,basic_Capital_Gains_Allowence, basic_Capital_Gains_Rate, high_Capital_Gains_Rate, additional_Capital_Gains_Rate,corporation_Capital_Gains_Rate FROM accounts WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()[0]
+    closeDatabase()
+    year = int(yearDateOfSaleEntryBox.get())
+    sell_Price = float(salePriceEntryBox.get())
+    saleProfit = sell_Price - buy_Price
+    tax_Rate = str(deScramble(tax_Rate))
+    capitalGainsAllowence = float(deScramble(capitalGainsAllowence))
+    bGainsRate = float(deScramble(bGainsRate))/100
+    hGainsRate = float(deScramble(hGainsRate))/100
+    aGainsRate = float(deScramble(aGainsRate))/100
+    cGainsRate = float(deScramble(cGainsRate))/100
 
+
+    #if the account is a personal account get previous sold units this year to work out if the perosnal allownece has been used
+    if tax_Rate != 'c':
+        openDatabase()
+        previousTaxDues = cursor.execute("SELECT tax_Due FROM sold_Units WHERE sell_Year = '" + scramble(year) + "' AND account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+        closeDatabase()
+        totalTaxDueOnPrevious = 0
+        for i in range(len(previousTaxDues)):
+            taxDueOnPrevious = float(deScramble(previousTaxDues[i][0]))
+            totalTaxDueOnPrevious = totalTaxDueOnPrevious + taxDueOnPrevious
+        if totalTaxDueOnPrevious == 0:
+            saleProfit = saleProfit - capitalGainsAllowence
+        if tax_Rate == 'b':
+            taxDue = saleProfit * bGainsRate
+        elif tax_Rate == 'h':
+            taxDue = saleProfit * hGainsRate
+        else:
+            taxDue = saleProfit * aGainsRate
+        if taxDue < 0:
+            taxDue = 0
+        return (taxDue)
+    else: #for calculating buisness cap gains due is simple, just multiply by the 
+        return (saleProfit * cGainsRate)
+            
 def refinancePage(unit_ID):
     #Code to intialise page and add general utility such as header, menu, back button etc
     initialiseWindow()
