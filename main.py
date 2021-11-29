@@ -4465,15 +4465,25 @@ def deletesellPage(unit_ID):
     root.mainloop()
 
 def deleteunit(unit_ID): 
-    #TODO: if password is correct
+    #geting the correct password from DB
     openDatabase()
-    cursor.execute("DELETE FROM units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
-    cursor.execute("DELETE FROM loan WHERE unit_ID = '" + scramble(unit_ID)  + "'")
-    cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + scramble(unit_ID)  + "'")
-    cursor.execute("DELETE FROM sold_Units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
-    cursor.execute("DELETE FROM units_Monthly WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+    correct_Password = deScramble(cursor.execute("SELECT Password FROM accounts WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()[0][0])
     closeDatabase()
-    displayConfirmation('Properties')
+    #getting entered password
+    enteredPassword = passwordValidatiomEntryBox.get()
+    if str(correct_Password) == enteredPassword:
+        openDatabase()
+        cursor.execute("DELETE FROM units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+        cursor.execute("DELETE FROM loan WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+        cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+        cursor.execute("DELETE FROM sold_Units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+        cursor.execute("DELETE FROM units_Monthly WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+        closeDatabase()
+        displayConfirmation('Properties')
+    else:
+        #displayed error message to say as such
+        pass
+    
 
 def sellunit(unit_ID):
     #getting data from units db to place into sold units table
