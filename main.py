@@ -26,6 +26,7 @@ import string
 from numpy.distutils.command.install import install
 from dataObjectClass import uInputDataObj
 from datetime import datetime
+import smtplib
 
 print('program started')
 
@@ -39,7 +40,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            deletesellPage('LT2')
+            forgottenPasswordPageOne()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -583,13 +584,79 @@ def createAccountPage():
     root.mainloop()
 
 def forgottenPasswordPageOne():
+    #creating page and displaying title. menu and back button etc
     initialiseWindow()
+    displayMenuButton()
     displayBackButton()
     global previousPage
     previousPage = 'Forgotten Password Page 1'
     root.title('Property managment system - Forgotten Password (Page 1 of 3)')
-    happyFace = Label(root, text=':)', font=(font.data,'40'),fg=secondry.data,bg=primary.data,justify='center').place(relx=0.5,rely=0.5,anchor=CENTER)
+    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
+    subTextHeader = Label(root, text='Sending reset code via email',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
+    longNormal = PhotoImage(file="Long-Normal.PNG")
+
+    #placing and making entry box to got email
+    emailEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
+    global emailEntryBox
+    emailEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
+    emailEntryBox.place(relx=0.5,rely=0.40,anchor=CENTER)
+    emailEntryBoxLabel = Label(root, text='Enter the username/email of the account you would like to access',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
+
+    submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= forgottenPasswordStage1).place(relx=0.5, rely=0.8, anchor=CENTER)
+
     root.mainloop()
+
+def forgottenPasswordStage1():
+    enteredEmail = emailEntryBox.get()
+    listOfPossibleEmails = []
+    openDatabase()
+    listOfPossibleEmailsD = cursor.execute("SELECT recovery_Email FROM accounts").fetchall()
+    closeDatabase()
+    for i in range(len(listOfPossibleEmailsD)):
+        listOfPossibleEmails.append(deScramble(listOfPossibleEmailsD[i][0]))
+    #checking entered email is an email related to an account
+    if enteredEmail in listOfPossibleEmails:
+        #creating random code to use as verifiication
+        characters = (string.ascii_uppercase)+(string.digits)
+        global randomCode
+        randomCode = (''.join(random.choice(characters) for i in range(25)))
+        
+        #sending email with random code to correct email
+        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.ehlo()
+            smtp.login('propertymanagmentsystem36@gmail.com','secretPASSWORD1') #dont login to my email although it is only used for this
+            Subject = 'Password reset Request'  
+            body = "There has been a request for the reset of your account with your proporty managment system software. If this was not you just delete this email\nIf this was you then your code can be found below\n\n" + str(randomCode)
+            emailToSend = 'Subject: ' + Subject + '\n\n' + body
+            smtp.sendmail('propertymanagmentsystem36@gmail.com',enteredEmail, emailToSend)
+            forgottenPasswordPageTwo()
+    else:
+        invalidEmailErrorMessage = Label(root, text='Sorry this email doenst belong to any accounts', bg=primary.data, fg=bannedColours['errorRed'], width=50, font=(font.data,12), justify='center', relief='flat').place(relx=0.5, rely=0.48,anchor=CENTER)
+
+def forgottenPasswordPageTwo():
+    #creating page and displaying title. menu and back button etc
+    initialiseWindow()
+    displayMenuButton()
+    displayBackButton()
+    global previousPage
+    previousPage = 'Forgotten Password Page 2'
+    root.title('Property managment system - Forgotten Password (Page 2 of 3)')
+    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
+    subTextHeader = Label(root, text='Code Verifiication',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
+    longNormal = PhotoImage(file="Long-Normal.PNG")
+
+    #placing and making entry box to got email
+    emailEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
+    global emailEntryBox
+    emailEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
+    emailEntryBox.place(relx=0.5,rely=0.40,anchor=CENTER)
+    emailEntryBoxLabel = Label(root, text='Enter the username/email of the account you would like to access',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
+
+
+def forgottenPasswordPageThree():
+    pass
 
 def createAccount():
     recovery_Email = uInputDataObj(emailEntryBox.get(),str)
@@ -966,8 +1033,6 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Terms and Conditions':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=displayTCs).place(relx=0.05, rely=0.05, anchor=CENTER)
-    elif previousPage == 'Forgotten Password Page 1':
-        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Home':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=homePage).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Menu':
@@ -1012,6 +1077,13 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'LoanManagment':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID,current_loan_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Forgotten Password Page 1':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Forgotten Password Page 2':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageTwo).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Forgotten Password Page 3':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageThree).place(relx=0.05, rely=0.05, anchor=CENTER)
+
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1022,8 +1094,6 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=createAccountPage).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Terms and Conditions':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=displayTCs).place(relx=0.5, rely=0.9, anchor=CENTER)
-    elif nextPageCommand == 'Forgotten Password Page 1':
-        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Home':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=homePage).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Menu':
@@ -1068,6 +1138,13 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: refinancePage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'LoanManagment':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: loanManagmentPage(current_unit_ID,current_loan_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Forgotten Password Page 1':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageOne).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Forgotten Password Page 2':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageTwo).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Forgotten Password Page 3':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageThree).place(relx=0.5, rely=0.9, anchor=CENTER)
+
 
 def displayGovermentNationalInsurancePage():
     try:
