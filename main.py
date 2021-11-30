@@ -607,6 +607,7 @@ def forgottenPasswordPageOne():
     root.mainloop()
 
 def forgottenPasswordStage1():
+    global enteredEmail
     enteredEmail = emailEntryBox.get()
     listOfPossibleEmails = []
     openDatabase()
@@ -621,17 +622,22 @@ def forgottenPasswordStage1():
         global randomCode
         randomCode = (''.join(random.choice(characters) for i in range(25)))
         
-        #sending email with random code to correct email
-        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.ehlo()
-            smtp.login('propertymanagmentsystem36@gmail.com','secretPASSWORD1') #dont login to my email although it is only used for this
-            Subject = 'Password reset Request'  
-            body = "There has been a request for the reset of your account with your proporty managment system software. If this was not you just delete this email\nIf this was you then your code can be found below\n\n" + str(randomCode)
-            emailToSend = 'Subject: ' + Subject + '\n\n' + body
-            smtp.sendmail('propertymanagmentsystem36@gmail.com',enteredEmail, emailToSend)
-            forgottenPasswordPageTwo()
+        #error handling if this is tried without internet
+        try:
+            #sending email with random code to correct email
+            with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+                smtp.ehlo()
+                smtp.starttls()
+                smtp.ehlo()
+                smtp.login('propertymanagmentsystem36@gmail.com','secretPASSWORD1') #dont login to my email although it is only used for this
+                Subject = 'Password reset Request'  
+                body = "There has been a request for the reset of your account with your proporty managment system software. If this was not you just delete this email\nIf this was you then your code can be found below\n\n" + str(randomCode)
+                emailToSend = 'Subject: ' + Subject + '\n\n' + body
+                smtp.sendmail('propertymanagmentsystem36@gmail.com',enteredEmail, emailToSend)
+                forgottenPasswordPageTwo()
+        except OSError: #if there is a connection error
+            displayConnectionError()
+        
     else:
         invalidEmailErrorMessage = Label(root, text='Sorry this email doenst belong to any accounts', bg=primary.data, fg=bannedColours['errorRed'], width=50, font=(font.data,12), justify='center', relief='flat').place(relx=0.5, rely=0.48,anchor=CENTER)
 
@@ -645,18 +651,27 @@ def forgottenPasswordPageTwo():
     root.title('Property managment system - Forgotten Password (Page 2 of 3)')
     topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
     subTextHeader = Label(root, text='Code Verifiication',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
-    longNormal = PhotoImage(file="Long-Normal.PNG")
+    global longNormalAgain
+    longNormalAgain = PhotoImage(file="Long-Normal.PNG")
 
     #placing and making entry box to got email
-    emailEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
-    global emailEntryBox
-    emailEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
-    emailEntryBox.place(relx=0.5,rely=0.40,anchor=CENTER)
-    emailEntryBoxLabel = Label(root, text='Enter the username/email of the account you would like to access',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
+    resetCodeEntryBoxbackground = Label(image = longNormalAgain, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
+    global resetCodeEntryBox
+    resetCodeEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
+    resetCodeEntryBox.place(relx=0.5,rely=0.40,anchor=CENTER)
+    resetCodeEntryBoxLabel = Label(root, text='A code has been sent to ' + enteredEmail + ' enter this code',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
 
+    submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= forgottenPasswordStageTwo).place(relx=0.5, rely=0.8, anchor=CENTER)
+
+def forgottenPasswordStageTwo():
+    enteredResetCode = resetCodeEntryBox.get()
+    if enteredResetCode == randomCode:
+        forgottenPasswordPageThree()
+    else:
+        invalidCodeErrorMessage = Label(root, text='Invalid code entry', bg=primary.data, fg=bannedColours['errorRed'], width=50, font=(font.data,12), justify='center', relief='flat').place(relx=0.5, rely=0.48,anchor=CENTER)
 
 def forgottenPasswordPageThree():
-    pass
+    print('code is good')
 
 def createAccount():
     recovery_Email = uInputDataObj(emailEntryBox.get(),str)
@@ -5037,4 +5052,4 @@ print('Program Finished')
 #order stuff in tablesx``
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
 #back end of loan managment
-#fix delete unit without password issue
+#need to add connection checking before sending email for page 1 forgotten password
