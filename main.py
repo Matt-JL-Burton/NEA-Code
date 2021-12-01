@@ -5102,7 +5102,6 @@ def loanManagmentPageCoverUp():
             else:
                 coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=loanManagmentCoverUpCords[entryboxData]['x'],rely=loanManagmentCoverUpCords[entryboxData]['y'],anchor=CENTER)
 
-
 initialise()
 print('Program Finished')
 
@@ -5110,5 +5109,12 @@ print('Program Finished')
 #ReAdjustScore after late or missed rents
 #order stuff in tablesx``
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
-#back end of loan managment
-#need to add connection checking before sending email for page 1 forgotten password
+#scramble alg/ descrable
+#edit refinance page
+#edit sell data page
+
+
+#### stuff could add for better
+#AI predicition for monthly expenses
+#back button stack
+#
