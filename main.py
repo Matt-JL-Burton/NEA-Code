@@ -586,13 +586,13 @@ def createAccountPage():
 def forgottenPasswordPageOne():
     #creating page and displaying title. menu and back button etc
     initialiseWindow()
+    root.title('Property managment system - Forgotten Password (Page 1 of 3)')
+    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
+    subTextHeader = Label(root, text='Sending reset code via email',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
     displayMenuButton()
     displayBackButton()
     global previousPage
     previousPage = 'Forgotten Password Page 1'
-    root.title('Property managment system - Forgotten Password (Page 1 of 3)')
-    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
-    subTextHeader = Label(root, text='Sending reset code via email',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
     longNormal = PhotoImage(file="Long-Normal.PNG")
 
     #placing and making entry box to got email
@@ -644,13 +644,13 @@ def forgottenPasswordStage1():
 def forgottenPasswordPageTwo():
     #creating page and displaying title. menu and back button etc
     initialiseWindow()
+    root.title('Property managment system - Forgotten Password (Page 2 of 3)')
+    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
+    subTextHeader = Label(root, text='Code Verifiication',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
     displayMenuButton()
     displayBackButton()
     global previousPage
     previousPage = 'Forgotten Password Page 2'
-    root.title('Property managment system - Forgotten Password (Page 2 of 3)')
-    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
-    subTextHeader = Label(root, text='Code Verifiication',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
     global longNormalAgain
     longNormalAgain = PhotoImage(file="Long-Normal.PNG")
 
@@ -664,7 +664,6 @@ def forgottenPasswordPageTwo():
     submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= forgottenPasswordStageTwo).place(relx=0.5, rely=0.8, anchor=CENTER)
     root.mainloop()
 
-
 def forgottenPasswordStageTwo():
     enteredResetCode = resetCodeEntryBox.get()
     if enteredResetCode == randomCode:
@@ -675,36 +674,65 @@ def forgottenPasswordStageTwo():
 def forgottenPasswordPageThree():
     #creating page and displaying title. menu and back button etc
     initialiseWindow()
+    root.title('Property managment system - Forgotten Password (Page 3 of 3)')
+    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
+    subTextHeader = Label(root, text='Reset Password',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
     displayMenuButton()
     displayBackButton()
     global previousPage
     previousPage = 'Forgotten Password Page 3'
-    root.title('Property managment system - Forgotten Password (Page 3 of 3)')
-    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
-    subTextHeader = Label(root, text='Reset Password',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
     global longNormalAgain
     longNormalAgain = PhotoImage(file="Long-Normal.PNG")
 
     #placing and making entry box to got new password
-    newPasswordBoxbackground = Label(image = longNormalAgain, border = 0).place(relx=0.5,rely=0.30,anchor=CENTER)
+    
+    newPasswordBoxbackground = Label(image = longNormalAgain, border = 0).place(relx=0.5,rely=0.35,anchor=CENTER)
     global newPasswordEntryBox
     newPasswordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
-    newPasswordEntryBox.place(relx=0.5,rely=0.30,anchor=CENTER)
-    newPasswordEntryBoxLabel = Label(root, text='New assword',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.22,anchor=CENTER)
+    newPasswordEntryBox.place(relx=0.5,rely=0.35,anchor=CENTER)
+    newPasswordEntryBoxLabel = Label(root, text='New password',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.27,anchor=CENTER)
+    newPasswordHideButton = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(newPasswordEntryBox,0.14,0.35)).place(relx=0.14, rely=0.35, anchor=CENTER)
 
     #placing and making entry box to got confirm password
     confirmasswordBoxbackground = Label(image = longNormalAgain, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
     global confirmPasswordEntryBox
     confirmPasswordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
     confirmPasswordEntryBox.place(relx=0.5,rely=0.60,anchor=CENTER)
-    confirmPasswordEntryBoxLabel = Label(root, text='Confirm Ppssword',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+    confirmPasswordEntryBoxLabel = Label(root, text='Confirm password',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+    confirmPasswordHideButton = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(confirmPasswordEntryBox,0.14,0.6)).place(relx=0.14, rely=0.6, anchor=CENTER)
+
 
     submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= forgottenPasswordStageThree).place(relx=0.5, rely=0.85, anchor=CENTER)
 
     root.mainloop()
 
 def forgottenPasswordStageThree():
-    pass
+    #defining var to check the entered password is valid
+    testsPast = 0
+    #getting entered password from screen
+    newPassword = newPasswordEntryBox.get()
+    confirmPassword = confirmPasswordEntryBox.get()
+
+    #covers previous error message for clearer erros
+    unmatchingPasswordsErrorMessageCoverUp = Label(root, bg=primary.data, fg=bannedColours['errorRed'], width=50, font=(font.data,12), justify='center', relief='flat').place(relx=0.5, rely=0.68,anchor=CENTER)
+    shortPasswordErrorMessageCoverUp = Label(root, bg=primary.data, fg=bannedColours['errorRed'], width=50, font=(font.data,12), justify='center', relief='flat').place(relx=0.5, rely=0.43,anchor=CENTER)
+
+
+    if newPassword == confirmPassword: #checks passwords are equal
+        testsPast = testsPast + 1 
+    else:
+        unmatchingPasswordsErrorMessage = Label(root, text="Sorry your passwords don't match", bg=primary.data, fg=bannedColours['errorRed'], width=50, font=(font.data,12), justify='center', relief='flat').place(relx=0.5, rely=0.68,anchor=CENTER)
+    if len(newPassword) > 7: #checks length is atleast 7
+        testsPast = testsPast + 1
+    else:
+        shortPasswordErrorMessage = Label(root, text="Sorry your password must be more than 7 characters", bg=primary.data, fg=bannedColours['errorRed'], width=50, font=(font.data,12), justify='center', relief='flat').place(relx=0.5, rely=0.43,anchor=CENTER)
+
+
+    if testsPast == 2: #basically if valid passwords entered
+        openDatabase()
+        cursor.execute("UPDATE accounts SET password = '" + scramble(newPassword) + "' WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'")
+        closeDatabase()
+        displayConfirmation('Home')
 
 def createAccount():
     recovery_Email = uInputDataObj(emailEntryBox.get(),str)
