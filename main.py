@@ -40,7 +40,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            forgottenPasswordPageOne()
+            forgottenPasswordPageThree()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -662,6 +662,8 @@ def forgottenPasswordPageTwo():
     resetCodeEntryBoxLabel = Label(root, text='A code has been sent to ' + enteredEmail + ' enter this code',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
 
     submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= forgottenPasswordStageTwo).place(relx=0.5, rely=0.8, anchor=CENTER)
+    root.mainloop()
+
 
 def forgottenPasswordStageTwo():
     enteredResetCode = resetCodeEntryBox.get()
@@ -671,7 +673,38 @@ def forgottenPasswordStageTwo():
         invalidCodeErrorMessage = Label(root, text='Invalid code entry', bg=primary.data, fg=bannedColours['errorRed'], width=50, font=(font.data,12), justify='center', relief='flat').place(relx=0.5, rely=0.48,anchor=CENTER)
 
 def forgottenPasswordPageThree():
-    print('code is good')
+    #creating page and displaying title. menu and back button etc
+    initialiseWindow()
+    displayMenuButton()
+    displayBackButton()
+    global previousPage
+    previousPage = 'Forgotten Password Page 3'
+    root.title('Property managment system - Forgotten Password (Page 3 of 3)')
+    topBorder = Label(root, text='Forgotten Passsword', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0.5,rely=0.1,anchor='center')
+    subTextHeader = Label(root, text='Reset Password',bg=primary.data, fg = secondry.data, width=42, font=(font.data,16), justify='center').place(relx=0.5,rely=0.16,anchor='center')
+    global longNormalAgain
+    longNormalAgain = PhotoImage(file="Long-Normal.PNG")
+
+    #placing and making entry box to got new password
+    newPasswordBoxbackground = Label(image = longNormalAgain, border = 0).place(relx=0.5,rely=0.30,anchor=CENTER)
+    global newPasswordEntryBox
+    newPasswordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
+    newPasswordEntryBox.place(relx=0.5,rely=0.30,anchor=CENTER)
+    newPasswordEntryBoxLabel = Label(root, text='New assword',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.22,anchor=CENTER)
+
+    #placing and making entry box to got confirm password
+    confirmasswordBoxbackground = Label(image = longNormalAgain, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
+    global confirmPasswordEntryBox
+    confirmPasswordEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
+    confirmPasswordEntryBox.place(relx=0.5,rely=0.60,anchor=CENTER)
+    confirmPasswordEntryBoxLabel = Label(root, text='Confirm Ppssword',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+
+    submitLoginDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= forgottenPasswordStageThree).place(relx=0.5, rely=0.85, anchor=CENTER)
+
+    root.mainloop()
+
+def forgottenPasswordStageThree():
+    pass
 
 def createAccount():
     recovery_Email = uInputDataObj(emailEntryBox.get(),str)
@@ -1099,7 +1132,6 @@ def displayBackButton():
     elif previousPage == 'Forgotten Password Page 3':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageThree).place(relx=0.05, rely=0.05, anchor=CENTER)
 
-
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
         pass
@@ -1159,7 +1191,6 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageTwo).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Forgotten Password Page 3':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageThree).place(relx=0.5, rely=0.9, anchor=CENTER)
-
 
 def displayGovermentNationalInsurancePage():
     try:
