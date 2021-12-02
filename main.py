@@ -40,7 +40,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            forgottenPasswordPageThree()
+            editRefinancePage('LT2')
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -1159,6 +1159,8 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageTwo).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Forgotten Password Page 3':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageThree).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Edit Refinance':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editRefinancePage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1219,6 +1221,8 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageTwo).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Forgotten Password Page 3':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageThree).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Edit Refinance':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editRefinancePage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -4839,7 +4843,117 @@ def refinancePage(unit_ID):
     #Button to link to view loan Mannagment page
     loanManagmentPageButton = Button(root, text='Loan Managment Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: loanManagmentPage(unit_ID,loan_ID_To_Parse)).place(relx=0.825, rely=0.9, anchor=CENTER)
 
+    #button to link edit refinance page 
+    editRefinancePageButton = Button(root, text='Edit Refinance Page', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: editRefinancePage(unit_ID)).place(relx=0.175, rely=0.9, anchor=CENTER)
+
     root.mainloop()
+
+def editRefinancePage(unit_ID):
+    #Code to intialise page and add general utility such as header, menu, back button etc
+    initialiseWindow()
+    global current_Unit_ID
+    current_Unit_ID = unit_ID
+    root.title('Property managment system - Edit Refinance Page')
+    topBorder = Label(root, text='Edit Refinance Unit ' + unit_ID, height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Edit Refinance'
+    displayMenuButton()
+
+    #defining images to use in this page
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+    shortFat = PhotoImage(file = "Short-Fat.PNG")
+
+    dateOfRefinanceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.35,anchor=CENTER)
+    openDatabase()
+    possibleDate = cursor.execute("SELECT month, year FROM refinance WHERE unit_ID = '" + scramble(current_Unit_ID) + "'").fetchall()
+    global listOfPossibleDates
+    listOfPossibleDates = []
+    for i in range(len(possibleDate)):
+        month = str(int(deScramble(possibleDate[i][0])))
+        year = str(int(deScramble(possibleDate[i][1])))
+        listOfPossibleDates.append(month + '/' + year)
+    closeDatabase()
+    global dateOfRefinanceMenu
+    dateOfRefinanceMenu = ttk.Combobox(root, value=listOfPossibleDates, justify=tkinter.CENTER, font=(font.data,18))
+    dateOfRefinanceMenu.current(0)
+    dateOfRefinanceMenu.place(relx=0.5,rely=0.35,anchor=CENTER)
+    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
+    dateOfRefinanceEntryBoxLabel = Label(root, text='Date of Refinance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.27,anchor=CENTER)
+
+    equityWithDrawnEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.6,anchor=CENTER)
+    date = dateOfRefinanceMenu.get()
+    month,year = date.split('/')
+    openDatabase()
+    equity_Withdrawn = deScramble(cursor.execute("SELECT equity_Withdrawn FROM refinance WHERE unit_ID = '" + scramble(current_Unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'").fetchall()[0][0])
+    closeDatabase()
+    global equityWithDrawnEntryBox
+    equityWithDrawnEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    equityWithDrawnEntryBox.place(relx=0.5,rely=0.6,anchor=CENTER)
+    equityWithDrawnEntryBox.insert(0,equity_Withdrawn)
+    equityWithDrawnEntryBoxLabel = Label(root, text='Equity Withdrawn',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+
+    #buttons for screen
+    
+    #refresh values of screen
+    refreshValues = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshRefinanceValue(unit_ID)).place(relx=0.3, rely=0.35, anchor=CENTER)
+
+    #submit
+    submitEditUnit = Button(root, text='S U B M I T ', font=(font.data,'20','bold','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: editRefinance(unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
+
+    #delete
+    refreshValues = Button(root, text='Delete Refinance', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteRefinacne(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+
+    root.mainloop()
+
+def refreshRefinanceValue(unit_ID):
+    date = dateOfRefinanceMenu.get()
+    if date in listOfPossibleDates:
+        month,year = date.split('/')
+        openDatabase()
+        equity_Withdrawn = deScramble(cursor.execute("SELECT equity_Withdrawn FROM refinance WHERE unit_ID = '" + scramble(current_Unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'").fetchall()[0][0])
+        closeDatabase()
+        equityWithDrawnEntryBox.delete(0,END)
+        equityWithDrawnEntryBox.insert(0,equity_Withdrawn.data)
+    else:
+        #displays an error stating an invalid date was entered
+        invalidDateEntered = Label(root, text="Date entered was invalid",bg=primary.data, fg=bannedColours['errorRed'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.41,anchor=CENTER)
+
+def deleteRefinacne(unit_ID):
+    global current_Unit_ID
+    current_Unit_ID = unit_ID
+    date = dateOfRefinanceMenu.get()
+    if date in listOfPossibleDates:
+        month,year = date.split('/')
+        openDatabase()
+        cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + scramble(unit_ID) + "' AND year = '" + scramble(year) + "' AND month = '" + scramble(month) + "'")
+        closeDatabase()
+    else:
+        #displays an error stating an invalid date was entered
+        invalidDateEntered = Label(root, text="Date entered was invalid",bg=primary.data, fg=bannedColours['errorRed'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.43,anchor=CENTER)
+
+def editRefinance(unit_ID):
+    global current_Unit_ID
+    current_Unit_ID = unit_ID
+    coverUpRefinance()
+    date = dateOfRefinanceMenu.get()
+    if date in listOfPossibleDates:
+        month,year = date.split('/')
+        equityWithdrawn = uInputDataObj(equityWithDrawnEntryBox.get(),float)
+        if presenceCheck(equityWithdrawn) == True and rangeCheck(equityWithdrawn,0,None) == True:
+            openDatabase()
+            cursor.execute("UPDATE refinance SET equity_Withdrawn = '" + scramble(equityWithdrawn.data) + "' WHERE month = '" + scramble(month) + "' AND year = '" + scramble(year) + "' AND unit_ID = '" + scramble(unit_ID) + "'")
+            closeDatabase()
+            displayConfirmation('Home')
+        else:
+            invalidEquityWithdrawn = Label(root, text="The entered value must be a positive number",bg=primary.data, fg=bannedColours['errorRed'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.68,anchor=CENTER)
+    else:
+        #displays an error stating an invalid date was entered
+        invalidDateEntered = Label(root, text="Date entered was invalid",bg=primary.data, fg=bannedColours['errorRed'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.43,anchor=CENTER)
+
+def coverUpRefinance():
+    invalidDateEnteredCover = Label(root,bg=primary.data, font=(font.data,12), justify='center',relief='flat',width= 50).place(relx=0.5,rely=0.43,anchor=CENTER)
+    invalidEquityWithdrawnCover= Label(root,bg=primary.data, font=(font.data,12), justify='center',relief='flat',width= 50).place(relx=0.5,rely=0.68,anchor=CENTER)
 
 def refinance(unit_ID):
     #defining the current unit_ID so as to allow the loan managment page to load the correct data when it is clicked
