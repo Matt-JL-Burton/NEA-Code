@@ -4616,6 +4616,7 @@ def deletesellPage(unit_ID):
     sellUnitBSub = Label(root, text='Click this once you are happy with your sell detials',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.83,anchor=CENTER)
     deleteUnitB = Button(root, text='Just delete unit', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteunit(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
     sellUnitBSub = Label(root, text='It will be as if the unit never exsisted',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.93,anchor=CENTER)
+    editSoldUnitsB = Button(root, text='Edit sold unit', font=(font.data,'16','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= editSoldUnitPage).place(relx=0.825, rely=0.85, anchor=CENTER)
 
     #defining coords for placing error messages
     global deelteSellCoords
@@ -4708,11 +4709,10 @@ def sellunit(unit_ID):
             VALUES (?,?,?,?,?,?,?,?)"""
             cursor.execute(sellUnitSQLCommand,soldUnitDataArray)
             #deleteing the references of the old the unit in the 'main database'
-            cursor.execute("DELETE FROM units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
-            cursor.execute("DELETE FROM loan WHERE unit_ID = '" + scramble(unit_ID)  + "'")
-            cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + scramble(unit_ID)  + "'")
-            cursor.execute("DELETE FROM sold_Units WHERE unit_ID = '" + scramble(unit_ID)  + "'")
-            cursor.execute("DELETE FROM units_Monthly WHERE unit_ID = '" + scramble(unit_ID)  + "'")
+            cursor.execute("DELETE FROM units WHERE unit_ID = '" + scramble(unit_ID.data)  + "'")
+            cursor.execute("DELETE FROM loan WHERE unit_ID = '" + scramble(unit_ID.data)  + "'")
+            cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + scramble(unit_ID.data)  + "'")
+            cursor.execute("DELETE FROM units_Monthly WHERE unit_ID = '" + scramble(unit_ID.data)  + "'")
             closeDatabase()
             displayConfirmation('Properties')
 
@@ -5215,6 +5215,73 @@ def loanManagmentPageCoverUp():
                 coverUp = Label(root,bg=primary.data,width=125,font=(font.data,7),justify='center').place(relx=loanManagmentCoverUpCords[entryboxData]['x'],rely=loanManagmentCoverUpCords[entryboxData]['y'],anchor=CENTER)
             else:
                 coverUp = Label(root,bg=primary.data,width=75,font=(font.data,7),justify='center').place(relx=loanManagmentCoverUpCords[entryboxData]['x'],rely=loanManagmentCoverUpCords[entryboxData]['y'],anchor=CENTER)
+
+def editSoldUnitPage():
+    initialiseWindow()
+    root.title('Property managment system - Edit Sold Unit Page')
+    topBorder = Label(root, text='Edit Sold Units', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
+    displayBackButton()
+    global previousPage
+    previousPage = 'Edit unit'
+    displayMenuButton()
+
+    #defiing images to use in the page layout
+    longNormal = PhotoImage(file = "Long-Normal.PNG")
+    shortNormal = PhotoImage(file = "Short-Normal.PNG")
+
+    #placing elements to rerive inputs from user
+    #sale price entry box + extras for visual
+    salePriceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.40,anchor=CENTER)
+    global salePriceEntryBox
+    salePriceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    salePriceEntryBox.place(relx=0.175,rely=0.40,anchor=CENTER)
+    salePriceEntryBoxLabel = Label(root, text='Sale Price',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.32,anchor=CENTER)
+    
+    #date of sale price entry box + extras for visual, includes month and year entry boxes seperatly for easyier back end retrival
+    dateOfSaleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
+    global monthDateOfSaleEntryBox
+    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.49,rely=0.355)
+    monthDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    monthDateOfSaleEntryBox.place(relx=0.435,rely=0.40,anchor=CENTER)
+    global yearDateOfSaleEntryBox
+    yearDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    yearDateOfSaleEntryBox.place(relx=0.575,rely=0.40,anchor=CENTER)
+    dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Sale',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
+    dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.4675,anchor=CENTER)
+
+    #capital gains entry box + extras for visual
+    capGainsTaxPaidBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.40,anchor=CENTER)
+    global capGainsPaidOptions
+    capGainsPaidOptions = ['Paid','Not Paid'] 
+    global capGainsMenu
+    capGainsMenu = ttk.Combobox(root, value=capGainsPaidOptions, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+    capGainsMenu.place(relx=0.825,rely=0.40,anchor=CENTER)
+    capGainsMenu.current(capGainsPaidOptions.index('Paid'))
+    root.option_add('*TCombobox*Listbox.font', (font.data,14))
+    global capGainsTaxPaidEntryBox
+    capGainsTaxPaidEntryBoxLabel = Label(root, text='Capital Gains Tax paid',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.32,anchor=CENTER)
+
+    #password entry box + extras for visual, used for validating the delete/sell request
+    passwordValidatiomEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
+    global passwordValidatiomEntryBox
+    passwordValidatiomEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
+    passwordValidatiomEntryBox.place(relx=0.5,rely=0.60,anchor=CENTER)
+    passwordValidatiomEntryBoxLabel = Label(root, text='Enter password as verfication',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+    hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordValidatiomEntryBox,0.14,0.60)).place(relx=0.14, rely=0.60, anchor=CENTER)
+
+    #places action buttons and respective descriptors for the action buttons
+    sellUnitB = Button(root, text='Confirm unit sold', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: sellunit(unit_ID)).place(relx=0.5, rely=0.8, anchor=CENTER)
+    sellUnitBSub = Label(root, text='Click this once you are happy with your sell detials',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.83,anchor=CENTER)
+    deleteUnitB = Button(root, text='Just delete unit', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteunit(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    sellUnitBSub = Label(root, text='It will be as if the unit never exsisted',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.93,anchor=CENTER)
+    editSoldUnitsB = Button(root, text='Edit sold unit', font=(font.data,'16','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= editSoldUnitPage).place(relx=0.825, rely=0.85, anchor=CENTER)
+
+    #defining coords for placing error messages
+    global deelteSellCoords
+    deelteSellCoords = {'sell_Price':{'x':0.175,'y':0.47},'sell_Month':{'x':0.5,'y':0.47},'sell_Year':{'x':0.5,'y':0.47},'tax_Paid':{'x':0.825,'y':0.47},'password':{'x':0.5,'y':0.67}}
+
+
+    root.mainloop()
 
 initialise()
 print('Program Finished')
