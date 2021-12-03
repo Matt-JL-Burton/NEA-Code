@@ -40,7 +40,7 @@ def initialise():
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             #displayTCs()
-            editRefinancePage('LT2')
+            editSoldUnitPage()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -5229,11 +5229,37 @@ def editSoldUnitPage():
     longNormal = PhotoImage(file = "Long-Normal.PNG")
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
 
+    #sold unit_ID entry box
+    soldUnitIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
+    global possibleUnitIDs
+    possibleUnitIDs = []
+    openDatabase()
+    possibleSoldUnitIDs = cursor.execute("SELECT unit_ID FROM sold_Units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+    closeDatabase() 
+    for i in range(len(possibleSoldUnitIDs)):
+        possibleUnitIDs.append(deScramble(possibleSoldUnitIDs[i][0]))
+    global possibleUnitsMenu
+    possibleUnitsMenu = ttk.Combobox(root, value=possibleUnitIDs, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+    possibleUnitsMenu.place(relx=0.5,rely=0.60,anchor=CENTER)
+    possibleUnitsMenu.current(0)
+    root.option_add('*TCombobox*Listbox.font', (font.data,14))
+    soldUnitIDEntryBoxLabel = Label(root, text='Select Sold Unit ID',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+
+    #efficent code for retricing inputs for the page
+    openDatabase()
+    salePrice,month,year,capGainsPaid = cursor.execute("SELECT sell_Price, sell_Month, sell_Year, tax_Paid FROM sold_Units WHERE unit_ID = '" + scramble(possibleUnitsMenu.get()) + "'").fetchall()[0]
+    closeDatabase()
+    salePrice = deScramble(salePrice)
+    month = int(deScramble(month))
+    year = int(deScramble(year))
+    capGainsPaid = deScramble(capGainsPaid)
+
     #placing elements to rerive inputs from user
     #sale price entry box + extras for visual
     salePriceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.40,anchor=CENTER)
     global salePriceEntryBox
     salePriceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+    salePriceEntryBox.insert(0,salePrice)
     salePriceEntryBox.place(relx=0.175,rely=0.40,anchor=CENTER)
     salePriceEntryBoxLabel = Label(root, text='Sale Price',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.32,anchor=CENTER)
     
@@ -5242,9 +5268,11 @@ def editSoldUnitPage():
     global monthDateOfSaleEntryBox
     slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.49,rely=0.355)
     monthDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    monthDateOfSaleEntryBox.insert(0,month)
     monthDateOfSaleEntryBox.place(relx=0.435,rely=0.40,anchor=CENTER)
     global yearDateOfSaleEntryBox
     yearDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+    yearDateOfSaleEntryBox.insert(0,year)
     yearDateOfSaleEntryBox.place(relx=0.575,rely=0.40,anchor=CENTER)
     dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Sale',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
     dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.4675,anchor=CENTER)
@@ -5256,32 +5284,118 @@ def editSoldUnitPage():
     global capGainsMenu
     capGainsMenu = ttk.Combobox(root, value=capGainsPaidOptions, justify=tkinter.CENTER, width = 20,font=(font.data,18))
     capGainsMenu.place(relx=0.825,rely=0.40,anchor=CENTER)
-    capGainsMenu.current(capGainsPaidOptions.index('Paid'))
+    capGainsMenu.current(capGainsPaidOptions.index(capGainsPaid))
     root.option_add('*TCombobox*Listbox.font', (font.data,14))
-    global capGainsTaxPaidEntryBox
     capGainsTaxPaidEntryBoxLabel = Label(root, text='Capital Gains Tax paid',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.32,anchor=CENTER)
 
-    #password entry box + extras for visual, used for validating the delete/sell request
-    passwordValidatiomEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
-    global passwordValidatiomEntryBox
-    passwordValidatiomEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=50, font=(font.data,18),justify='center',relief='flat')
-    passwordValidatiomEntryBox.place(relx=0.5,rely=0.60,anchor=CENTER)
-    passwordValidatiomEntryBoxLabel = Label(root, text='Enter password as verfication',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
-    hidePasswordLoginPageB = Button(root, text='Hide', font=(font.data,'15','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: hideEntryBox(passwordValidatiomEntryBox,0.14,0.60)).place(relx=0.14, rely=0.60, anchor=CENTER)
-
     #places action buttons and respective descriptors for the action buttons
-    sellUnitB = Button(root, text='Confirm unit sold', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: sellunit(unit_ID)).place(relx=0.5, rely=0.8, anchor=CENTER)
-    sellUnitBSub = Label(root, text='Click this once you are happy with your sell detials',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.83,anchor=CENTER)
-    deleteUnitB = Button(root, text='Just delete unit', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteunit(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
-    sellUnitBSub = Label(root, text='It will be as if the unit never exsisted',bg=primary.data, fg=secondry.data, font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.93,anchor=CENTER)
-    editSoldUnitsB = Button(root, text='Edit sold unit', font=(font.data,'16','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= editSoldUnitPage).place(relx=0.825, rely=0.85, anchor=CENTER)
+    updateSoldUnitsB = Button(root, text='Update Sold Unit Data', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= updateSoldUnit).place(relx=0.5, rely=0.8, anchor=CENTER)
+    deleteSoldUnitsB = Button(root, text='Delete Sold Unit Data', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= deleteSoldUnits).place(relx=0.5, rely=0.9, anchor=CENTER)
+    editSoldUnitsB = Button(root, text='Refresh Values', font=(font.data,'16','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= refreshSoldUnitsEntryBoxes).place(relx=0.73, rely=0.6, anchor=CENTER)
 
     #defining coords for placing error messages
-    global deelteSellCoords
-    deelteSellCoords = {'sell_Price':{'x':0.175,'y':0.47},'sell_Month':{'x':0.5,'y':0.47},'sell_Year':{'x':0.5,'y':0.47},'tax_Paid':{'x':0.825,'y':0.47},'password':{'x':0.5,'y':0.67}}
+    global editSoldUnits
+    editSoldUnits = {'sell_Price':{'x':0.175,'y':0.47},'sell_Month':{'x':0.5,'y':0.47},'sell_Year':{'x':0.5,'y':0.47},'tax_Paid':{'x':0.825,'y':0.47},'unit_ID':{'x':0.5,'y':0.67}}
 
 
     root.mainloop()
+
+def updateSoldUnit():
+    enteredUnitID = possibleUnitsMenu.get()
+    if enteredUnitID in possibleUnitIDs:
+        #getting data needed from screen
+        unit_ID = uInputDataObj(possibleUnitsMenu.get(),str)
+        sell_Price = uInputDataObj(salePriceEntryBox.get(),float)
+        sell_Month = uInputDataObj(monthDateOfSaleEntryBox.get(),int)
+        sell_Year = uInputDataObj(yearDateOfSaleEntryBox.get(),int)
+        tax_Paid = uInputDataObj(capGainsMenu.get(),str)
+
+        #gettiing other needed data. 
+        openDatabase()
+        buy_Price, tax_Due = cursor.execute("SELECT buy_Price, tax_Due FROM sold_Units WHERE unit_ID = '" + scramble(unit_ID.data) + "'").fetchall()[0]
+        closeDatabase()
+        buy_Price = uInputDataObj(deScramble(buy_Price),float)
+        tax_Due = uInputDataObj(deScramble(tax_Due),float)
+
+        sell_Price = uInputDataObj(salePriceEntryBox.get(),float)
+        soldUnitDataArray = [unit_ID.data,databaseCurrentAccount_ID.data,buy_Price.data,sell_Price.data,sell_Month.data,sell_Year.data,tax_Due.data,tax_Paid.data]
+        soldUnitFieldArray = ['unit_ID','account_ID','buy_Price','sell_Price','sell_Month','sell_Year','tax_Due','tax_Paid']
+
+        global dictOfDataValdationResults
+        dictOfDataValdationResults = dict.fromkeys(soldUnitFieldArray)
+        dictOfDataValdationResults['sell_Price'] = {'presenceCheck':presenceCheck(sell_Price),'positiveCheck':rangeCheck(sell_Price,0,None)}
+        dictOfDataValdationResults['sell_Month'] = {'presenceCheck':presenceCheck(sell_Month),'monthBetween1/12':rangeCheck(sell_Month,1,12)}
+        dictOfDataValdationResults['sell_Year'] = {'presenceCheck':presenceCheck(sell_Year),'yearBetween1900/2100':rangeCheck(sell_Year,1900,2100)}
+        dictOfDataValdationResults['tax_Paid'] = {'menuOptionCheck':menuOptionCheck(tax_Paid,capGainsPaidOptions)}
+        editSoldUnitCoverUp()
+
+        for entryboxData in dictOfDataValdationResults.keys():
+            countOfFailedTests = 0
+            if dictOfDataValdationResults[entryboxData] != None:
+                for test in dictOfDataValdationResults[entryboxData].keys():
+                    while dictOfDataValdationResults[entryboxData][test] == False and countOfFailedTests == 0:
+                        disaplayEM(test,editSoldUnits[entryboxData]['x'],editSoldUnits[entryboxData]['y'])
+                        countOfFailedTests = countOfFailedTests + 1
+
+        countOfFailedTests = 0
+        for entryboxData in dictOfDataValdationResults.keys():
+            if dictOfDataValdationResults[entryboxData] != None:
+                for test in dictOfDataValdationResults[entryboxData].values():
+                    if test == False:
+                        countOfFailedTests = countOfFailedTests +1
+
+        if countOfFailedTests == 0:
+            #scrambles the data to update to the DB
+            for i in range(len(soldUnitDataArray)):
+                soldUnitDataArray[i] = str(scramble(soldUnitDataArray[i]))
+
+            #updates the appropriate records in the DB
+            openDatabase()
+            cursor.execute("UPDATE sold_Units SET sell_Price = '" + soldUnitDataArray[3]  +"', sell_Month = '" + soldUnitDataArray[4] + "', sell_Year = '" + soldUnitDataArray[5] + "', tax_Paid = '" + soldUnitDataArray[7] + "' WHERE unit_ID = '" + soldUnitFieldArray[0] + "'")
+            closeDatabase()
+            
+            displayConfirmation('Properties')
+    else:
+        invlaidUnitID = Label(root, text = 'You must pick and ID from the list',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
+
+def deleteSoldUnits():
+    enteredUnitID = possibleUnitsMenu.get()
+    if enteredUnitID in possibleUnitIDs:
+        openDatabase()
+        cursor.execute("DELETE FROM sold_Units WHERE unit_ID = '" + scramble(enteredUnitID) + "'")
+        closeDatabase()
+    else:
+        invlaidUnitID = Label(root, text = 'You must pick and ID from the list',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
+
+def refreshSoldUnitsEntryBoxes():
+    enteredUnitID = possibleUnitsMenu.get()
+    if enteredUnitID in possibleUnitIDs:
+        #efficent code for retriving inputs for the page
+        openDatabase()
+        salePrice,month,year,capGainsPaid = cursor.execute("SELECT sell_Price, sell_Month, sell_Year, tax_Paid FROM sold_Units WHERE unit_ID = '" + scramble(enteredUnitID) + "'").fetchall()[0]
+        closeDatabase()
+        salePrice = deScramble(salePrice)
+        month = int(deScramble(month))
+        year = int(deScramble(year))
+        capGainsPaid = deScramble(capGainsPaid)
+
+        #clearly the page's current data
+        salePriceEntryBox.delete(0,END)
+        monthDateOfSaleEntryBox.delete(0,END)
+        yearDateOfSaleEntryBox.delete(0,END)
+        
+        #adding in the new data
+        salePriceEntryBox.insert(0,salePrice)
+        monthDateOfSaleEntryBox.insert(0,month)
+        yearDateOfSaleEntryBox.insert(0,year)
+        capGainsMenu.current(capGainsPaidOptions.index(capGainsPaid))
+    else:
+        invlaidUnitID = Label(root, text = 'You must pick and ID from the list',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
+
+def editSoldUnitCoverUp():
+    for entryboxData in dictOfDataValdationResults.keys():
+        if dictOfDataValdationResults[entryboxData] != None:
+            coverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=editSoldUnits[entryboxData]['x'],rely=editSoldUnits[entryboxData]['y'],anchor=CENTER)
 
 initialise()
 print('Program Finished')
@@ -5291,11 +5405,9 @@ print('Program Finished')
 #order stuff in tablesx``
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
 #scramble alg/ descrable
-#edit refinance page
 #edit sell data page
 
 
 #### stuff could add for better
 #AI predicition for monthly expenses
 #back button stack
-#
