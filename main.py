@@ -1043,7 +1043,7 @@ def homePage():
             unitMonths = unitMonths + 1
             susValue = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND year = '" + scramble(orderedListOfListedDates[i][1]) + "' AND month = '" + scramble(orderedListOfListedDates[i][0]) + "'").fetchall()
             if len(susValue) != 0:
-                dictOfDates[(orderedListOfListedDates[x][0] + "/" + orderedListOfListedDates[x][1])] = dictOfDates[(orderedListOfListedDates[x][0] + "/" + orderedListOfListedDates[x][1])] + susValue[0][0]
+                dictOfDates[(str(orderedListOfListedDates[x][0]) + "/" + str(orderedListOfListedDates[x][1]))] = float(dictOfDates[(str(orderedListOfListedDates[x][0]) + "/" + str(orderedListOfListedDates[x][1]))]) + float(deScramble(susValue[0][0]))
     closeDatabase()
     if howManyUnits != 0 and unitMonths != 0:
         firstMonth = orderedListOfListedDates[0][0] + "/" +  orderedListOfListedDates[0][1]
@@ -1073,8 +1073,12 @@ def homePage():
         endValue = yValuesSuspropertyValues[len(yValuesSuspropertyValues)-1]
         totalValueIncrease = round(endValue - startValue,2)
         totalValueIncreasePercentage = str(round((((endValue/startValue)*100)-100),2)) + "%"
-        averageMonthlyIncrease = round(totalValueIncrease/(len(monthlyDates)-1),2)
-        averageGrowthRate = str(round(((((endValue/startValue)**(1/(len(monthlyDates)-1))) * 100) - 100),4)) + "%"
+        if len(monthlyDates) == 1:
+            averageMonthlyIncrease = round(totalValueIncrease,2)
+            averageGrowthRate = str(round((((endValue/startValue) * 100) - 100),4)) + "%"
+        else:
+            averageMonthlyIncrease = round(totalValueIncrease/(len(monthlyDates)-1),2)
+            averageGrowthRate = str(round(((((endValue/startValue)**(1/(len(monthlyDates)-1))) * 100) - 100),4)) + "%"
 
         sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'16','bold'), text='Portfolio Value over time', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.7, anchor=CENTER)
         sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Montlhy Value Increase (%) : ' + str(averageGrowthRate), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.73, anchor=CENTER)
