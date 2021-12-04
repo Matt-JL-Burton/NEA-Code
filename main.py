@@ -1510,7 +1510,7 @@ def lessThanDeposit(unit_ID,inputData):
         if len(tenantID_D) != 0:
             tenantID = deScramble(tenantID_D[0][0])
             if tenantID != 'None':
-                deposit = cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID ='" + tenantID + "'").fetchall()[0][0] # dont need to scramble as the data has just be retriived adn not be unscrambled
+                deposit = cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID ='" + scramble(tenantID) + "'").fetchall()[0][0] # dont need to scramble as the data has just be retriived adn not be unscrambled
                 if castingTypeCheckFunc(inputData.data,inputData.prefferredType) <= float(deScramble(deposit)):
                     return True
                 else:
@@ -3701,6 +3701,8 @@ def monthlyAdditionsPage(unitID):
     root.mainloop()
 
 def returnMostRecentMonth(monthYearlistOfTuples): #Only works for AD years but who is gonna use BC?
+    month = 0
+    year = 0
     currentMostRecentYear = 0
     currentMostRecentMonth = 0
     for i in range(len(monthYearlistOfTuples)):
@@ -3791,7 +3793,7 @@ def addNewMonthlyUnitData(unitID):
             unitInfoData = unitInfoDataD.fetchall()
             closeDatabase()
             currentMostRecentMonth, currentMostRecentYear = returnMostRecentMonth(unitInfoData)
-            listOFDatesToTest = [[int(month.data),int(year.data)],[currentMostRecentMonth,currentMostRecentYear]]
+            listOFDatesToTest = [[scramble(int(month.data)),scramble(int(year.data))],[scramble(currentMostRecentMonth),scramble(currentMostRecentYear)]]
             if returnMostRecentMonth(listOFDatesToTest)[0] == month.data and returnMostRecentMonth(listOFDatesToTest)[1] == year.data:
                 openDatabase()
                 capital_Owed = deScramble(cursor.execute("SELECT capital_Owed FROM loan WHERE unit_ID = '" + scramble(current_unit_ID)  +"'").fetchall()[0][0])
