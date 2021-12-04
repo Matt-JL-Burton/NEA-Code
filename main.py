@@ -39,8 +39,7 @@ def initialise():
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
             ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
-            #displayTCs()
-            editSoldUnitPage()
+            displayTCs()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
 def escapeProgram(event):
@@ -755,7 +754,9 @@ def createAccount():
 
     createAccountArray = [account_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(account_ID.data),incPA.data,other_Income_Estimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,national_Insurance_Due.data, primary.data, secondry.data, tertiary.data, font.data]
     accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate','personal_Income_Allowence','other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
-        
+    
+    #redifing other_Income_Estimate as the value may have been changed by the getTaxRate changed
+    other_Income_Estimate = uInputDataObj(otherIncomeEntryBox.get(),float)
 
     #running tests
     global dictOfDataValdationResults
@@ -1234,6 +1235,13 @@ def displayGovermentNationalInsurancePage():
                 displayConnectionError()
 
 def getTaxRate(accountID):
+    try:
+        other_Income_Estimate.data = float(other_Income_Estimate.data)
+    except:
+        pass #the otherincome estimate entry is invalid so doesnt actully matter what the tax_Rate is
+
+    #if the other income estiamte is non numerical the tax band cannot be calcualted - it also not needed to be calculated as the income estimate being invalid will be caught
+    #by the main entry validation of the create account page.
     if type(other_Income_Estimate.data) == float or type(other_Income_Estimate.data) == int:
         if operation_Type.data == 'personal':
             if other_Income_Estimate < bIncCutOff.data:
@@ -1242,10 +1250,10 @@ def getTaxRate(accountID):
                 tax_Rate = 'h'
             else:
                 tax_Rate = 'a'
-        elif operation_Type == 'buisness':
+        else:
             tax_Rate = 'c'
     else:
-        print('Getting Tax Rate went wrong, fix me :(')
+        tax_Rate = 'N/A'
     return(tax_Rate)
 
 #scrambling alg used for encrpytin data so that it cannot be easily read straight from the DB file
