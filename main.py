@@ -2052,7 +2052,6 @@ def tenantsPage():
                 occupyingPrimaryTenants = occupyingPrimaryTenants + 1
                 totalRent = totalRent + float(deScramble(unitInfo[i][1]))
                 openDatabase()
-                print(scrambledTenant_ID)
                 tenantsLivingInUnit = float(deScramble(cursor.execute("SELECT total_Residents FROM tenants WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()[0][0]))
                 closeDatabase()
                 occupyingTotalTenants = occupyingTotalTenants + tenantsLivingInUnit
@@ -3271,18 +3270,20 @@ def complaintsManagmentPage(tenantID):
 
     tenantIDBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.82,rely=0.25,anchor=CENTER)
     openDatabase()
-    primaryColourD = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
-    data_To_Descrmable = deScramble(primaryColourD.fetchall())
+    tenant_ID_D = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'").fetchall()
     global listOfTenantIDs
     listOfTenantIDs = []
-    for i in range(len(data_To_Descrmable)):
-        listOfTenantIDs.append(data_To_Descrmable[i][0])
+    for i in range(len(tenant_ID_D)):
+        listOfTenantIDs.append(deScramble(tenant_ID_D[i][0]))
     closeDatabase()
     global tenantIDMenu
     tenantIDMenu = ttk.Combobox(root, value=listOfTenantIDs, justify=tkinter.CENTER, width = 20,font=(font.data,18))
     tenantIDMenu.place(relx=0.82,rely=0.25,anchor=CENTER)
-    primaryHexEntryLabel = Label(root, text='Complaint ID',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.82,rely=0.17,anchor=CENTER)
-    tenantIDMenu.current(listOfTenantIDs.index(tenantID))
+    primaryHexEntryLabel = Label(root, text='Tenant ID',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.82,rely=0.17,anchor=CENTER)
+    if tenantID in listOfTenantIDs:
+        tenantIDMenu.current(listOfTenantIDs.index(tenantID))
+    else:
+        tenantIDMenu.current(0)
 
     DateBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.185,rely=0.45,anchor=CENTER)
     activeComplaintID = complaintIDMenu.get()
@@ -3446,6 +3447,7 @@ def deleteComplaint():
     openDatabase()
     cursor.execute("DELETE FROM complaints WHERE complaint_ID = '" + scramble(compalaint_ID) + "'")
     closeDatabase()
+    displayConfirmation('individualTenantPage')
 
 def addComplaintPage(tenantID):
     global current_tenant_ID
@@ -3637,7 +3639,6 @@ def monthlyAdditionsPage(unitID):
     unitInfoDataD = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
     unitInfoData = unitInfoDataD.fetchall()
     if len(unitInfoData) != 0:
-        print(unitInfoData)
         month, year = returnMostRecentMonth(unitInfoData)
         month, year = str(month), str(year)    
         unitInfoDataD = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'")
@@ -3701,11 +3702,9 @@ def monthlyAdditionsPage(unitID):
     root.mainloop()
 
 def returnMostRecentMonth(monthYearlistOfTuples): #Only works for AD years but who is gonna use BC?
-    print(monthYearlistOfTuples)
     currentMostRecentYear = 0
     currentMostRecentMonth = 0
     for i in range(len(monthYearlistOfTuples)):
-        print(i)
         month = int(deScramble(monthYearlistOfTuples[i][0]))
         year = int(deScramble(monthYearlistOfTuples[i][1]))
         if year >= currentMostRecentYear and month > currentMostRecentMonth:
@@ -3959,7 +3958,6 @@ def mortgageLengthCalculator(loan_ID):
     openDatabase()
     loanInfo = cursor.execute("SELECT capital_Owed, instalments, interest_Rate FROM loan WHERE loan_ID = '" + (loan_ID) + "'").fetchall()
     closeDatabase()
-    print(loanInfo)
     capitalOwed = float(deScramble(loanInfo[0][0]))
     instalments = float(deScramble(loanInfo[0][1]))
     interestRate = float(deScramble(loanInfo[0][2]))
