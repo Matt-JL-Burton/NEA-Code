@@ -2048,10 +2048,11 @@ def tenantsPage():
         closeDatabase()
         for i in range(len(unitInfo)):
             scrambledTenant_ID = str(unitInfo[i][0])
-            if deScramble(scrambledTenant_ID) != '':
+            if deScramble(scrambledTenant_ID) != 'None':
                 occupyingPrimaryTenants = occupyingPrimaryTenants + 1
                 totalRent = totalRent + float(deScramble(unitInfo[i][1]))
                 openDatabase()
+                print(scrambledTenant_ID)
                 tenantsLivingInUnit = float(deScramble(cursor.execute("SELECT total_Residents FROM tenants WHERE tenant_ID = '" + scrambledTenant_ID + "'").fetchall()[0][0]))
                 closeDatabase()
                 occupyingTotalTenants = occupyingTotalTenants + tenantsLivingInUnit
