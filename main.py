@@ -1507,11 +1507,14 @@ def lessThanDeposit(unit_ID,inputData):
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
         openDatabase()
         tenantID_D = cursor.execute("SELECT tenant_ID FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()
-        if tenantID_D != []:
-            tenantID = tenantID_D[0][0]
-            deposit = cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID ='" + tenantID + "'").fetchall()[0][0] # dont need to scramble as the data has just be retriived adn not be unscrambled
-            if castingTypeCheckFunc(inputData.data,inputData.prefferredType) <= float(deScramble(deposit)):
-                return True
+        if len(tenantID_D) != 0:
+            tenantID = deScramble(tenantID_D[0][0])
+            if tenantID != 'None':
+                deposit = cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID ='" + tenantID + "'").fetchall()[0][0] # dont need to scramble as the data has just be retriived adn not be unscrambled
+                if castingTypeCheckFunc(inputData.data,inputData.prefferredType) <= float(deScramble(deposit)):
+                    return True
+                else:
+                    return False
             else:
                 return False
         else:
