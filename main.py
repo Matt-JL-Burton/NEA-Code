@@ -840,6 +840,7 @@ def homePage():
     totalTaxDue = 0
     nextMonthExpectedExpenses = 0
     incomeTaxToPay = 0
+    scrambledUnitID = 0
 
 
     openDatabase()
@@ -879,11 +880,12 @@ def homePage():
 
         #working out tax due
         #getting tax data
-        unit_Monthly_Tax = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND year = '" + scramble(year) + "'").fetchall()
-        for z in range(len(unit_Monthly_Tax)):
-            totalYearlyIncome = totalYearlyIncome + float(deScramble(unit_Monthly_Tax[z][0]))
-            totalTaxableExpenses = totalTaxableExpenses + float(deScramble(unit_Monthly_Tax[z][1]))
-            totalNoneTaxableExpenses = totalNoneTaxableExpenses + float(deScramble(unit_Monthly_Tax[z][2]))
+        if scrambledUnitID != 0: #only getting this data if there is an account in the unit 
+            unit_Monthly_Tax = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND year = '" + scramble(year) + "'").fetchall()
+            for z in range(len(unit_Monthly_Tax)):
+                totalYearlyIncome = totalYearlyIncome + float(deScramble(unit_Monthly_Tax[z][0]))
+                totalTaxableExpenses = totalTaxableExpenses + float(deScramble(unit_Monthly_Tax[z][1]))
+                totalNoneTaxableExpenses = totalNoneTaxableExpenses + float(deScramble(unit_Monthly_Tax[z][2]))
         accountTaxInfo = cursor.execute("SELECT operation_Type, personal_Income_Allowence, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, national_Insurance_Due FROM accounts WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
         operation_Type = deScramble(accountTaxInfo[0][0])
         personal_Income_Allowence = float(deScramble(accountTaxInfo[0][1]))
@@ -1592,10 +1594,11 @@ def menuPage():
     addNewTenantButton = Button(root, text='Add New Tenant Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newTenantPage).place(relx=0.5, rely=0.55, anchor=CENTER)
     taxPageButton = Button(root, text='Tax Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=taxPage).place(relx=0.5, rely=0.625, anchor=CENTER)
     settingsPageButton = Button(root, text='Settings Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=settingsPage).place(relx=0.5, rely=0.7, anchor=CENTER)
+    settingsPageButton = Button(root, text='Edit Sold Units Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=editSoldUnitPage).place(relx=0.5, rely=0.775, anchor=CENTER)
     #contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=contactPage)
     #contactPageButton.place(relx=0.5, rely=0.775, anchor=CENTER)
     #contactPageButton["state"] = "disabled" #To disable contact button as Im no longer using this
-    signOutButton = Button(root, text='Sign Out', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=loginPage).place(relx=0.5, rely=0.775, anchor=CENTER)
+    signOutButton = Button(root, text='Sign Out', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=loginPage).place(relx=0.5, rely=0.85, anchor=CENTER)
     root.mainloop()
 
 #This page is for presenting data about the overall state of my end users portfolio aswell as a way to access data for each individual unit
