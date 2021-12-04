@@ -63,7 +63,7 @@ def definingDefaultVariables():
     global primary, secondry, tertiary, bannedColours, font, listOfIdealTables, databaseName, listOfIdealAssets, listOfIdealAssetsMutable ,connectionError, previousPage
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
     global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts, operation_Type, recovery_Email, first_Name, last_Name, password, title
-    global tax_Rate, other_Income_Estimate, national_Insurance_Due, style
+    global tax_Rate, other_Income_Estimate, national_Insurance_Due, style, listOfPossibleCharacters, listOfPossibleCharactersMapping
     primary = uInputDataObj('#373f51',str)
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
@@ -102,8 +102,10 @@ def definingDefaultVariables():
     listOfAcceptedFonts = ['Bahnschrift Semilight','Microsoft Sans Serif','Times New Roman']
     for i in range(len(listOfAcceptedFonts)):
         listOfAcceptedFonts[i] = listOfAcceptedFonts[i].title()
+    #got this list from doing for i in range 512 chr(i) - so as to nearly every character that is likely to be entered into my system
+    listOfPossibleCharacters = ['\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\t', '\n', '\x0b', '\x0c', '\r', '\x0e', '\x0f', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', ' ', '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '\x7f', '\x80', '\x81', '\x82', '\x83', '\x84', '\x85', '\x86', '\x87', '\x88', '\x89', '\x8a', '\x8b', '\x8c', '\x8d', '\x8e', '\x8f', '\x90', '\x91', '\x92', '\x93', '\x94', '\x95', '\x96', '\x97', '\x98', '\x99', '\x9a', '\x9b', '\x9c', '\x9d', '\x9e', '\x9f', '\xa0', '¡', '¢', '£', '¤', '¥', '¦', '§', '¨', '©', 'ª', '«', '¬', '\xad', '®', '¯', '°', '±', '²', '³', '´', 'µ', '¶', '·', '¸', '¹', 'º', '»', '¼', '½', '¾', '¿', 'À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', '×', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'Þ', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', '÷', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'þ', 'ÿ']
+    listOfPossibleCharactersMapping = ['2968', '6047', '3783', '9380', '5729', '7455', '2663', '7602', '5400', '4853', '7992', '3462', '4259', '7271', '5978', '6995', '6708', '7197', '5401', '2666', '2337', '4415', '4822', '2933', '3598', '8008', '9894', '5927', '9164', '9161', '3816', '8733', '7742', '4022', '7070', '9789', '6991', '7757', '8051', '8644', '7967', '7087', '7129', '4137', '6340', '3118', '9634', '5976', '4788', '9345', '7573', '2844', '9744', '3236', '7393', '7598', '6226', '4138', '5576', '2945', '7488', '3509', '6435', '9064', '7941', '6821', '7200', '4885', '8433', '7149', '9961', '4734', '9479', '6381', '6892', '8317', '3477', '3989', '6051', '8776', '2298', '5800', '4418', '6641', '8133', '5060', '9618', '4830', '7161', '2147', '4749', '5536', '5250', '8792', '5489', '3934', '4709', '2754', '6752', '8614', '8944', '5906', '6104', '5380', '6573', '5307', '5010', '8701', '5050', '5248', '3787', '5023', '3218', '4734', '9434', '9954', '6305', '9654', '3358', '8679', '2091', '9578', '5108', '6409', '6062', '5083', '2326', '8506', '3329', '8334', '7690', '8196', '6332', '4422', '8335', '9056', '7189', '8883', '9479', '2901', '6478', '8962', '4377', '9460', '4296', '4340', '3661', '3046', '9235', '5007', '7111', '4924', '4416', '4366', '4445', '8515', '9770', '3704', '2143', '3349', '2515', '9190', '5507', '3828', '2225', '8783', '8176', '6639', '9649', '5990', '8212', '9121', '9998', '5160', '2481', '5121', '8053', '4644', '7268', '2620', '8191', '9599', '3399', '4152', '5286', '4729', '5212', '2309', '3634', '7363', '2795', '2682', '7625', '5897', '5674', '8439', '3755', '2593', '9559', '6141', '3808', '6095', '4952', '5145', '9855', '2572', '7275', '2701', '6488', '3404', '8953', '8782', '2318', '8956', '9665', '6735', '6686', '9007', '3125', '7104', '9280', '8497', '3960', '9491', '5440', '2785', '2890', '9405', '9339', '5592', '2437', '8612', '3101', '3055', '4729', '6387', '4864', '4184', '6674', '9085', '4312', '8765', '8098', '4839', '4690', '9025', '2545', '7783', '5460', '6184', '6554', '4264', '4452', '6210', '2611', '2889']
 
-#intialising page
 def initialiseWindow():
     closeMainPage()
     global root
@@ -1248,33 +1250,21 @@ def getTaxRate(accountID):
 
 #scrambling alg used for encrpytin data so that it cannot be easily read straight from the DB file
 def scramble(data):
-    # data = list(str(data))
-    # for i in range (len(data)):
-    #     ascii_Code = ord(data[i])+len(data)
-    #     if ascii_Code == 92: #This takes out the \ character because this messes with the SQL as it is used in f stirngs
-    #         ascii_Code = 0
-    #     data[i] = chr(ascii_Code) #uses a variable cipher to make it more complex
-    # cipherText = listToString(data[::-1])
-    #return cipherText
-    return str(data)
+    data = list(str(data))
+    for i in range (len(data)):
+        data[i] = listOfPossibleCharactersMapping[listOfPossibleCharacters.index(data[i])] + ' '
+    cipherText = listToString(data[::-1])
+    return cipherText
 
 #used to decrypt the data from the db
 def deScramble(cipherText):
-    # cipherText = list(str(cipherText))
-    # cipherText = cipherText[::-1]
-    # cipherText = list(cipherText)
-    # for i in range(len(cipherText)):
-    #     ascii_Code = ord(cipherText[i])
-    #     if ascii_Code == 0: #subs back in the \ character so that data is not lost
-    #         ascii_Code = 92
-    #     cipherText[i] = chr(ascii_Code - len(cipherText))
-    # data = listToString(cipherText)
-    # return data
-    try:
-        cipherText = float(cipherText)
-    except:
-        cipherText = str(cipherText)
-    return (cipherText)
+    cipherText = cipherText.split(' ')
+    cipherText = cipherText[::-1]
+    cipherText.remove('')
+    for i in range(len(cipherText)):
+        cipherText[i] = listOfPossibleCharacters[listOfPossibleCharactersMapping.index(cipherText[i])]
+    data = listToString(cipherText)
+    return (data)
 
 def listToString(list):
     word = ''
@@ -5404,9 +5394,6 @@ print('Program Finished')
 #ReAdjustScore after late or missed rents
 #order stuff in tablesx``
 #rememebr to implament capital gains tax calculations in home page after sell unit page done
-#scramble alg/ descrable
-#edit sell data page
-
 
 #### stuff could add for better
 #AI predicition for monthly expenses
