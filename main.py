@@ -3632,14 +3632,23 @@ def monthlyAdditionsPage(unitID):
     openDatabase()
     unitInfoDataD = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
     unitInfoData = unitInfoDataD.fetchall()
-    print(unitInfoData)
-    month, year = returnMostRecentMonth(unitInfoData)
-    month, year = str(month), str(year)    
-    unitInfoDataD = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'")
-    originalSusPropertValue = float(deScramble(unitInfoDataD.fetchall()[0][0]))
-    closeDatabase()
-    susPropertValueEntryBOx.insert(END,round(originalSusPropertValue*1.004,2))
+    if len(unitInfoData) != 0:
+        print(unitInfoData)
+        month, year = returnMostRecentMonth(unitInfoData)
+        month, year = str(month), str(year)    
+        unitInfoDataD = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'")
+        originalSusPropertValue = float(deScramble(unitInfoDataD.fetchall()[0][0]))
+        closeDatabase()
+        susPropertValueEntryBOx.insert(END,round(originalSusPropertValue*1.004,2))
+    else:
+        month = '01'
+        year = '1900'
+        openDatabase()
+        buy_Price = float(deScramble(cursor.execute("SELECT buy_Price FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0]))
+        closeDatabase()
+        susPropertValueEntryBOx.insert(END,round(buy_Price*1.004,2))
     susPropertValueEntryBOx.place(relx=0.815,rely=0.45,anchor=CENTER)
+
     primaryHexEntryLabel = Label(root, text='Suspected Property Value',bg=primary.data, fg=secondry.data, width=33, font=(font.data,18), justify='center',relief='flat').place(relx=0.815,rely=0.37,anchor=CENTER)
     primaryHexEntryLabel = Label(root, text='The preloaded text is our estimate',bg=primary.data, fg=secondry.data, width=33, font=(font.data,12), justify='center',relief='flat').place(relx=0.815,rely=0.52,anchor=CENTER)
 
@@ -3688,9 +3697,11 @@ def monthlyAdditionsPage(unitID):
     root.mainloop()
 
 def returnMostRecentMonth(monthYearlistOfTuples): #Only works for AD years but who is gonna use BC?
+    print(monthYearlistOfTuples)
     currentMostRecentYear = 0
     currentMostRecentMonth = 0
     for i in range(len(monthYearlistOfTuples)):
+        print(i)
         month = int(deScramble(monthYearlistOfTuples[i][0]))
         year = int(deScramble(monthYearlistOfTuples[i][1]))
         if year >= currentMostRecentYear and month > currentMostRecentMonth:
