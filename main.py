@@ -791,7 +791,6 @@ def createAccount():
     if countOfFailedTests == 0:
         for i in range(len(createAccountArray)):
             createAccountArray[i] = scramble(createAccountArray[i])
-
         openDatabase()
         global accountsInsertionCommand
         accountsInsertionCommand = """INSERT INTO accounts(account_ID, password, recovery_Email, first_Name, last_Name, operation_Type, title, tax_Rate, personal_Income_Allowence, other_Income_Estimate, basic_Income_Rate, high_Income_Rate, additional_Income_Rate, basic_Income_Cut_Off, high_Income_Cut_Off, corporation_Rate, basic_Capital_Gains_Rate, basic_Capital_Gains_Allowence, high_Capital_Gains_Rate, additional_Capital_Gains_Rate, corporation_Capital_Gains_Rate, national_Insurance_Due, primary_Colour, secondry_Colour, tertiary_Colour, font)
@@ -1266,10 +1265,13 @@ def scramble(data):
 
 #used to decrypt the data from the db
 def deScramble(cipherText):
+    cipherText = str(cipherText)
     cipherText = cipherText.split(' ')
     cipherText = cipherText[::-1]
-    cipherText.remove('')
+    if '' in cipherText:
+        cipherText.remove('')
     for i in range(len(cipherText)):
+        cipherText[i] = str(int(float(cipherText[i])))
         cipherText[i] = listOfPossibleCharacters[listOfPossibleCharactersMapping.index(cipherText[i])]
     data = listToString(cipherText)
     return (data)
@@ -2794,7 +2796,7 @@ def redoConfigureAccountSettingsVariables():
     allAcoountData = allAcoountData.fetchall()[0]
     accountArray = [databaseCurrentAccount_ID,password,recovery_Email,first_Name,last_Name, operation_Type, title, tax_Rate, incPA,other_Income_Estimate,bIncTR, hIncTR, aIncTR, bIncCutOff, hIncCutOff, corpTR, bCapGainsTR, bCapGainsAllowence, hCapGainsTR, aCapGainsTR, corpCapGainsTR,national_Insurance_Due, primary, secondry, tertiary, font]
     for i in range(len(accountArray)):
-        accountArray[i] = accountArray[i].setData(allAcoountData[i]) 
+        accountArray[i] = accountArray[i].setData(deScramble(allAcoountData[i]))
     closeDatabase()
 
 def changePasswordPage():
