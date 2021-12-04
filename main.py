@@ -1658,7 +1658,7 @@ def propertiesPage():
             openDatabase()
             mostRecentSusValue = deScramble(cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scrmabled_Unit_ID + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'").fetchall()[0][0])
             closeDatabase()
-            totalSuspectedValue = totalSuspectedValue + mostRecentSusValue
+            totalSuspectedValue = totalSuspectedValue + float(mostRecentSusValue)
         else:
             totalSuspectedValue = totalSuspectedValue + float(deScramble(unitInfo[i][0]))
         openDatabase()
@@ -4895,49 +4895,59 @@ def editRefinancePage(unit_ID):
     previousPage = 'Edit Refinance'
     displayMenuButton()
 
-    #defining images to use in this page
-    shortNormal = PhotoImage(file = "Short-Normal.PNG")
-    shortFat = PhotoImage(file = "Short-Fat.PNG")
-
-    dateOfRefinanceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.35,anchor=CENTER)
+    #finding out how many refinances an account has and displaying an error message if this is 0
+    numberOfRefinaces = 0
     openDatabase()
-    possibleDate = cursor.execute("SELECT month, year FROM refinance WHERE unit_ID = '" + scramble(current_Unit_ID) + "'").fetchall()
-    global listOfPossibleDates
-    listOfPossibleDates = []
-    for i in range(len(possibleDate)):
-        month = str(int(deScramble(possibleDate[i][0])))
-        year = str(int(deScramble(possibleDate[i][1])))
-        listOfPossibleDates.append(month + '/' + year)
+    refinanceData = cursor.execute("SELECT unit_ID FROM refinance WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()
+    numberOfRefinaces = numberOfRefinaces + len(refinanceData)
     closeDatabase()
-    global dateOfRefinanceMenu
-    dateOfRefinanceMenu = ttk.Combobox(root, value=listOfPossibleDates, justify=tkinter.CENTER, font=(font.data,18))
-    dateOfRefinanceMenu.current(0)
-    dateOfRefinanceMenu.place(relx=0.5,rely=0.35,anchor=CENTER)
-    root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
-    dateOfRefinanceEntryBoxLabel = Label(root, text='Date of Refinance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.27,anchor=CENTER)
 
-    equityWithDrawnEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.6,anchor=CENTER)
-    date = dateOfRefinanceMenu.get()
-    month,year = date.split('/')
-    openDatabase()
-    equity_Withdrawn = deScramble(cursor.execute("SELECT equity_Withdrawn FROM refinance WHERE unit_ID = '" + scramble(current_Unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'").fetchall()[0][0])
-    closeDatabase()
-    global equityWithDrawnEntryBox
-    equityWithDrawnEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    equityWithDrawnEntryBox.place(relx=0.5,rely=0.6,anchor=CENTER)
-    equityWithDrawnEntryBox.insert(0,equity_Withdrawn)
-    equityWithDrawnEntryBoxLabel = Label(root, text='Equity Withdrawn',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
+    if numberOfRefinaces != 0:
+        #defining images to use in this page
+        shortNormal = PhotoImage(file = "Short-Normal.PNG")
+        shortFat = PhotoImage(file = "Short-Fat.PNG")
 
-    #buttons for screen
-    
-    #refresh values of screen
-    refreshValues = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshRefinanceValue(unit_ID)).place(relx=0.3, rely=0.35, anchor=CENTER)
+        dateOfRefinanceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.35,anchor=CENTER)
+        openDatabase()
+        possibleDate = cursor.execute("SELECT month, year FROM refinance WHERE unit_ID = '" + scramble(current_Unit_ID) + "'").fetchall()
+        global listOfPossibleDates
+        listOfPossibleDates = []
+        for i in range(len(possibleDate)):
+            month = str(int(deScramble(possibleDate[i][0])))
+            year = str(int(deScramble(possibleDate[i][1])))
+            listOfPossibleDates.append(month + '/' + year)
+        closeDatabase()
+        global dateOfRefinanceMenu
+        dateOfRefinanceMenu = ttk.Combobox(root, value=listOfPossibleDates, justify=tkinter.CENTER, font=(font.data,18))
+        dateOfRefinanceMenu.current(0)
+        dateOfRefinanceMenu.place(relx=0.5,rely=0.35,anchor=CENTER)
+        root.option_add('*TCombobox*Listbox.font', (font.data,14)) 
+        dateOfRefinanceEntryBoxLabel = Label(root, text='Date of Refinance',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.27,anchor=CENTER)
 
-    #submit
-    submitEditUnit = Button(root, text='S U B M I T ', font=(font.data,'20','bold','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: editRefinance(unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
+        equityWithDrawnEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.6,anchor=CENTER)
+        date = dateOfRefinanceMenu.get()
+        month,year = date.split('/')
+        openDatabase()
+        equity_Withdrawn = deScramble(cursor.execute("SELECT equity_Withdrawn FROM refinance WHERE unit_ID = '" + scramble(current_Unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'").fetchall()[0][0])
+        closeDatabase()
+        global equityWithDrawnEntryBox
+        equityWithDrawnEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+        equityWithDrawnEntryBox.place(relx=0.5,rely=0.6,anchor=CENTER)
+        equityWithDrawnEntryBox.insert(0,equity_Withdrawn)
+        equityWithDrawnEntryBoxLabel = Label(root, text='Equity Withdrawn',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
 
-    #delete
-    refreshValues = Button(root, text='Delete Refinance', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteRefinacne(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+        #buttons for screen
+        
+        #refresh values of screen
+        refreshValues = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshRefinanceValue(unit_ID)).place(relx=0.3, rely=0.35, anchor=CENTER)
+
+        #submit
+        submitEditUnit = Button(root, text='S U B M I T ', font=(font.data,'20','bold','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: editRefinance(unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
+
+        #delete
+        refreshValues = Button(root, text='Delete Refinance', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: deleteRefinacne(unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    else:
+        mostHaveAtleast1RefinanceLabel = Label(root, text='You must have already refinaced this unit atleast once \nfor this page to be avaliable ',bg=primary.data, fg=secondry.data,font=(font.data,25), justify='center',relief='flat').place(relx=0.5,rely=0.55,anchor=CENTER)
 
     root.mainloop()
 
