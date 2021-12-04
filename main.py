@@ -1033,17 +1033,19 @@ def homePage():
         dictOfDates[key] = 0
     orderedListOfListedDates = orderListOfListedDates(listOfListedDates)
     openDatabase()
-    howManyUnitsMonths = 0 
+    howManyUnits = 0 
+    unitMonths = 0
     for i in range(len(unitsInfo)):
-        howManyUnitsMonths = howManyUnitsMonths + 1
+        howManyUnits = howManyUnits + 1
         scrambledUnitID = unitsInfo[i][0]
         unit_MonthlyInfo = cursor.execute("SELECT year, month FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "'").fetchall()
         for x in range(len(orderedListOfListedDates)):
+            unitMonths = unitMonths + 1
             susValue = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND year = '" + scramble(orderedListOfListedDates[i][1]) + "' AND month = '" + scramble(orderedListOfListedDates[i][0]) + "'").fetchall()
             if len(susValue) != 0:
                 dictOfDates[(orderedListOfListedDates[x][0] + "/" + orderedListOfListedDates[x][1])] = dictOfDates[(orderedListOfListedDates[x][0] + "/" + orderedListOfListedDates[x][1])] + susValue[0][0]
     closeDatabase()
-    if howManyUnitsMonths != 0:
+    if howManyUnits != 0 and unitMonths != 0:
         firstMonth = orderedListOfListedDates[0][0] + "/" +  orderedListOfListedDates[0][1]
         lastMonth = orderedListOfListedDates[len(orderedListOfListedDates) - 1][0] + "/" +  orderedListOfListedDates[len(orderedListOfListedDates) - 1][1]
         yValuesSuspropertyValues = list(dictOfDates.values())
@@ -1626,6 +1628,7 @@ def propertiesPage():
     meanIncome = 0
     meanExpenses = 0
     meanProfit = 0
+    meanProfitMargin = 0
 
     openDatabase()
 
@@ -2022,7 +2025,7 @@ def tenantsPage():
     primarytenantCount = 0
     totalTenantCount = 0
     totalScore = 0
-    averageScore = 'N/A'
+    averageScore = 0
     totalRent = 0
     occupyingPrimaryTenants = 0
     occupyingTotalTenants = 0
@@ -3629,6 +3632,7 @@ def monthlyAdditionsPage(unitID):
     openDatabase()
     unitInfoDataD = cursor.execute("SELECT month, year FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'")
     unitInfoData = unitInfoDataD.fetchall()
+    print(unitInfoData)
     month, year = returnMostRecentMonth(unitInfoData)
     month, year = str(month), str(year)    
     unitInfoDataD = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "' AND month = '" + scramble(month) + "' AND year = '" + scramble(year) + "'")
