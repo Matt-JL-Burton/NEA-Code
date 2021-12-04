@@ -3957,8 +3957,9 @@ def unitPage(unitID):
 
 def mortgageLengthCalculator(loan_ID):
     openDatabase()
-    loanInfo = cursor.execute("SELECT capital_Owed, instalments, interest_Rate FROM loan WHERE loan_ID = '" + str(loan_ID) + "'").fetchall()
+    loanInfo = cursor.execute("SELECT capital_Owed, instalments, interest_Rate FROM loan WHERE loan_ID = '" + (loan_ID) + "'").fetchall()
     closeDatabase()
+    print(loanInfo)
     capitalOwed = float(deScramble(loanInfo[0][0]))
     instalments = float(deScramble(loanInfo[0][1]))
     interestRate = float(deScramble(loanInfo[0][2]))
@@ -5093,13 +5094,14 @@ def loanManagmentPage(unit_ID,loan_ID):
     #loan ID element
     loanIDEntryBoxbackground = Label(image = longNormal, border = 0).place(relx=0.5,rely=0.35,anchor=CENTER)
     openDatabase()
-    loanIDs = cursor.execute("SELECT loan_ID FROM loan WHERE unit_ID = '" + unit_ID + "'").fetchall()
+    loanIDs = cursor.execute("SELECT loan_ID FROM loan WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()
     closeDatabase()
     cleanLoanIDsList = []
     for i in range(len(loanIDs)):
         cleanLoanIDsList.append(deScramble(loanIDs[i][0]))
     global loanIDOptions
     loanIDOptions = cleanLoanIDsList
+
     global loanIDTypeMenu
     loanIDTypeMenu = ttk.Combobox(root, value=loanIDOptions,width = 50, justify=tkinter.CENTER, font=(font.data,18))
     loanIDTypeMenu.current(loanIDOptions.index(loan_ID))
@@ -5143,6 +5145,9 @@ def loanManagmentPage(unit_ID,loan_ID):
     capitalOwedEntryBox.place(relx=0.825,rely=0.6,anchor=CENTER)
     capitalOwedEntryBoxLabel = Label(root, text='Remaining Capital Owed',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.52,anchor=CENTER)
 
+    global loanManagmentCoverUpCords
+    loanManagmentCoverUpCords = {'loan_ID':{'x':0.5,'y':0.425},'interest_Rate':{'x':0.175,'y':0.665},'instalments':{'x':0.5,'y':0.665},'capital_Owed':{'x':0.825,'y':0.665}}
+
     #placing buttons to refres the values for the correct loan and also to submit data to the screen
     submitUnitDetailsB = Button(root, text='S U B M I T', font=(font.data,'20','underline','bold'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: updateLoan(unit_ID,loan_ID)).place(relx=0.5, rely=0.8 , anchor=CENTER)
     refreshValuesButton = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshLoanManagmentPage(unit_ID)).place(relx=0.5, rely=0.85, anchor=CENTER)
@@ -5150,7 +5155,7 @@ def loanManagmentPage(unit_ID,loan_ID):
     refreshValuesButton2 = Button(root, text='Refresh Values', font=(font.data,'12','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= lambda: refreshLoanManagmentPage(unit_ID)).place(relx=0.875, rely=0.35, anchor=CENTER)
 
     #getting data to show as the calculated data
-    loanLength = mortgageLengthCalculator(loan_ID)
+    loanLength = mortgageLengthCalculator(scramble(loan_ID))
     if loanLength == 'Infinite':
         totalCost = 'Infinte'
     else:
@@ -5168,9 +5173,6 @@ def loanManagmentPage(unit_ID,loan_ID):
     #adding extra info to tell the user to delete the appropraite refinance data if they delete a loan which came from the refinaceing
     warningToCatchEye = Label(root, text='Extra Info',bg=primary.data, fg=bannedColours['warningYellow'], font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.75,anchor=CENTER)
     repaymentsPeriodLabel = Label(root, text='If you delete a loan created by refinancing\nthis unit be sure to delete the\nappropriate refinance data',bg=primary.data, fg=secondry.data, font=(font.data,16), justify='center',relief='flat').place(relx=0.825,rely=0.82,anchor=CENTER)
-
-    global loanManagmentCoverUpCords
-    loanManagmentCoverUpCords = {'loan_ID':{'x':0.5,'y':0.425},'interest_Rate':{'x':0.175,'y':0.665},'instalments':{'x':0.5,'y':0.665},'capital_Owed':{'x':0.825,'y':0.665}}
 
     root.mainloop()
 
