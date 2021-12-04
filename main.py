@@ -10,6 +10,7 @@ import time
 import datetime
 import tkinter
 from tkinter.tix import Tree
+from typing import Counter
 from IPython.utils import data
 import matplotlib
 import os
@@ -837,6 +838,9 @@ def homePage():
     nextMonthExpectedIncome = 0
     capitalGainsTaxDue = 0
     totalTaxDue = 0
+    nextMonthExpectedExpenses = 0
+    incomeTaxToPay = 0
+
 
     openDatabase()
     account_units = cursor.execute("SELECT unit_ID, buy_Price, rent, most_Recent_Valuation FROM units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
@@ -921,7 +925,7 @@ def homePage():
         capitalGainsTaxDue = 0
 
         #expected info for next monht
-        nextMonthExpectedIncome = round(totalExpectedIncome)
+        nextMonthExpectedIncome = round(totalExpectedIncome,2)
         nextMonthExpectedExpenses = round(totalInstallments + (totalMostRecentValuation*0.02)/12,2)
     closeDatabase()
 
@@ -998,7 +1002,10 @@ def homePage():
     averageInward = round(totalinward/6,2)
     averageOutward = -round(totaloutward/6,2)
     averfeProfit = averageInward - averageOutward
-    averageProfitMargin = str(round((averfeProfit/averageInward)*100,2)) + '%'
+    if averageInward != 0:
+        averageProfitMargin = str(round((averfeProfit/averageInward)*100,2)) + '%'
+    else:
+        averageProfitMargin = 0
 
     #placing top half of home page data
     sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'16','bold'), text='6 Month Income vs Expenditure', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.83, rely=0.26, anchor=CENTER)
@@ -1026,50 +1033,55 @@ def homePage():
         dictOfDates[key] = 0
     orderedListOfListedDates = orderListOfListedDates(listOfListedDates)
     openDatabase()
+    howManyUnitsMonths = 0 
     for i in range(len(unitsInfo)):
+        howManyUnitsMonths = howManyUnitsMonths + 1
         scrambledUnitID = unitsInfo[i][0]
         unit_MonthlyInfo = cursor.execute("SELECT year, month FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "'").fetchall()
-        for i in range(len(orderedListOfListedDates)):
+        for x in range(len(orderedListOfListedDates)):
             susValue = cursor.execute("SELECT suspected_Property_Value FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND year = '" + scramble(orderedListOfListedDates[i][1]) + "' AND month = '" + scramble(orderedListOfListedDates[i][0]) + "'").fetchall()
             if len(susValue) != 0:
-                dictOfDates[(orderedListOfListedDates[i][0] + "/" + orderedListOfListedDates[i][1])] = dictOfDates[(orderedListOfListedDates[i][0] + "/" + orderedListOfListedDates[i][1])] + susValue[0][0]
+                dictOfDates[(orderedListOfListedDates[x][0] + "/" + orderedListOfListedDates[x][1])] = dictOfDates[(orderedListOfListedDates[x][0] + "/" + orderedListOfListedDates[x][1])] + susValue[0][0]
     closeDatabase()
-    firstMonth = orderedListOfListedDates[0][0] + "/" +  orderedListOfListedDates[0][1]
-    lastMonth = orderedListOfListedDates[len(orderedListOfListedDates) - 1][0] + "/" +  orderedListOfListedDates[len(orderedListOfListedDates) - 1][1]
-    yValuesSuspropertyValues = list(dictOfDates.values())
-    monthlyDates = list(dictOfDates.keys())
+    if howManyUnitsMonths != 0:
+        firstMonth = orderedListOfListedDates[0][0] + "/" +  orderedListOfListedDates[0][1]
+        lastMonth = orderedListOfListedDates[len(orderedListOfListedDates) - 1][0] + "/" +  orderedListOfListedDates[len(orderedListOfListedDates) - 1][1]
+        yValuesSuspropertyValues = list(dictOfDates.values())
+        monthlyDates = list(dictOfDates.keys())
 
-    plt.style.use('seaborn-bright')
-    plt.clf()
-    plt.figure(figsize=(7,4))
-    plt.plot(monthlyDates, yValuesSuspropertyValues, label = 'Income', color = '#30B700', linewidth = 1, marker = 'o', markersize = 4)
-    plt.xlabel('Dates')
-    plt.ylabel('Suspected Property Valuation (£)')
-    plt.title("Monthly Suspected Property Valuation (£)")
-    plt.grid()
-    if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
-        chdir(f'.{path_seperator}Assets')
-    plt.savefig('suspected_Portfolio_Valuation_Against_Time.png')
+        plt.style.use('seaborn-bright')
+        plt.clf()
+        plt.figure(figsize=(7,4))
+        plt.plot(monthlyDates, yValuesSuspropertyValues, label = 'Income', color = '#30B700', linewidth = 1, marker = 'o', markersize = 4)
+        plt.xlabel('Dates')
+        plt.ylabel('Suspected Property Valuation (£)')
+        plt.title("Monthly Suspected Property Valuation (£)")
+        plt.grid()
+        if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
+            chdir(f'.{path_seperator}Assets')
+        plt.savefig('suspected_Portfolio_Valuation_Against_Time.png')
 
-    #resizing and placing graph image
-    graphImageTwo = Image.open('suspected_Portfolio_Valuation_Against_Time.png')
-    resizedGraphImageTwo = graphImageTwo.resize((480,325), Image.ANTIALIAS)
-    newPicTwo = ImageTk.PhotoImage(resizedGraphImageTwo)
-    graphLabel = Label(image = newPicTwo,border = 0).place(relx = 0.63, rely= 0.58)
-    
-    startValue = yValuesSuspropertyValues[0]
-    endValue = yValuesSuspropertyValues[len(yValuesSuspropertyValues)-1]
-    totalValueIncrease = round(endValue - startValue,2)
-    totalValueIncreasePercentage = str(round((((endValue/startValue)*100)-100),2)) + "%"
-    averageMonthlyIncrease = round(totalValueIncrease/(len(monthlyDates)-1),2)
-    averageGrowthRate = str(round(((((endValue/startValue)**(1/(len(monthlyDates)-1))) * 100) - 100),4)) + "%"
+        #resizing and placing graph image
+        graphImageTwo = Image.open('suspected_Portfolio_Valuation_Against_Time.png')
+        resizedGraphImageTwo = graphImageTwo.resize((480,325), Image.ANTIALIAS)
+        newPicTwo = ImageTk.PhotoImage(resizedGraphImageTwo)
+        graphLabel = Label(image = newPicTwo,border = 0).place(relx = 0.63, rely= 0.58)
+        
+        startValue = yValuesSuspropertyValues[0]
+        endValue = yValuesSuspropertyValues[len(yValuesSuspropertyValues)-1]
+        totalValueIncrease = round(endValue - startValue,2)
+        totalValueIncreasePercentage = str(round((((endValue/startValue)*100)-100),2)) + "%"
+        averageMonthlyIncrease = round(totalValueIncrease/(len(monthlyDates)-1),2)
+        averageGrowthRate = str(round(((((endValue/startValue)**(1/(len(monthlyDates)-1))) * 100) - 100),4)) + "%"
 
-    sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'16','bold'), text='Portfolio Value over time', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.7, anchor=CENTER)
-    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Montlhy Value Increase (%) : ' + str(averageGrowthRate), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.73, anchor=CENTER)
-    sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'14'), text='Average Value Increase (£) : ' + str(averageMonthlyIncrease), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.76, anchor=CENTER)
-    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Total Value Increase (%) : ' + str(totalValueIncreasePercentage), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.79, anchor=CENTER)
-    sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Total Value Increase (£) : ' + str(totalValueIncrease), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.82, anchor=CENTER)
-    
+        sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'16','bold'), text='Portfolio Value over time', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.7, anchor=CENTER)
+        sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Average Montlhy Value Increase (%) : ' + str(averageGrowthRate), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.73, anchor=CENTER)
+        sixMonthIncomevsExpenditureTitle = Label(root, font=(font.data,'14'), text='Average Value Increase (£) : ' + str(averageMonthlyIncrease), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.76, anchor=CENTER)
+        sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Total Value Increase (%) : ' + str(totalValueIncreasePercentage), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.79, anchor=CENTER)
+        sixMonthIncomevsExpenditure = Label(root, font=(font.data,'14'), text='Total Value Increase (£) : ' + str(totalValueIncrease), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.47, rely=0.82, anchor=CENTER)
+    else:
+        errorWarning = Label(root, font=(font.data,'14'), text="Data unavalible add unit's monthly data first", justify='center', bg=secondry.data,fg=primary.data).place(relx=0.66, rely=0.75, anchor=CENTER)
+
     root.mainloop()
 
 def orderListOfListedDates(listOfListedDates):
