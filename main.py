@@ -3258,7 +3258,7 @@ def complaintsManagmentPage(tenantID):
     global compaintsIDMenuOptions
     compaintsIDMenuOptions = []
     for i in range(len(data_To_Descrmable)):
-        compaintsIDMenuOptions.append(data_To_Descrmable[i][0])
+        compaintsIDMenuOptions.append(deScramble(data_To_Descrmable[i][0]))
     compaintsIDMenuOptions.append('None')
     closeDatabase()
     global complaintIDMenu
@@ -3479,12 +3479,11 @@ def addComplaintPage(tenantID):
 
     tenantIDBoxBackground = Label(image = shortNormal, border = 0).place(relx=0.82,rely=0.25,anchor=CENTER)
     openDatabase()
-    primaryColourD = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'")
-    data_To_Descrmable = deScramble(primaryColourD.fetchall())
+    data_To_Descrmable = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" +scramble(databaseCurrentAccount_ID.data)+"'").fetchall()
     global listOfTenantIDs
     listOfTenantIDs = []
     for i in range(len(data_To_Descrmable)):
-        listOfTenantIDs.append(data_To_Descrmable[i][0])
+        listOfTenantIDs.append(deScramble(data_To_Descrmable[i][0]))
     closeDatabase()
     global tenantIDMenu
     tenantIDMenu = ttk.Combobox(root, value=listOfTenantIDs, justify=tkinter.CENTER, width = 20,font=(font.data,18))
