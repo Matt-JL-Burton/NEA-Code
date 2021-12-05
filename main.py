@@ -1192,6 +1192,9 @@ def displayBackButton():
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageThree).place(relx=0.05, rely=0.05, anchor=CENTER)
     elif previousPage == 'Edit Refinance':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editRefinancePage(current_unit_ID)).place(relx=0.05, rely=0.05, anchor=CENTER)
+    elif previousPage == 'Edit Sold':
+        backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=editSoldUnitPage).place(relx=0.05, rely=0.05, anchor=CENTER)
+
 
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
@@ -1254,6 +1257,8 @@ def displayNextButton(nextPageCommand):
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=forgottenPasswordPageThree).place(relx=0.5, rely=0.9, anchor=CENTER)
     elif nextPageCommand == 'Edit Refinance':
         continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=lambda: editRefinancePage(current_unit_ID)).place(relx=0.5, rely=0.9, anchor=CENTER)
+    elif nextPageCommand == 'Edit Sold':
+        continueButton = Button(root, text='CONTINUE', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=editSoldUnitPage).place(relx=0.5, rely=0.9, anchor=CENTER)
 
 def displayGovermentNationalInsurancePage():
     try:
@@ -4985,6 +4990,7 @@ def deleteRefinacne(unit_ID):
         openDatabase()
         cursor.execute("DELETE FROM refinance WHERE unit_ID = '" + scramble(unit_ID) + "' AND year = '" + scramble(year) + "' AND month = '" + scramble(month) + "'")
         closeDatabase()
+        displayConfirmation('Edit Refinance')
     else:
         #displays an error stating an invalid date was entered
         invalidDateEntered = Label(root, text="Date entered was invalid",bg=primary.data, fg=bannedColours['errorRed'], font=(font.data,12), justify='center',relief='flat').place(relx=0.5,rely=0.43,anchor=CENTER)
@@ -5280,7 +5286,7 @@ def editSoldUnitPage():
     topBorder = Label(root, text='Edit Sold Units', height=2 ,bg=primary.data, fg = secondry.data, width=42, font=(font.data,40), justify='center').place(relx=0,rely=0)
     displayBackButton()
     global previousPage
-    previousPage = 'Edit unit'
+    previousPage = 'Edit Sold'
     displayMenuButton()
 
     #defiing images to use in the page layout
@@ -5422,8 +5428,10 @@ def deleteSoldUnits():
         openDatabase()
         cursor.execute("DELETE FROM sold_Units WHERE unit_ID = '" + scramble(enteredUnitID) + "'")
         closeDatabase()
+        displayConfirmation('Edit Sold')
     else:
         invlaidUnitID = Label(root, text = 'You must pick and ID from the list',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
+
 
 def refreshSoldUnitsEntryBoxes():
     enteredUnitID = possibleUnitsMenu.get()
@@ -5460,8 +5468,7 @@ print('Program Finished')
 
 #TODO: list
 #ReAdjustScore after late or missed rents
-#order stuff in tablesx``
-#rememebr to implament capital gains tax calculations in home page after sell unit page done
+#fix income tax estimate
 
 #### stuff could add for better
 #AI predicition for monthly expenses
