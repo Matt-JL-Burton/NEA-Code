@@ -1195,7 +1195,6 @@ def displayBackButton():
     elif previousPage == 'Edit Sold':
         backButton = Button(root, text='BACK', font=(font.data,'15','underline','bold'),fg=tertiary.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command=editSoldUnitPage).place(relx=0.05, rely=0.05, anchor=CENTER)
 
-
 def displayNextButton(nextPageCommand):
     if nextPageCommand == None:
         pass
@@ -5289,77 +5288,85 @@ def editSoldUnitPage():
     previousPage = 'Edit Sold'
     displayMenuButton()
 
-    #defiing images to use in the page layout
-    longNormal = PhotoImage(file = "Long-Normal.PNG")
-    shortNormal = PhotoImage(file = "Short-Normal.PNG")
-
-    #sold unit_ID entry box
-    soldUnitIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
-    global possibleUnitIDs
-    possibleUnitIDs = []
+    #working out the number of sold units in an account and displaying an error if this is 0
     openDatabase()
-    possibleSoldUnitIDs = cursor.execute("SELECT unit_ID FROM sold_Units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
-    closeDatabase() 
-    for i in range(len(possibleSoldUnitIDs)):
-        possibleUnitIDs.append(deScramble(possibleSoldUnitIDs[i][0]))
-    global possibleUnitsMenu
-    possibleUnitsMenu = ttk.Combobox(root, value=possibleUnitIDs, justify=tkinter.CENTER, width = 20,font=(font.data,18))
-    possibleUnitsMenu.place(relx=0.5,rely=0.60,anchor=CENTER)
-    possibleUnitsMenu.current(0)
-    root.option_add('*TCombobox*Listbox.font', (font.data,14))
-    soldUnitIDEntryBoxLabel = Label(root, text='Select Sold Unit ID',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
-
-    #efficent code for retricing inputs for the page
-    openDatabase()
-    salePrice,month,year,capGainsPaid = cursor.execute("SELECT sell_Price, sell_Month, sell_Year, tax_Paid FROM sold_Units WHERE unit_ID = '" + scramble(possibleUnitsMenu.get()) + "'").fetchall()[0]
+    soldUnitData = cursor.execute(" SELECT unit_ID FROM sold_Units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
     closeDatabase()
-    salePrice = deScramble(salePrice)
-    month = int(deScramble(month))
-    year = int(deScramble(year))
-    capGainsPaid = deScramble(capGainsPaid)
 
-    #placing elements to rerive inputs from user
-    #sale price entry box + extras for visual
-    salePriceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.40,anchor=CENTER)
-    global salePriceEntryBox
-    salePriceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
-    salePriceEntryBox.insert(0,salePrice)
-    salePriceEntryBox.place(relx=0.175,rely=0.40,anchor=CENTER)
-    salePriceEntryBoxLabel = Label(root, text='Sale Price',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.32,anchor=CENTER)
-    
-    #date of sale price entry box + extras for visual, includes month and year entry boxes seperatly for easyier back end retrival
-    dateOfSaleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
-    global monthDateOfSaleEntryBox
-    slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.49,rely=0.355)
-    monthDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
-    monthDateOfSaleEntryBox.insert(0,month)
-    monthDateOfSaleEntryBox.place(relx=0.435,rely=0.40,anchor=CENTER)
-    global yearDateOfSaleEntryBox
-    yearDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
-    yearDateOfSaleEntryBox.insert(0,year)
-    yearDateOfSaleEntryBox.place(relx=0.575,rely=0.40,anchor=CENTER)
-    dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Sale',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
-    dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.4675,anchor=CENTER)
+    if len(soldUnitData) != 0 :
+        #defiing images to use in the page layout
+        longNormal = PhotoImage(file = "Long-Normal.PNG")
+        shortNormal = PhotoImage(file = "Short-Normal.PNG")
 
-    #capital gains entry box + extras for visual
-    capGainsTaxPaidBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.40,anchor=CENTER)
-    global capGainsPaidOptions
-    capGainsPaidOptions = ['Paid','Not Paid'] 
-    global capGainsMenu
-    capGainsMenu = ttk.Combobox(root, value=capGainsPaidOptions, justify=tkinter.CENTER, width = 20,font=(font.data,18))
-    capGainsMenu.place(relx=0.825,rely=0.40,anchor=CENTER)
-    capGainsMenu.current(capGainsPaidOptions.index(capGainsPaid))
-    root.option_add('*TCombobox*Listbox.font', (font.data,14))
-    capGainsTaxPaidEntryBoxLabel = Label(root, text='Capital Gains Tax paid',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.32,anchor=CENTER)
+        #sold unit_ID entry box
+        soldUnitIDEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.60,anchor=CENTER)
+        global possibleUnitIDs
+        possibleUnitIDs = []
+        openDatabase()
+        possibleSoldUnitIDs = cursor.execute("SELECT unit_ID FROM sold_Units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
+        closeDatabase() 
+        for i in range(len(possibleSoldUnitIDs)):
+            possibleUnitIDs.append(deScramble(possibleSoldUnitIDs[i][0]))
+        global possibleUnitsMenu
+        possibleUnitsMenu = ttk.Combobox(root, value=possibleUnitIDs, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+        possibleUnitsMenu.place(relx=0.5,rely=0.60,anchor=CENTER)
+        possibleUnitsMenu.current(0)
+        root.option_add('*TCombobox*Listbox.font', (font.data,14))
+        soldUnitIDEntryBoxLabel = Label(root, text='Select Sold Unit ID',bg=primary.data, fg=secondry.data, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.52,anchor=CENTER)
 
-    #places action buttons and respective descriptors for the action buttons
-    updateSoldUnitsB = Button(root, text='Update Sold Unit Data', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= updateSoldUnit).place(relx=0.5, rely=0.8, anchor=CENTER)
-    deleteSoldUnitsB = Button(root, text='Delete Sold Unit Data', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= deleteSoldUnits).place(relx=0.5, rely=0.9, anchor=CENTER)
-    editSoldUnitsB = Button(root, text='Refresh Values', font=(font.data,'16','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= refreshSoldUnitsEntryBoxes).place(relx=0.73, rely=0.6, anchor=CENTER)
+        #efficent code for retricing inputs for the page
+        openDatabase()
+        salePrice,month,year,capGainsPaid = cursor.execute("SELECT sell_Price, sell_Month, sell_Year, tax_Paid FROM sold_Units WHERE unit_ID = '" + scramble(possibleUnitsMenu.get()) + "'").fetchall()[0]
+        closeDatabase()
+        salePrice = deScramble(salePrice)
+        month = int(deScramble(month))
+        year = int(deScramble(year))
+        capGainsPaid = deScramble(capGainsPaid)
 
-    #defining coords for placing error messages
-    global editSoldUnits
-    editSoldUnits = {'sell_Price':{'x':0.175,'y':0.47},'sell_Month':{'x':0.5,'y':0.47},'sell_Year':{'x':0.5,'y':0.47},'tax_Paid':{'x':0.825,'y':0.47},'unit_ID':{'x':0.5,'y':0.67}}
+        #placing elements to rerive inputs from user
+        #sale price entry box + extras for visual
+        salePriceEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.175,rely=0.40,anchor=CENTER)
+        global salePriceEntryBox
+        salePriceEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=23, font=(font.data,18),justify='center',relief='flat')
+        salePriceEntryBox.insert(0,salePrice)
+        salePriceEntryBox.place(relx=0.175,rely=0.40,anchor=CENTER)
+        salePriceEntryBoxLabel = Label(root, text='Sale Price',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.175,rely=0.32,anchor=CENTER)
+        
+        #date of sale price entry box + extras for visual, includes month and year entry boxes seperatly for easyier back end retrival
+        dateOfSaleEntryBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.5,rely=0.40,anchor=CENTER)
+        global monthDateOfSaleEntryBox
+        slashLabel1 = Label(root,bg=primary.data, fg=secondry.data, font = ('Bahnschrift SemiLight',40),text='/').place(relx=0.49,rely=0.355)
+        monthDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+        monthDateOfSaleEntryBox.insert(0,month)
+        monthDateOfSaleEntryBox.place(relx=0.435,rely=0.40,anchor=CENTER)
+        global yearDateOfSaleEntryBox
+        yearDateOfSaleEntryBox = Entry(root, bg=primary.data,fg=secondry.data, width=10,font=(font.data,18),justify='center',relief='flat')
+        yearDateOfSaleEntryBox.insert(0,year)
+        yearDateOfSaleEntryBox.place(relx=0.575,rely=0.40,anchor=CENTER)
+        dateOfRefinanceEntryBoxTenantLabel = Label(root, text='Date of Sale',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.5,rely=0.32,anchor=CENTER)
+        dateOfRefinanceEntryBoxTenantSubText = Label(root, text='In the format MM/YYYY', bg=primary.data, fg=secondry.data, width=50, font=(font.data,9), justify='center', relief='flat').place(relx=0.5, rely=0.4675,anchor=CENTER)
+
+        #capital gains entry box + extras for visual
+        capGainsTaxPaidBoxbackground = Label(image = shortNormal, border = 0).place(relx=0.825,rely=0.40,anchor=CENTER)
+        global capGainsPaidOptions
+        capGainsPaidOptions = ['Paid','Not Paid'] 
+        global capGainsMenu
+        capGainsMenu = ttk.Combobox(root, value=capGainsPaidOptions, justify=tkinter.CENTER, width = 20,font=(font.data,18))
+        capGainsMenu.place(relx=0.825,rely=0.40,anchor=CENTER)
+        capGainsMenu.current(capGainsPaidOptions.index(capGainsPaid))
+        root.option_add('*TCombobox*Listbox.font', (font.data,14))
+        capGainsTaxPaidEntryBoxLabel = Label(root, text='Capital Gains Tax paid',bg=primary.data, fg=secondry.data, width=23, font=(font.data,18), justify='center',relief='flat').place(relx=0.825,rely=0.32,anchor=CENTER)
+
+        #places action buttons and respective descriptors for the action buttons
+        updateSoldUnitsB = Button(root, text='Update Sold Unit Data', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= updateSoldUnit).place(relx=0.5, rely=0.8, anchor=CENTER)
+        deleteSoldUnitsB = Button(root, text='Delete Sold Unit Data', font=(font.data,'18','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= deleteSoldUnits).place(relx=0.5, rely=0.9, anchor=CENTER)
+        editSoldUnitsB = Button(root, text='Refresh Values', font=(font.data,'16','underline'),fg=secondry.data,bg=primary.data,activeforeground=bannedColours['activeTextColor'],activebackground=primary.data,border=0,command= refreshSoldUnitsEntryBoxes).place(relx=0.73, rely=0.6, anchor=CENTER)
+
+        #defining coords for placing error messages
+        global editSoldUnits
+        editSoldUnits = {'sell_Price':{'x':0.175,'y':0.47},'sell_Month':{'x':0.5,'y':0.47},'sell_Year':{'x':0.5,'y':0.47},'tax_Paid':{'x':0.825,'y':0.47},'unit_ID':{'x':0.5,'y':0.67}}
+    else:
+        mostHaveAtleast1SoldUnitLabel = Label(root, text='You must have atleast 1 sold unit to access this page',bg=primary.data, fg=secondry.data,font=(font.data,25), justify='center',relief='flat').place(relx=0.5,rely=0.55,anchor=CENTER)
 
 
     root.mainloop()
