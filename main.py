@@ -2,7 +2,7 @@
 from email import message
 import email
 from http.client import GATEWAY_TIMEOUT
-from sqlite3.dbapi2 import Connection, Error
+from sqlite3.dbapi2 import Connection, Error, ProgrammingError
 from tkinter import ttk
 from tkinter import *
 import sqlite3
@@ -923,13 +923,22 @@ def homePage():
             totalTaxableIncome = other_Income_Estimate + totalYearlyIncome - totalTaxableExpenses
             incomeTaxToPay = totalTaxableIncome * (corporation_Rate/100)
 
-        #TODO: rememebr to implament capital gains tax calculations
+        #getting capital gains tax data
+        openDatabase()
+        tax_Due_Data = cursor.execute("SELECT tax_Due FROM sold_Units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "' AND sell_Year = '" + scramble(year) + "'").fetchall()
         capitalGainsTaxDue = 0
+        for i in range(len(tax_Due_Data)):
+            capitalGainsTaxDue = capitalGainsTaxDue + float(deScramble(tax_Due_Data[i][0]))
+        closeDatabase()
 
         #expected info for next monht
         nextMonthExpectedIncome = round(totalExpectedIncome,2)
         nextMonthExpectedExpenses = round(totalInstallments + (totalMostRecentValuation*0.02)/12,2)
-    closeDatabase()
+    #closes the database unless it is already close from the above closeDatabase (which is not always called)
+    try:
+        closeDatabase()
+    except ProgrammingError:
+        pass 
 
     #place all data
     generalLabel = Label(root, font=(font.data,'20','bold'), text='General', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.2, anchor=CENTER)
