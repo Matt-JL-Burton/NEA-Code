@@ -1526,7 +1526,7 @@ def lessThanDeposit(unit_ID,inputData):
     if castingTypeCheckFunc(inputData.data,inputData.prefferredType) != False or type(castingTypeCheckFunc(inputData.data,inputData.prefferredType)) != bool:
         openDatabase()
         tenantID_D = cursor.execute("SELECT tenant_ID FROM units WHERE unit_ID = '" + scramble(unit_ID) + "'").fetchall()
-        if len(tenantID_D) != 0:
+        if tenantID_D != 0:
             tenantID = deScramble(tenantID_D[0][0])
             if tenantID != 'None':
                 deposit = cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID ='" + scramble(tenantID) + "'").fetchall()[0][0] # dont need to scramble as the data has just be retriived adn not be unscrambled
@@ -1535,7 +1535,10 @@ def lessThanDeposit(unit_ID,inputData):
                 else:
                     return False
             else:
-                return False
+                if float(inputData.data) == 0:
+                    return True
+                else:
+                    return False
         else:
             return False
     else:
@@ -3837,10 +3840,21 @@ def addNewMonthlyUnitData(unitID):
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?) """
         openDatabase()
         cursor.execute(addMonthlyCommand,new_Units_Monthly_Data)
-        deposit = deScramble(cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
-        cursor.execute("UPDATE tenants SET deposit = '" + scramble(float(deposit) - float(money_Taken_From_Deposit.data)) + "' WHERE tenant_ID = '" + scramble(tenant_ID) + "'")
         closeDatabase()
-        
+        if tenant_ID != 'None':                
+            openDatabase()
+            deposit = deScramble(cursor.execute("SELECT deposit FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0])
+            score = float(deScramble(cursor.execute("SELECT score FROM tenants WHERE tenant_ID = '" + scramble(tenant_ID) + "'").fetchall()[0][0]))
+            if rent_Late.data != 'On Time':
+                score = score - 15
+                if score < 0:
+                    score = 0
+            else:
+                score = score + 5
+                if score > 100:
+                    score = 100
+            cursor.execute("UPDATE tenants SET deposit = '" + scramble(float(deposit) - float(money_Taken_From_Deposit.data)) + "', score = '" + scramble(score) + "' WHERE tenant_ID = '" + scramble(tenant_ID) + "'")
+            closeDatabase()       
         displayConfirmation('Properties')
 
 def unitPage(unitID):
@@ -5439,7 +5453,6 @@ def deleteSoldUnits():
     else:
         invlaidUnitID = Label(root, text = 'You must pick and ID from the list',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
 
-
 def refreshSoldUnitsEntryBoxes():
     enteredUnitID = possibleUnitsMenu.get()
     if enteredUnitID in possibleUnitIDs:
@@ -5475,7 +5488,6 @@ print('Program Finished')
 
 #TODO: list
 #ReAdjustScore after late or missed rents
-#fix income tax estimate
 
 #### stuff could add for better
 #AI predicition for monthly expenses
