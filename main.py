@@ -3274,10 +3274,10 @@ def complaintsManagmentPage(tenantID):
     longNormal = PhotoImage(file = "Long-Normal.PNG")
     shortNormal = PhotoImage(file = "Short-Normal.PNG")
 
-    personalIncomeBoxbackground = Label(image = longNormal, border = 0).place(relx=0.35,rely=0.25,anchor=CENTER)
+    complaintIDBoxbackground = Label(image = longNormal, border = 0).place(relx=0.35,rely=0.25,anchor=CENTER)
     openDatabase()
-    primaryColourD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" +scramble(tenantID)+"'")
-    data_To_Descrmable = primaryColourD.fetchall()
+    complaintIDD = cursor.execute("SELECT complaint_ID FROM complaints WHERE tenant_ID = '" +scramble(tenantID)+"'")
+    data_To_Descrmable = complaintIDD.fetchall()
     global compaintsIDMenuOptions
     compaintsIDMenuOptions = []
     for i in range(len(data_To_Descrmable)):
