@@ -39,7 +39,7 @@ def initialise():
         os.chdir(pathlib.Path(__file__).parent.absolute())
         if fileCreation() == 'Correct Files Created':
             convertAssetColor(primary,secondry)
-            ## This allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
+            ## Changing inital page function called allows me to access specific pages without having to go via the terms and conditions -> login -> menu -> target page  
             displayTCs()
             
 #setting up key bindings for quickly exciting the program (mainly useful for developing)
