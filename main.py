@@ -385,7 +385,6 @@ def openDatabase():
 def closeDatabase():
     connection.commit()
     connection.close()
-    #chdir('..')
 
 def restartFromConnectionError():
     connectionError.destroy()
@@ -5484,6 +5483,10 @@ def editSoldUnitCoverUp():
             coverUp = Label(root,bg=primary.data,width=65,font=(font.data,7),justify='center').place(relx=editSoldUnits[entryboxData]['x'],rely=editSoldUnits[entryboxData]['y'],anchor=CENTER)
 
 initialise()
+
+
+
+
 print('Program Finished')
 
 #TODO: list
