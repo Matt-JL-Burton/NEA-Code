@@ -99,7 +99,7 @@ def definingDefaultVariables():
     hCapGainsTR =  uInputDataObj(28,float)
     aCapGainsTR =  uInputDataObj(28,float)
     #instansaite the current account object - also allows me the developer to access pages using test accoutns without signing in
-    # databaseCurrentAccount_ID = uInputDataObj('W2V2423OL5',str) 
+    databaseCurrentAccount_ID = uInputDataObj('W2V2423OL5',str) 
     listOfAcceptedFonts = ['Bahnschrift Semilight','Microsoft Sans Serif','Times New Roman']
     for i in range(len(listOfAcceptedFonts)):
         listOfAcceptedFonts[i] = listOfAcceptedFonts[i].title()
