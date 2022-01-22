@@ -1339,6 +1339,7 @@ def findOS():
         path_seperator = None
         invalidOSRunning()
 
+
 #data validation tests
 def menuOptionCheck(entry,globalMenuList):
     if castingTypeCheckFunc(entry.data,entry.prefferredType) != False:
@@ -1544,7 +1545,7 @@ def lessThanDeposit(unit_ID,inputData):
     else:
         return False
 # end of data validation tests
-
+        
 def disaplayEM(errorType,x,y):
     warning = Label(root, text = errorMessgesDict[errorType],bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,9),justify='center').place(relx=x,rely=y,anchor=CENTER)
 
