@@ -5486,9 +5486,6 @@ def editSoldUnitCoverUp():
 
 initialise()
 
-
-
-
 print('Program Finished')
 
 #TODO: list
