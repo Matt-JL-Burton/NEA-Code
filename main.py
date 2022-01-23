@@ -152,10 +152,14 @@ def createFile(fileName):
         f.close()
 
 def addAssets():
+    # goes the correct CWD
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
         chdir(f'.{path_seperator}Assets')
+    # gets all the assets currently in the system
     listOfAssets = os.listdir(os.getcwd())
     i = 0
+
+    #iterates over every item in the list
     while i in range(len(listOfIdealAssets)):
         asset = listOfIdealAssets[i]
         if asset not in listOfAssets:
@@ -163,21 +167,20 @@ def addAssets():
                 urllib.request.urlretrieve(f"https://matt-jl-burton.github.io/NEA/{asset}",f'{asset}')
             except OSError: #if there is a connection error
                 if connectionError.state != 'normal':
-                    i = len(listOfIdealAssets) + 1 #to exit while loop so as not to try and get more Assets resulting in 
-                    #loads of connection error's being displayed
+                    i = len(listOfIdealAssets) + 1 #to exit while loop so as not to try and get more Assets resulting in loads of connection error's being displayed
                     displayConnectionError()
         i = i + 1
 
-    #sorting list
+    #sorting list so that comparision can be accuralty made
     listOfIdealAssetsSorted = (listOfIdealAssets).sort()
     listOfObtainedAssetsSorted =  ((os.listdir(os.getcwd())).sort())
     chdir('..')
 
+    #if assests got is the same as the assets that my system wanted to get
     if listOfObtainedAssetsSorted == listOfIdealAssetsSorted:
         return 'Correct Assets Obtained'
     else:
-        print('Correct Assets Not Obtained')
-        return 'Correct Assets Not Obtained'
+        return 'Correct Assets Not Obtained' 
 
 def configureDatabase():
     if ((os.getcwd()).split(path_seperator))[len(os.getcwd().split(path_seperator))-1] != 'Assets':
@@ -1597,6 +1600,7 @@ def login():
 
 #This menu page is for allowing access to a few of the most commonly used and most important pages in terms on navigation
 def menuPage():
+    #setting up the page adding titles, headers and back button (if appropirate)
     initialiseWindow()
     root.title('Property managment system - Menu')
     root.configure(bg=secondry.data)
@@ -1604,6 +1608,8 @@ def menuPage():
     displayBackButton()
     global previousPage
     previousPage = 'Menu'
+
+    # displays the buttons allowing traversal to other pages
     homePageButton = Button(root, text='Home Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=homePage).place(relx=0.5, rely=0.25, anchor=CENTER)
     properitesPageButton = Button(root, text='Properties Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=propertiesPage).place(relx=0.5, rely=0.325, anchor=CENTER)
     newUnitPageButton = Button(root, text='Add New Unit Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=newUnitPage).place(relx=0.5, rely=0.4, anchor=CENTER)
@@ -1612,10 +1618,8 @@ def menuPage():
     taxPageButton = Button(root, text='Tax Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=taxPage).place(relx=0.5, rely=0.625, anchor=CENTER)
     settingsPageButton = Button(root, text='Settings Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=settingsPage).place(relx=0.5, rely=0.7, anchor=CENTER)
     editSoldPageButton = Button(root, text='Edit Sold Units Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=editSoldUnitPage).place(relx=0.5, rely=0.775, anchor=CENTER)
-    #contactPageButton = Button(root, text='Contact Page', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=contactPage)
-    #contactPageButton.place(relx=0.5, rely=0.775, anchor=CENTER)
-    #contactPageButton["state"] = "disabled" #To disable contact button as Im no longer using this
     signOutButton = Button(root, text='Sign Out', font=(font.data,'17','underline'),fg=primary.data,bg=secondry.data,activeforeground=bannedColours['activeTextColor'],activebackground=secondry.data,border=0,command=loginPage).place(relx=0.5, rely=0.85, anchor=CENTER)
+    
     root.mainloop()
 
 #This page is for presenting data about the overall state of my end users portfolio aswell as a way to access data for each individual unit
