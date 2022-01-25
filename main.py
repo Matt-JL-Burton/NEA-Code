@@ -5494,6 +5494,7 @@ print('Program Finished')
 
 #TODO: list
 
+
 #ReAdjustScore after late or missed rents
 
 #### stuff could add for better
