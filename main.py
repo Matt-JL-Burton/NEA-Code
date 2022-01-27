@@ -5496,6 +5496,7 @@ print('Program Finished')
 
 #ReAdjustScore after late or missed rents
 
+
 #### stuff could add for better
 #AI predicition for monthly expenses
 #back button stack
