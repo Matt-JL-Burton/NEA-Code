@@ -5312,6 +5312,7 @@ def editSoldUnitPage():
     soldUnitData = cursor.execute(" SELECT unit_ID FROM sold_Units WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
     closeDatabase()
 
+    #shows an error message if there are no units to edit
     if len(soldUnitData) != 0 :
         #defiing images to use in the page layout
         longNormal = PhotoImage(file = "Long-Normal.PNG")
@@ -5444,7 +5445,7 @@ def updateSoldUnit():
             cursor.execute("UPDATE sold_Units SET sell_Price = '" + soldUnitDataArray[3]  +"', sell_Month = '" + soldUnitDataArray[4] + "', sell_Year = '" + soldUnitDataArray[5] + "', tax_Paid = '" + soldUnitDataArray[7] + "' WHERE unit_ID = '" + soldUnitFieldArray[0] + "'")
             closeDatabase()
             
-            displayConfirmation('Properties')
+            displayConfirmation('Edit Sold')
     else:
         invlaidUnitID = Label(root, text = 'You must pick and ID from the list',bg=primary.data,width=65, fg = bannedColours['errorRed'], font=(font.data,12),justify='center').place(relx=0.5,rely=0.67,anchor=CENTER)
 
