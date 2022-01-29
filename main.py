@@ -2137,6 +2137,7 @@ def addUnitLineOfData(unit_ID,score,tenant_Email,nlateRent,nOfCompaints,i):
     createTenantYaxisLine(152+76*((i%5)))
 
 def createTableForTenant(startValueForAccountListing):
+    #sets up the table
     frameToGiveOtheCanvasABorder = Frame(root,width=840,height=500,bg=secondry.data,relief='solid',highlightthickness=2,highlightbackground=primary.data)
     frameToGiveOtheCanvasABorder.place(relx=0.315,rely=0.18)
     frameToGiveOtheCanvasABorder.grid_propagate(False) #Stops frame from changing size to fit the inside of it
@@ -2144,6 +2145,8 @@ def createTableForTenant(startValueForAccountListing):
     canvasForTable = Canvas(frameToGiveOtheCanvasABorder,width=840,height=500,bg=secondry.data,highlightthickness=0)
     canvasForTable.pack()
     canvasForTable.grid_propagate(False) #Stops frame from changing size to fit the inside of it
+    
+    #creates header row
     tenant_ID_ColumHeader = Label(canvasForTable, text='Tenant ID', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.04, rely=0.05)
     score_ColumHeader = Label(canvasForTable, text='Score', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.23, rely=0.05)
     email_ColumHeader = Label(canvasForTable, text='Email', height=1 ,bg=secondry.data, fg = primary.data, font=(font.data,14,'bold'), justify='center').place(relx = 0.43, rely=0.05)
@@ -2155,16 +2158,17 @@ def createTableForTenant(startValueForAccountListing):
     canvasForTable.create_line(655,0,655,76,fill=primary.data)
     canvasForTable.create_line(0,76,850,76,fill=primary.data)
 
-    # INSERT INTO complaints (complaint_ID, tenant_ID, month, year, complaint_Nature, resoltion)
-    # VALUES ('newComplaintID','TA1','12','2019','testing','This is solved') #SQL to add a new complaint
-
+    #gets appropriate data
     openDatabase()
     tenantBriefInfoD = cursor.execute("SELECT tenant_ID, score, tenant_Email FROM tenants WHERE account_ID = '" + str(scramble(databaseCurrentAccount_ID.data)) + str("'")) 
     tenantBriefInfo = tenantBriefInfoD.fetchall()
     closeDatabase()
-    if len(tenantBriefInfo) != 0: #If there is a tenants in the database
+
+    #if there is a tenant in the system
+    if len(tenantBriefInfo) != 0: 
         i = startValueForAccountListing
         count = 0
+        #for each row
         while i < len(tenantBriefInfo) and count < 5:
             tenant_ID = deScramble(tenantBriefInfo[i][0])
             score = deScramble(tenantBriefInfo[i][1])
