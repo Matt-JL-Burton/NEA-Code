@@ -2163,7 +2163,6 @@ def createTableForTenant(startValueForAccountListing):
     tenantBriefInfo = tenantBriefInfoD.fetchall()
     closeDatabase()
     if len(tenantBriefInfo) != 0: #If there is a tenants in the database
-        #TODO: need to order tenant's by descrambled tenant_ID
         i = startValueForAccountListing
         count = 0
         while i < len(tenantBriefInfo) and count < 5:
