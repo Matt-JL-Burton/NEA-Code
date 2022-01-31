@@ -740,6 +740,7 @@ def forgottenPasswordStageThree():
         displayConfirmation('Home')
 
 def createAccount():
+    #getting data from screen and passing to the correct form
     recovery_Email = uInputDataObj(emailEntryBox.get(),str)
     first_Name = uInputDataObj(firstNameEntryBox.get(),str)
     global operation_Type
@@ -751,11 +752,13 @@ def createAccount():
     title = uInputDataObj(titleEntryBox.get(),str)
     national_Insurance_Due = uInputDataObj(nationalInsuranceEntryBox.get(),float)
 
+    #creating a unique account ID
     characters = (string.ascii_uppercase)+(string.digits)
     account_ID =  uInputDataObj(''.join(random.choice(characters) for i in range(10)),str)
     while uniqueDataCheck(account_ID,'account_ID','accounts') == False:
         account_ID =  (''.join(random.choice(characters) for i in range(10)))
 
+    #creates arrays used to pass to database and for data validation dict keys
     createAccountArray = [account_ID.data,password.data,recovery_Email.data,first_Name.data,last_Name.data, operation_Type.data, title.data, getTaxRate(account_ID.data),incPA.data,other_Income_Estimate.data,bIncTR.data, hIncTR.data, aIncTR.data, bIncCutOff.data, hIncCutOff.data, corpTR.data, bCapGainsTR.data, bCapGainsAllowence.data, hCapGainsTR.data, aCapGainsTR.data, corpCapGainsTR.data,national_Insurance_Due.data, primary.data, secondry.data, tertiary.data, font.data]
     accountFields = ['account_ID', 'password', 'recovery_Email', 'first_Name', 'last_Name', 'operation_Type', 'title', 'tax_Rate','personal_Income_Allowence','other_Income_Estimate', 'basic_Income_Rate', 'high_Income_Rate', 'additional_Income_Rate', 'basic_Income_Cut_Off', 'high_Income_Cut_Off', 'corporation_Rate', 'basic_Capital_Gains_Rate', 'basic_Capital_Gains_Allowence', 'high_Capital_Gains_Rate', 'additional_Capital_Gains_Rate', 'corporation_Capital_Gains_Rate', 'national_Insurance_Due', 'primary_Colour', 'secondry_Colour', 'tertiary_Colour','font']
     
@@ -765,7 +768,6 @@ def createAccount():
     #running tests
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(accountFields)
-    #dictOfDataValdationResults['account_ID'] = {'presenceCheck':presenceCheck(account_ID),'uniqueDataCheck':uniqueDataCheck(account_ID,'account_ID','accounts')}
     dictOfDataValdationResults['password'] = {'lengthOverSevenCheck':rangeCheck(password,7,None)}
     dictOfDataValdationResults['recovery_Email'] = {'lengthCheck':rangeCheck(recovery_Email,3,None),'@check':pictureCheck(recovery_Email,'@',1,1),'noSpaces':pictureCheck(recovery_Email,'',0,0),'uniqueDataCheck':uniqueDataCheck(recovery_Email,'recovery_Email','accounts')}
     dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
@@ -774,8 +776,9 @@ def createAccount():
     dictOfDataValdationResults['operation_Type'] = {'menuOptionCheck':menuOptionCheck(operation_Type,operationTypeOptions)}
     dictOfDataValdationResults['title'] = {'presenceCheck':presenceCheck(title),'containsOnlyLetters':containsOnlyLetters(title)}
     dictOfDataValdationResults['national_Insurance_Due'] = {'presenceCheck':presenceCheck(national_Insurance_Due),'positiveCheck':rangeCheck(national_Insurance_Due,0,None)}
-    createAccountCoverUpErrorMessage()
+    createAccountCoverUpErrorMessage() #to avoid error messages statying on the screen after consecutive data submit attempts
 
+    #displays appropraite error message to screen
     for entryboxData in dictOfDataValdationResults.keys():
         countOfFailedTests = 0
         if dictOfDataValdationResults[entryboxData] != None:
@@ -784,6 +787,7 @@ def createAccount():
                     disaplayEM(test,accountPageEntryMessageBoxCords[entryboxData]['x'],accountPageEntryMessageBoxCords[entryboxData]['y'])
                     countOfFailedTests = countOfFailedTests + 1
 
+    # counts teh number of failed tests
     countOfFailedTests = 0
     for entryboxData in dictOfDataValdationResults.keys():
         if dictOfDataValdationResults[entryboxData] != None:
@@ -791,7 +795,7 @@ def createAccount():
                 if test == False:
                     countOfFailedTests = countOfFailedTests +1
 
-
+    #adds data to db if no failed tests
     if countOfFailedTests == 0:
         for i in range(len(createAccountArray)):
             createAccountArray[i] = scramble(createAccountArray[i])
@@ -3807,7 +3811,7 @@ def addNewMonthlyUnitData(unitID):
             disaplayEM('dateForUnitUsed',monthlyAdditionsCords['month']['x'],monthlyAdditionsCords['month']['y'])
             countOfFailedTests = countOfFailedTests + 1
         
-
+    #add monthly data if no data validation tests are failed
     if countOfFailedTests == 0:
         openDatabase()
         original_property_Equity = float(deScramble(cursor.execute("SELECT property_Equity FROM units WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()[0][0]))
@@ -4044,7 +4048,6 @@ def createTableForIndividualUnit(startValueForUnitListing):
     unitBriefInfo = cursor.execute("SELECT month, year , tenant_ID, non_Taxable_Expenses, taxable_Expenses, rent_Paid, rent_Late, equity_In_Property, income FROM units_Monthly WHERE unit_ID = '" + scramble(current_unit_ID) + "'").fetchall()
     closeDatabase()
     if len(unitBriefInfo) != 0: #If there is a tenant's month in the database
-        #TODO: need to order by date
         i = startValueForUnitListing
         count = 0
         while i < len(unitBriefInfo) and count < 5:
