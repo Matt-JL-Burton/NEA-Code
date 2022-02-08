@@ -5499,7 +5499,6 @@ initialise()
 
 print('Program Finished')
 
-
 #List of stuff to use in evaluation
 #### stuff could add for better
 #AI predicition for monthly expenses
