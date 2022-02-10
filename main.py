@@ -69,7 +69,7 @@ def definingDefaultVariables():
     tertiary = uInputDataObj('#a9a9a9',str)
     listOfSecondryColourOptions = ['white','grey','black']
     bannedColours = {'errorRed':'#FF0000','warningYellow':'#FDDA0D','activeTextColor':'dark grey','emaraldGreen':'#50C878'}
-    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 6 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 0 and 31','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password','matchesNewPassword':'Your new passwords are not matching, please enter matching passwords','lessThanDeposit':'The deposit spent is more than the tenant has in their deposit','dateForUnitUsed':'Sorry a monthly entry for this month in this unit already exsists','refinanceDateError':'Sorry a refinance for this month already exsits for this unit'}
+    errorMessgesDict = {'presenceCheck':'Please give an input of correct data type','uniqueDataCheck':'Sorry a this data is not unique in the database - it must be unique','lengthCheck':'Sorry the length of this input is not appropriate','pictureCheck':'Sorry the format of this input is invalid','lengthOverSevenCheck':'This input must be more than 6 charcters long','@check':'This input must contain 1 "@" symbol','containsOnlyLetters':'This input should only contain letters','typeCheck':'Sorry the data type of this data is wrong','positiveCheck':'This input must be a positive number','menuOptionCheck':'Please pick and option that is in the menu','noSpaces':'Sorry this input cannot have any spaces in it','dayBetween0/31':'Please enter a day between 1 and 31 (inclusive)','monthBetween1/12':'Please enter an integar between 1 and 12','yearBetween1900/2100':'Please enter a year in 1900 and 2100','between0/100':'Please enter number between 0 and 100','mustContainsLetters':'The input must contain atleast one letter','mustContainNumbers':'The input must contain atleast one number','hexCodeCheck':'Please enter a valid hex code','fontCheck':'Sorry this font is not supported please try again','checkPassword':'Incorrect password','matchesNewPassword':'Your new passwords are not matching, please enter matching passwords','lessThanDeposit':'The deposit spent is more than the tenant has in their deposit','dateForUnitUsed':'Sorry a monthly entry for this month in this unit already exsists','refinanceDateError':'Sorry a refinance for this month already exsits for this unit'}
     font = uInputDataObj('Bahnschrift SemiLight',str)
     operation_Type = uInputDataObj(None,str)
     recovery_Email = uInputDataObj(None,str)
@@ -1983,7 +1983,7 @@ def addUnit():
     dictOfDataValdationResults['tenant_ID'] = {'menuOptionCheck':menuOptionCheck(tenant_ID,occupyingTenantOptions)}
     dictOfDataValdationResults['postcode'] = {'presenceCheck':presenceCheck(postcode),'lengthCheck':rangeCheck(postcode,6,11),'mustContainsLetters':containsLetters(postcode),'mustContainNumbers':containsNumbers(postcode)}
     dictOfDataValdationResults['buy_Month'] = {'presenceCheck':presenceCheck(buy_Month),'monthBetween1/12':rangeCheck(buy_Month,1,12)}
-    dictOfDataValdationResults['buy_Year'] = {'presenceCheck':presenceCheck(buy_Year),'yearBetween1900/2100':rangeCheck(buy_Year,1900,2100)}
+    dictOfDataValdationResults['buy_Year'] = {'presenceCheck':presenceCheck(buy_Year),'yearBetween1900/2100':rangeCheck(buy_Year,1900,2200)}
     dictOfDataValdationResults['intrest_Rate'] = {'presenceCheck':presenceCheck(intrest_Rate),'between0/100':rangeCheck(intrest_Rate,0,100)}
     dictOfDataValdationResults['loan_ID'] = {'presenceCheck':presenceCheck(loan_ID),'noSpaces':pictureCheck(unit_ID,'',0,0),'uniqueDataCheck':uniqueDataCheck(loan_ID,'loan_ID','loan')}
     dictOfDataValdationResults['property_Equity'] = {'presenceCheck':presenceCheck(property_Equity),'positiveCheck':rangeCheck(property_Equity,0,None)}
@@ -2801,11 +2801,11 @@ def addTenant():
     dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(last_Name),'containsOnlyLetters':containsOnlyLetters(last_Name)}
     dictOfDataValdationResults['day'] = {'presenceCheck':presenceCheck(day),'dayBetween0/31':rangeCheck(day,0,31)}
     dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
-    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2200)}
     dictOfDataValdationResults['score'] = {'presenceCheck':presenceCheck(score),'between0/100':rangeCheck(score,0,100)}
     dictOfDataValdationResults['total_Residents'] = {'presenceCheck':presenceCheck(total_Residents),'positiveCheck':rangeCheck(total_Residents,0,None)}
     dictOfDataValdationResults['startMonth'] = {'presenceCheck':presenceCheck(startMonth),'monthBetween1/12':rangeCheck(startMonth,1,12)}
-    dictOfDataValdationResults['startYear'] = {'presenceCheck':presenceCheck(startYear),'yearBetween1900/2100':rangeCheck(startYear,1900,2100)}
+    dictOfDataValdationResults['startYear'] = {'presenceCheck':presenceCheck(startYear),'yearBetween1900/2100':rangeCheck(startYear,1900,2200)}
     dictOfDataValdationResults['deposit'] = {'presenceCheck':presenceCheck(deposit),'postiveCheck':rangeCheck(deposit,0,None)}
     dictOfDataValdationResults['gerneral_Notes'] = {'lengthCheck':rangeCheck(gerneral_Notes,0,1024)}
     newTenantCoverUp()
@@ -3412,7 +3412,7 @@ def updateComplaints():
         #dictOfDataValdationResults['complaint_ID'] = {'presenceCheck':presenceCheck(complaint_ID)}
         #dictOfDataValdationResults['tenant_ID'] = {'presenceCheck':presenceCheck(tenant_ID)}
         dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
-        dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+        dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2200)}
         dictOfDataValdationResults['complaint_Nature'] = {'presenceCheck':presenceCheck(complaint_Nature),'mustContainsLetters':containsLetters(complaint_Nature)}
 
         for entryboxData in dictOfDataValdationResults.keys():
@@ -3577,7 +3577,7 @@ def addNewComplaint():
 
     dictOfDataValdationResults['tenant_ID'] = {'menuOptionCheck':menuOptionCheck(tenant_ID,listOfTenantIDs)}
     dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
-    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2200)}
     dictOfDataValdationResults['complaint_Nature'] = {'presenceCheck':presenceCheck(complaint_Nature),'mustContainsLetters':containsLetters(complaint_Nature)}
 
     for entryboxData in dictOfDataValdationResults.keys():
@@ -3766,7 +3766,7 @@ def addNewMonthlyUnitData(unitID):
     global dictOfDataValdationResults
     dictOfDataValdationResults = dict.fromkeys(units_Monthly_Fields)
     dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
-    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2200)}
     dictOfDataValdationResults['rent_Paid'] = {'menuOptionCheck':menuOptionCheck(rent_Paid,listOfRentPaidOptions)}
     dictOfDataValdationResults['rent_Late'] = {'menuOptionCheck':menuOptionCheck(rent_Late,listOfRentTimeOptions)}
     dictOfDataValdationResults['income'] = {'presenceCheck':presenceCheck(income),'positiveCheck':rangeCheck(income,0,None)}
@@ -4338,13 +4338,13 @@ def updateTenant(tenant_ID_Parsed):
     dictOfDataValdationResults['title'] = {'presenceCheck':presenceCheck(title),'containsOnlyLetters':containsOnlyLetters(title)}
     dictOfDataValdationResults['first_Name'] = {'presenceCheck':presenceCheck(first_Name),'containsOnlyLetters':containsOnlyLetters(first_Name)}
     dictOfDataValdationResults['last_Name'] = {'presenceCheck':presenceCheck(last_Name),'containsOnlyLetters':containsOnlyLetters(last_Name)}
-    dictOfDataValdationResults['day'] = {'presenceCheck':presenceCheck(day),'dayBetween0/31':rangeCheck(day,0,31)}
+    dictOfDataValdationResults['day'] = {'presenceCheck':presenceCheck(day),'dayBetween0/31':rangeCheck(day,1,31)}
     dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
-    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2200)}
     dictOfDataValdationResults['score'] = {'presenceCheck':presenceCheck(score),'between0/100':rangeCheck(score,0,100)}
     dictOfDataValdationResults['total_Residents'] = {'presenceCheck':presenceCheck(total_Residents),'positiveCheck':rangeCheck(total_Residents,0,None)}
     dictOfDataValdationResults['startMonth'] = {'presenceCheck':presenceCheck(startMonth),'monthBetween1/12':rangeCheck(startMonth,1,12)}
-    dictOfDataValdationResults['startYear'] = {'presenceCheck':presenceCheck(startYear),'yearBetween1900/2100':rangeCheck(startYear,1900,2100)}
+    dictOfDataValdationResults['startYear'] = {'presenceCheck':presenceCheck(startYear),'yearBetween1900/2100':rangeCheck(startYear,1900,2200)}
     dictOfDataValdationResults['deposit'] = {'presenceCheck':presenceCheck(deposit),'postiveCheck':rangeCheck(deposit,0,None)}
     dictOfDataValdationResults['gerneral_Notes'] = {'lengthCheck':rangeCheck(gerneral_Notes,0,1024)}
     newTenantCoverUp()
@@ -4587,7 +4587,7 @@ def updateUnit(current_unit_ID, loanID):
     dictOfDataValdationResults['tenant_ID'] = {'menuOptionCheck':menuOptionCheck(tenant_ID,occupyingTenantOptions)}
     dictOfDataValdationResults['postcode'] = {'presenceCheck':presenceCheck(postcode),'lengthCheck':rangeCheck(postcode,6,11),'mustContainsLetters':containsLetters(postcode),'mustContainNumbers':containsNumbers(postcode)}
     dictOfDataValdationResults['buy_Month'] = {'presenceCheck':presenceCheck(buy_Month),'monthBetween1/12':rangeCheck(buy_Month,1,12)}
-    dictOfDataValdationResults['buy_Year'] = {'presenceCheck':presenceCheck(buy_Year),'yearBetween1900/2100':rangeCheck(buy_Year,1900,2100)}
+    dictOfDataValdationResults['buy_Year'] = {'presenceCheck':presenceCheck(buy_Year),'yearBetween1900/2100':rangeCheck(buy_Year,1900,2200)}
     dictOfDataValdationResults['intrest_Rate'] = {'presenceCheck':presenceCheck(intrest_Rate),'between0/100':rangeCheck(intrest_Rate,0,100)}
     dictOfDataValdationResults['property_Equity'] = {'presenceCheck':presenceCheck(property_Equity),'positiveCheck':rangeCheck(property_Equity,0,None)}
     dictOfDataValdationResults['instalments'] = {'presenceCheck':presenceCheck(instalments),'positiveCheck':rangeCheck(property_Equity,0,None)}
@@ -4752,7 +4752,7 @@ def sellunit(unit_ID):
         dictOfDataValdationResults = dict.fromkeys(soldUnitFieldsArray)
         dictOfDataValdationResults['sell_Price'] = {'presenceCheck':presenceCheck(sell_Price),'positiveCheck':rangeCheck(sell_Price,0,None)}
         dictOfDataValdationResults['sell_Month'] = {'presenceCheck':presenceCheck(sell_Month),'monthBetween1/12':rangeCheck(sell_Month,1,12)}
-        dictOfDataValdationResults['sell_Year'] = {'presenceCheck':presenceCheck(sell_Year),'yearBetween1900/2100':rangeCheck(sell_Year,1900,2100)}
+        dictOfDataValdationResults['sell_Year'] = {'presenceCheck':presenceCheck(sell_Year),'yearBetween1900/2100':rangeCheck(sell_Year,1900,2200)}
         dictOfDataValdationResults['tax_Paid'] = {'menuOptionCheck':menuOptionCheck(tax_Paid,capGainsPaidOptions)}
         selldeleteCoverUp()
 
@@ -5079,7 +5079,7 @@ def refinance(unit_ID):
     dictOfDataValdationResults['most_Recent_Valuation'] = {'presenceCheck':presenceCheck(most_Recent_Valuation),'positiveCheck':rangeCheck(most_Recent_Valuation,0,None)}
     dictOfDataValdationResults['capital_Owed'] = {'presenceCheck':presenceCheck(capital_Owed),'positiveCheck':rangeCheck(capital_Owed,0,None)}
     dictOfDataValdationResults['month'] = {'presenceCheck':presenceCheck(month),'monthBetween1/12':rangeCheck(month,1,12)}
-    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2100)}
+    dictOfDataValdationResults['year'] = {'presenceCheck':presenceCheck(year),'yearBetween1900/2100':rangeCheck(year,1900,2200)}
     dictOfDataValdationResults['interest_Rate'] = {'presenceCheck':presenceCheck(interest_Rate),'positiveCheck':rangeCheck(interest_Rate,0,None)}
     dictOfDataValdationResults['instalments'] = {'presenceCheck':presenceCheck(instalments),'positiveCheck':rangeCheck(instalments,0,None)}
     refinancePageCoverUp()
@@ -5422,7 +5422,7 @@ def updateSoldUnit():
         dictOfDataValdationResults = dict.fromkeys(soldUnitFieldArray)
         dictOfDataValdationResults['sell_Price'] = {'presenceCheck':presenceCheck(sell_Price),'positiveCheck':rangeCheck(sell_Price,0,None)}
         dictOfDataValdationResults['sell_Month'] = {'presenceCheck':presenceCheck(sell_Month),'monthBetween1/12':rangeCheck(sell_Month,1,12)}
-        dictOfDataValdationResults['sell_Year'] = {'presenceCheck':presenceCheck(sell_Year),'yearBetween1900/2100':rangeCheck(sell_Year,1900,2100)}
+        dictOfDataValdationResults['sell_Year'] = {'presenceCheck':presenceCheck(sell_Year),'yearBetween1900/2100':rangeCheck(sell_Year,1900,2200)}
         dictOfDataValdationResults['tax_Paid'] = {'menuOptionCheck':menuOptionCheck(tax_Paid,capGainsPaidOptions)}
         editSoldUnitCoverUp()
 
