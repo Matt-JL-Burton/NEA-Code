@@ -64,7 +64,7 @@ def definingDefaultVariables():
     global incPA, bIncTR, hIncTR, aIncTR, bCapGainsAllowence, bIncCutOff, hIncCutOff, corpTR, corpCapGainsTR, bCapGainsTR, hCapGainsTR, aCapGainsTR, normalSet, mappingSet, numericalMappingSet
     global errorMessgesDict, databaseCurrentAccount_ID, listOfSecondryColourOptions, listOfAcceptedFonts, operation_Type, recovery_Email, first_Name, last_Name, password, title
     global tax_Rate, other_Income_Estimate, national_Insurance_Due, style, listOfPossibleCharacters, listOfPossibleCharactersMapping
-    primary = uInputDataObj('#373f51',str)
+    primary = uInputDataObj('#373f52',str)
     secondry = uInputDataObj('#ffffff',str)
     tertiary = uInputDataObj('#a9a9a9',str)
     listOfSecondryColourOptions = ['white','grey','black']
@@ -5504,3 +5504,4 @@ print('Program Finished')
 #### stuff could add for better
 #AI predicition for monthly expenses
 #back button stack
+#streaking
