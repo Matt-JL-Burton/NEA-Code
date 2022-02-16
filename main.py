@@ -5497,10 +5497,9 @@ def editSoldUnitCoverUp():
 
 initialise()
 
-print('Program Has Finished')
+print('Program Finished')
 
 #List of stuff to use in evaluation
 #### stuff could add for better
 #AI predicition for monthly expenses
 #back button stack
-#streak
