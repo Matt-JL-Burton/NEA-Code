@@ -889,7 +889,7 @@ def homePage():
         #working out tax due
         #getting tax data
         if scrambledUnitID != 0: #only getting this data if there is an account in the unit 
-            unit_Monthly_Tax = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE unit_ID = '" + scrambledUnitID + "' AND year = '" + scramble(year) + "'").fetchall()
+            unit_Monthly_Tax = cursor.execute("SELECT income, non_Taxable_Expenses, taxable_Expenses FROM units_Monthly WHERE tenant_ID = '" + scarambledtenatnID + "' AND year = '" + scramble(year) + "'").fetchall()
             for z in range(len(unit_Monthly_Tax)):
                 totalYearlyIncome = totalYearlyIncome + float(deScramble(unit_Monthly_Tax[z][0]))
                 totalTaxableExpenses = totalTaxableExpenses + float(deScramble(unit_Monthly_Tax[z][1]))
