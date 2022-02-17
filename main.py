@@ -875,6 +875,7 @@ def homePage():
     tenantInfo = cursor.execute("SELECT tenant_ID FROM tenants WHERE account_ID = '" + scramble(databaseCurrentAccount_ID.data) + "'").fetchall()
     for x in range(len(tenantInfo)):
         scarambledtenatnID = tenantInfo[x][0]
+        openDatabase()
         lastMonthComplaintscomplaintsInfo = cursor.execute("SELECT complaint_ID FROM complaints WHERE month = '" + scramble(month) + "' AND year = '" + scramble(year) + "' AND tenant_ID = '" + scarambledtenatnID + "'").fetchall()
         for yy in range(len(lastMonthComplaintscomplaintsInfo)):
             nofComplaitnsLastMomth = nofComplaitnsLastMomth + 1
