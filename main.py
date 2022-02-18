@@ -5500,6 +5500,8 @@ initialise()
 
 print('Program Finished')
 
+print("Fully complete")
+
 #List of stuff to use in evaluation
 #### stuff could add for better
 #AI predicition for monthly expenses
