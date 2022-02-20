@@ -1627,7 +1627,8 @@ def menuPage():
     
     root.mainloop()
 
-#This page is for presenting data about the overall state of my end users portfolio aswell as a way to access data for each individual unit 
+#This page is for presenting data about the overall state of my end users portfolio aswell as a way to access data for each individual unit
+
 def propertiesPage():
     initialiseWindow()
     root.title('Property managment system - Properties Page')
