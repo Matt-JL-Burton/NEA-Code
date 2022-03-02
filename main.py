@@ -5051,6 +5051,8 @@ def refinance(unit_ID):
     
     #getting data from the front end to update the DB with
     loan_ID = uInputDataObj(loanIDEntryBox.get(),str)
+    global curreny_loan_ID
+    current_loan_ID = loan_ID
     property_Equity = uInputDataObj(remainingEquityEntryBox.get(),float)
     most_Recent_Valuation = uInputDataObj(newUnitValuationEntryBox.get(),float)
     capital_Owed = uInputDataObj(loanValueEntryBox.get(),float)
@@ -5105,7 +5107,7 @@ def refinance(unit_ID):
     openDatabase()
     listOfItemsWithSamePrimaryKey = cursor.execute("SELECT unit_ID FROM refinance WHERE month = '" + scramble(month.data) + "' AND year = '" + scramble(year.data) + "' AND unit_ID = '" + scramble(unit_ID) + "'").fetchall()
     closeDatabase()
-    if len(listOfItemsWithSamePrimaryKey) != 0 or True:
+    if len(listOfItemsWithSamePrimaryKey) != 0:
         countOfFailedTests = countOfFailedTests + 1
         disaplayEM('refinanceDateError',refinanceCordsDict['month']['x'],refinanceCordsDict['month']['y'])
 
