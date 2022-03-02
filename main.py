@@ -968,8 +968,8 @@ def homePage():
     generalLabel = Label(root, font=(font.data,'14'), text='Expenses : ' + str(float(nextMonthExpectedExpenses)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.76, anchor=CENTER)
 
     generalLabel = Label(root, font=(font.data,'20','bold'), text='Tax (estimates) ' + str(year) + "/" + str(year + 1), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.86, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Income Tax Due : 22,196.0', justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.89, anchor=CENTER)
-    generalLabel = Label(root, font=(font.data,'14'), text='Capital Gains Tax Due : ' + str(float(incomeTaxToPay)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.92, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Income Tax Due : ' + str(float(incomeTaxToPay)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.89, anchor=CENTER)
+    generalLabel = Label(root, font=(font.data,'14'), text='Capital Gains Tax Due : ' + str(float(capitalGainsTaxDue)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.92, anchor=CENTER)
     generalLabel = Label(root, font=(font.data,'14'), text='Total Tax Due : ' + str(float(capitalGainsTaxDue + incomeTaxToPay)), justify='center', bg=secondry.data,fg=primary.data).place(relx=0.15, rely=0.95, anchor=CENTER)
 
     #creating the graphs
