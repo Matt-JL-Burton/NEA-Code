@@ -638,6 +638,7 @@ def forgottenPasswordStage1():
                 Subject = 'Password reset Request'  
                 body = "There has been a request for the reset of your account with your proporty managment system software. If this was not you just delete this email\nIf this was you then your code can be found below\n\n" + str(randomCode)
                 emailToSend = 'Subject: ' + Subject + '\n\n' + body
+                print("Hello World")
                 smtp.sendmail('propertymanagmentsystem36@gmail.com',enteredEmail, emailToSend)
                 forgottenPasswordPageTwo()
         except OSError: #if there is a connection error
