@@ -1141,6 +1141,7 @@ def yearMonthSubtraction(month,year,i):
     return [returnmonth,returnYear]
 
 def displayBackButton():
+    #TODO: to improve this function i could implament a stack fucntion to allow for stacks 
     if previousPage == None:
         pass
     elif previousPage == 'Login':
@@ -1286,13 +1287,13 @@ def getTaxRate(accountID):
     if type(other_Income_Estimate.data) == float or type(other_Income_Estimate.data) == int:
         if operation_Type.data == 'personal':
             if other_Income_Estimate < bIncCutOff.data:
-                tax_Rate = 'b'
+                tax_Rate = 'b' #stands for basic 
             elif other_Income_Estimate < hIncCutOff.data:
-                tax_Rate = 'h'
+                tax_Rate = 'h' #stands for high
             else:
-                tax_Rate = 'a'
+                tax_Rate = 'a' #stamds for additional
         else:
-            tax_Rate = 'c'
+            tax_Rate = 'c' #stands for corporate
     else:
         tax_Rate = 'N/A'
     return(tax_Rate)
@@ -1338,14 +1339,14 @@ def listToFloat(list):
     floater = float(word)
     return floater
 
-def findOS():
+def findOS(): #This function finds and sets the path seperator varible to the correct path seperator for the OS
     global path_seperator
     if platform.system() == 'Windows': #Windows (for me to develope the program)
         path_seperator = '\\'
     elif platform.system() == 'Darwin': #MAC OS (for my end user to run the program)
         path_seperator = '/'
     else:
-        path_seperator = None
+        path_seperator = None #The system is being run on an unsuported OS thus the system wont work
         invalidOSRunning()
 
 
